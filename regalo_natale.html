@@ -2,7 +2,8 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Fondamentale per la responsività, già presente ma lo ribadiamo -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Enigma di Natale - Viaggio Misterioso</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
@@ -312,16 +313,6 @@
             border-bottom: 1px solid #ddd;
         }
 
-        .gallery-item .caption {
-            font-family: 'Playfair Display', serif;
-            color: var(--royal-blue);
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
-        }
-        
-        /* Stile per i placeholder in caso di errore di caricamento */
         .img-placeholder {
             width: 100%;
             min-height: 200px;
@@ -337,6 +328,15 @@
             box-sizing: border-box;
         }
 
+        .gallery-item .caption {
+            font-family: 'Playfair Display', serif;
+            color: var(--royal-blue);
+            font-size: 1.1rem;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
         /* --- CONTROLS AND BUTTONS --- */
 
         .controls {
@@ -419,18 +419,56 @@
             box-shadow: 0 0 15px var(--pure-white);
         }
 
-        /* Mobile adjustments */
+        /* --- OTTIMIZZAZIONE MOBILE (iPhone 13 / schermi sotto i 768px) ---
+        */
         @media (max-width: 768px) {
-            h1 { font-size: 3.5rem; }
-            h2 { font-size: 2rem; }
-            p { font-size: 1.1rem; }
-            .reveal-box { font-size: 3.5rem; padding: 2rem 3rem; }
-            .decoration { font-size: 5rem; }
-            .controls { right: 15px; bottom: 15px; gap: 0.5rem; }
-            button { padding: 10px 20px; font-size: 1rem; }
-            .date-box { font-size: 2.5rem; }
-            #slide-4 h1 { font-size: 4rem; }
-            .gallery-container { columns: 1; }
+            
+            /* Riduzione generale padding della slide */
+            .slide {
+                padding: 1rem;
+            }
+
+            /* Titoli: ridotti per adattarsi meglio in larghezza */
+            h1 { font-size: 3rem; } /* Da 3.5rem a 3rem */
+            h2 { font-size: 1.8rem; } /* Da 2rem a 1.8rem */
+            h3 { font-size: 1.5rem; }
+            p { font-size: 1.05rem; }
+            
+            /* Box Rivelazione (Slide 4) */
+            .reveal-box { 
+                font-size: 3rem;       /* Ridotto da 3.5rem */
+                padding: 1.5rem 2.5rem; /* Ridotto per lasciare più spazio */
+            }
+            #slide-4 h1 { 
+                font-size: 3.5rem; 
+            }
+
+            /* Data Box */
+            .date-box { 
+                font-size: 2rem; 
+                padding: 1rem 2rem;
+                margin: 2rem 0;
+            }
+
+            /* Galleria (Slide 5) */
+            .gallery-container { 
+                columns: 1; /* Forza una singola colonna */
+                padding: 0 10px;
+            }
+            .gallery-item .caption {
+                font-size: 1rem;
+            }
+
+            /* Controlli (Pulsanti) */
+            .controls { 
+                right: 10px; 
+                bottom: 10px; 
+                gap: 0.5rem; 
+            }
+            button { 
+                padding: 8px 16px; /* Pulsanti più piccoli */
+                font-size: 0.9rem; 
+            }
         }
     </style>
 </head>
