@@ -2,7 +2,7 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <!-- Fondamentale per la responsività, già presente ma lo ribadiamo -->
+    <!-- Fondamentale per la responsività -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Enigma di Natale - Viaggio Misterioso</title>
     <style>
@@ -15,6 +15,7 @@
             --pure-white: #FFFFFF;    /* Crisp White */
             --text-color-light: #F0F0F0;
             --dark-background: #001A4A; /* Base più scura del Royal Blue */
+            --accent-green: #00A65A; /* Colore Ryanair/Trasporto */
         }
 
         body, html {
@@ -105,7 +106,7 @@
             width: 100%;
         }
 
-        /* Decorative Elements - Pulite da bandiere/GB */
+        /* Decorative Elements */
         .decoration {
             position: absolute;
             font-size: 10rem;
@@ -267,76 +268,101 @@
             to { text-shadow: 0 0 35px var(--bright-red), 0 0 15px var(--royal-blue); }
         }
         
-        /* --- GALLERY (SLIDE 5 - MASONRY LOOK) --- */
+        /* --- ITINERARIO (SLIDE 5) --- */
         #slide-5 {
              padding-top: 5rem;
              justify-content: flex-start;
         }
         
-        .gallery-container {
-            width: 100%;
-            max-width: 1300px;
-            padding: 0 20px;
-            margin-top: 30px;
-            columns: 3 300px; 
-            column-gap: 20px;
-        }
-
-        /* Modificato per essere un link <a> */
-        .gallery-item {
-            display: inline-block;
-            width: 100%;
-            margin-bottom: 20px;
-            background: var(--pure-white);
-            padding: 10px 10px 20px 10px; 
-            border-radius: 4px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            transition: transform 0.4s ease;
+        .itinerary-timeline {
+            display: flex;
+            flex-direction: column;
+            width: 90%;
+            max-width: 700px;
+            margin-top: 20px;
             position: relative;
-            overflow: hidden;
-            text-decoration: none; /* Rimuove sottolineatura link */
-            cursor: pointer;      /* Indica interattività */
         }
 
-        .gallery-item:hover {
-            transform: scale(1.05) rotate(1deg);
-            z-index: 10;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.7);
+        .timeline-item {
+            display: flex;
+            padding: 20px 0;
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px 15px 15px 40px;
+            border-left: 5px solid var(--bright-red);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--pure-white);
         }
 
-        .gallery-item img {
-            width: 100%;
-            height: auto;
-            display: block;
-            min-height: 150px; 
-            object-fit: cover;
-            border-bottom: 1px solid #ddd;
+        .timeline-item-content {
+            flex-grow: 1;
+        }
+        
+        .timeline-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+            color: var(--pure-white);
         }
 
-        .img-placeholder {
-            width: 100%;
-            min-height: 200px;
-            background-color: #f0f0f0;
-            color: #666;
+        .timeline-item p {
+            margin: 0;
+            font-size: 1.1rem;
+            text-align: left;
+            color: var(--text-color-light);
+        }
+        
+        .timeline-meta {
+            font-weight: bold;
+            color: var(--accent-green);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        /* Logo Styling */
+        .logo-container {
+            flex-shrink: 0;
+            margin-left: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            font-size: 0.9rem;
-            border: 2px dashed #ccc;
-            margin-bottom: 10px;
-            box-sizing: border-box;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--pure-white);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
         }
 
-        .gallery-item .caption {
-            font-family: 'Playfair Display', serif;
-            color: var(--royal-blue);
-            font-size: 1.1rem;
-            font-weight: bold;
-            text-align: center;
-            margin-top: 10px;
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px; /* Spazio interno per i loghi */
         }
         
+        /* Stile specifico per l'Hotel */
+        .hotel-image {
+            width: 100%;
+            height: auto;
+            max-height: 200px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+        .hotel-image-container {
+             width: 100%;
+             max-width: 400px;
+             margin: 10px auto;
+        }
+
+
         /* --- CONTROLS AND BUTTONS --- */
 
         .controls {
@@ -419,25 +445,24 @@
             box-shadow: 0 0 15px var(--pure-white);
         }
 
-        /* --- OTTIMIZZAZIONE MOBILE (iPhone 13 / schermi sotto i 768px) ---
-        */
+        /* --- OTTIMIZZAZIONE MOBILE (iPhone 13 / schermi sotto i 768px) --- */
         @media (max-width: 768px) {
             
             /* Riduzione generale padding della slide */
             .slide {
-                padding: 1rem;
+                padding: 1rem 0.5rem;
             }
 
             /* Titoli: ridotti per adattarsi meglio in larghezza */
-            h1 { font-size: 3rem; } /* Da 3.5rem a 3rem */
-            h2 { font-size: 1.8rem; } /* Da 2rem a 1.8rem */
+            h1 { font-size: 3rem; } 
+            h2 { font-size: 1.8rem; } 
             h3 { font-size: 1.5rem; }
             p { font-size: 1.05rem; }
             
             /* Box Rivelazione (Slide 4) */
             .reveal-box { 
-                font-size: 3rem;       /* Ridotto da 3.5rem */
-                padding: 1.5rem 2.5rem; /* Ridotto per lasciare più spazio */
+                font-size: 3rem;       
+                padding: 1.5rem 2.5rem; 
             }
             #slide-4 h1 { 
                 font-size: 3.5rem; 
@@ -450,13 +475,29 @@
                 margin: 2rem 0;
             }
 
-            /* Galleria (Slide 5) */
-            .gallery-container { 
-                columns: 1; /* Forza una singola colonna */
+            /* Itinerario (Slide 5) */
+            .itinerary-timeline {
+                width: 100%;
                 padding: 0 10px;
             }
-            .gallery-item .caption {
+            .timeline-item {
+                flex-direction: column; /* Impila elementi su mobile */
+                border-left-width: 3px;
+                padding: 10px 10px 10px 20px;
+            }
+            .timeline-item h3 {
+                font-size: 1.2rem;
+            }
+             .timeline-item p {
                 font-size: 1rem;
+            }
+            .logo-container {
+                width: 50px;
+                height: 50px;
+                margin: 10px auto 0; /* Centra il logo sotto il testo */
+            }
+            .hotel-image-container {
+                max-width: 100%;
             }
 
             /* Controlli (Pulsanti) */
@@ -466,7 +507,7 @@
                 gap: 0.5rem; 
             }
             button { 
-                padding: 8px 16px; /* Pulsanti più piccoli */
+                padding: 8px 16px; 
                 font-size: 0.9rem; 
             }
         }
@@ -542,7 +583,6 @@
         <!-- SLIDE 4: La Rivelazione -->
         <div class="slide" id="slide-4">
             <div class="decoration top-right">🥂</div>
-            <!-- Decorazione neutra (ex GB) -->
             <div class="decoration bottom-left" style="font-size: 12rem; opacity: 0.1;">🎁</div>
 
             <div class="slide-content">
@@ -557,74 +597,81 @@
                 <p class="content-fade" style="margin-top: 2rem; transition-delay: 1.0s;">Preparati ad attraversare la Manica e ad esplorare una città più vibranti del mondo!</p>
                 <p class="content-fade" style="margin-top: 1rem; font-style: italic; transition-delay: 1.2s;">La nostra avventura ti aspetta. <strong>Ti amo!</strong> ❤️</p>
                 
-                <!-- Pulsante per la galleria, l'unico modo per avanzare da qui -->
-                <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">🖼️ Scopri il Regalo (Galleria)</button>
+                <!-- Pulsante per l'itinerario -->
+                <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">✈️ Scopri l'Itinerario</button>
             </div>
         </div>
         
-        <!-- SLIDE 5: La Galleria Immagini (ORA LINK) -->
+        <!-- SLIDE 5: L'ITINERARIO (NUOVA) -->
         <div class="slide" id="slide-5">
             <div class="central-light"></div>
-            <div class="decoration top-right">📸</div>
+            <div class="decoration top-right">📅</div>
             
             <div class="slide-content">
-                <h1 class="content-fade" style="font-size: 3rem;">L'Avventura ci aspetta!</h1>
-                <p class="content-fade" style="max-width: 90%; font-size: 1.1rem; margin-bottom: 0;">Clicca sulle foto per esplorare!</p>
+                <h1 class="content-fade" style="font-size: 3rem;">L'Itinerario (5-8 Maggio)</h1>
+                <p class="content-fade" style="max-width: 90%; font-size: 1.1rem; margin-bottom: 0;">Tutti i dettagli fondamentali del viaggio, pronti per la partenza!</p>
                 
-                <div class="gallery-container content-fade" style="transition-delay: 0.3s;">
+                <div class="itinerary-timeline content-fade" style="transition-delay: 0.3s;">
                     
-                    <!-- Tutti gli elementi della galleria sono ora link <a> con ricerca Google Images -->
-                    <a href="https://www.google.com/search?tbm=isch&q=Big+Ben+e+Parlamento+Londra" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/10398649220862485563" alt="Big Ben e Westminster" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Big Ben e il Parlamento (Placeholder)</div>'">
-                        <div class="caption">Big Ben & Westminster</div>
-                    </a>
+                    <!-- 1. VOLO ANDATA -->
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">5 Maggio - Viaggio</div>
+                            <h3>Volo di Andata 🛫</h3>
+                            <p>Partenza da **Bologna** (BLQ) ore <strong>09:45</strong>. Arrivo a **Stansted** (STN) ore <strong>11:00</strong>.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair" alt="Logo Ryanair" onerror="this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
+                        </div>
+                    </div>
 
-                    <a href="https://www.google.com/search?tbm=isch&q=Tower+Bridge+Londra" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/8884223243134696568" alt="Tower Bridge" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Tower Bridge (Placeholder)</div>'">
-                        <div class="caption">Tower Bridge</div>
-                    </a>
+                    <!-- 2. TRENO ANDATA -->
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">5 Maggio - Trasferimento</div>
+                            <h3>Stansted Express per Londra 🚆</h3>
+                            <p>Dall'aeroporto, treno veloce diretto per il cuore della città.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express" alt="Logo Stansted Express" onerror="this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
+                        </div>
+                    </div>
 
-                    <a href="https://www.google.com/search?tbm=isch&q=Buckingham+Palace+cambio+guardia" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/6255995173327655277" alt="Buckingham Palace" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Buckingham Palace (Placeholder)</div>'">
-                        <div class="caption">Buckingham Palace</div>
-                    </a>
+                    <!-- 3. HOTEL -->
+                    <div class="timeline-item" style="border-left-color: gold;">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
+                            <h3>Hotel Comfort Inn</h3>
+                            <p>La nostra base per l'esplorazione: **Edgware Road W2**.</p>
+                             <div class="hotel-image-container">
+                                 <img src="https://placehold.co/600x400/00215F/FFFFFF?text=Comfort+Inn+Edgware+Road" alt="Immagine Esterno Hotel Comfort Inn Edgware Road" class="hotel-image" onerror="this.src='https://placehold.co/600x400/00215F/FFFFFF?text=Comfort+Inn+Edgware+Road'">
+                             </div>
+                        </div>
+                    </div>
 
-                    <a href="https://www.google.com/search?tbm=isch&q=The+Gherkin+Londra" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/14446008788322108668" alt="The Gherkin" onerror="this.outerHTML = '<div class=\'img-placeholder\'>The Gherkin (Placeholder)</div>'">
-                        <div class="caption">The Gherkin</div>
-                    </a>
+                    <!-- 4. TRENO RITORNO -->
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">8 Maggio - Trasferimento</div>
+                            <h3>Stansted Express per Aeroporto 🚆</h3>
+                            <p>Da Londra (Liverpool Street) a Stansted in tempo per il rientro.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express" alt="Logo Stansted Express" onerror="this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
+                        </div>
+                    </div>
 
-                    <a href="https://www.google.com/search?tbm=isch&q=Warner+Bros+Studio+Tour+London+Harry+Potter" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/15019948908916866309" alt="Harry Potter Studio" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Warner Bros Studio Tour (Harry Potter) (Placeholder)</div>'">
-                        <div class="caption">Warner Bros Studio Tour (Harry Potter)</div>
-                    </a>
-
-                    <a href="https://www.google.com/search?tbm=isch&q=London+Eye+ruota+panoramica" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/13693984066740498681" alt="London Eye" onerror="this.outerHTML = '<div class=\'img-placeholder\'>London Eye (Placeholder)</div>'">
-                        <div class="caption">London Eye</div>
-                    </a>
-
-                    <a href="https://www.google.com/search?tbm=isch&q=Piccadilly+Circus+Londra" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/15048681044901855552" alt="Piccadilly Circus" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Piccadilly Circus (Placeholder)</div>'">
-                        <div class="caption">Piccadilly Circus</div>
-                    </a>
-
-                    <a href="https://www.google.com/search?tbm=isch&q=Cattedrale+St+Paul+e+Millennium+Bridge" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/1412761753648942288" alt="St Paul's e Millennium Bridge" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Cattedrale di St Paul e Millennium Bridge (Placeholder)</div>'">
-                        <div class="caption">St Paul's & Millennium Bridge</div>
-                    </a>
-
-                    <a href="https://www.google.com/search?tbm=isch&q=Natural+History+Museum+Londra" target="_blank" class="gallery-item">
-                        <img src="http://googleusercontent.com/image_collection/image_retrieval/10146204865038031255" alt="Natural History Museum" onerror="this.outerHTML = '<div class=\'img-placeholder\'>Museo di Storia Naturale (Placeholder)</div>'">
-                        <div class="caption">Museo di Storia Naturale</div>
-                    </a>
-                    
-                    <!-- Elemento finale non-immagine -->
-                    <a href="https://www.google.com/search?tbm=isch&q=attrazioni+Londra+shopping+parchi" target="_blank" class="gallery-item">
-                        <div style="height: 150px; display: flex; align-items: center; justify-content: center; background: var(--bright-red); color: white; font-weight: bold; font-size: 1.5rem; text-align: center;">E molto altro!</div>
-                        <div class="caption">...M&M's Store, Hyde Park, e tanto shopping!</div>
-                    </a>
-
+                    <!-- 5. VOLO RITORNO -->
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">8 Maggio - Ritorno</div>
+                            <h3>Volo di Ritorno 🛬</h3>
+                            <p>Partenza da **Stansted** (STN) ore <strong>22:10</strong>. Arrivo a **Bologna** (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair" alt="Logo Ryanair" onerror="this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
