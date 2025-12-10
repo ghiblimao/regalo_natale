@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
     <title>Enigma di Natale - Viaggio Misterioso</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght{300;400;700}&display=swap');
 
         /* PALETTE UNION JACK VERA: Royal Blue, Bright Red, White */
         :root {
@@ -597,12 +597,12 @@
                 <p class="content-fade" style="margin-top: 2rem; transition-delay: 1.0s;">Preparati ad attraversare la Manica e ad esplorare una città più vibranti del mondo!</p>
                 <p class="content-fade" style="margin-top: 1rem; font-style: italic; transition-delay: 1.2s;">La nostra avventura ti aspetta. <strong>Ti amo!</strong> ❤️</p>
                 
-                <!-- Pulsante per l'itinerario -->
+                <!-- Pulsante per l'itinerario. Usa un transition-delay più lungo per l'effetto di sorpresa. -->
                 <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">✈️ Scopri l'Itinerario</button>
             </div>
         </div>
         
-        <!-- SLIDE 5: L'ITINERARIO (NUOVA) -->
+        <!-- SLIDE 5: L'ITINERARIO -->
         <div class="slide" id="slide-5">
             <div class="central-light"></div>
             <div class="decoration top-right">📅</div>
@@ -618,7 +618,8 @@
                         <div class="timeline-item-content">
                             <div class="timeline-meta">5 Maggio - Viaggio</div>
                             <h3>Volo di Andata 🛫</h3>
-                            <p>Partenza da **Bologna** (BLQ) ore <strong>09:45</strong>. Arrivo a **Stansted** (STN) ore <strong>11:00</strong>.</p>
+                            <!-- TESTO CORRETTO SENZA ** -->
+                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>.</p>
                         </div>
                         <div class="logo-container">
                             <img src="https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair" alt="Logo Ryanair" onerror="this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
@@ -642,7 +643,8 @@
                         <div class="timeline-item-content">
                             <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
                             <h3>Hotel Comfort Inn</h3>
-                            <p>La nostra base per l'esplorazione: **Edgware Road W2**.</p>
+                            <!-- TESTO CORRETTO SENZA ** -->
+                            <p>La nostra base per l'esplorazione: <strong>Edgware Road W2</strong>.</p>
                              <div class="hotel-image-container">
                                  <img src="https://placehold.co/600x400/00215F/FFFFFF?text=Comfort+Inn+Edgware+Road" alt="Immagine Esterno Hotel Comfort Inn Edgware Road" class="hotel-image" onerror="this.src='https://placehold.co/600x400/00215F/FFFFFF?text=Comfort+Inn+Edgware+Road'">
                              </div>
@@ -654,7 +656,7 @@
                         <div class="timeline-item-content">
                             <div class="timeline-meta">8 Maggio - Trasferimento</div>
                             <h3>Stansted Express per Aeroporto 🚆</h3>
-                            <p>Da Londra (Liverpool Street) a Stansted in tempo per il rientro.</p>
+                            <p>Da Londra (Liverpool Street) a <strong>Stansted</strong> (STN) in tempo per il rientro.</p>
                         </div>
                         <div class="logo-container">
                             <img src="https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express" alt="Logo Stansted Express" onerror="this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
@@ -666,7 +668,8 @@
                         <div class="timeline-item-content">
                             <div class="timeline-meta">8 Maggio - Ritorno</div>
                             <h3>Volo di Ritorno 🛬</h3>
-                            <p>Partenza da **Stansted** (STN) ore <strong>22:10</strong>. Arrivo a **Bologna** (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
+                            <!-- TESTO CORRETTO SENZA ** -->
+                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
                         </div>
                         <div class="logo-container">
                             <img src="https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair" alt="Logo Ryanair" onerror="this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
@@ -684,6 +687,7 @@
 
     <div class="controls">
         <button id="prevBtn" onclick="changeSlide(-1)" disabled>Indietro</button>
+        <!-- Questo pulsante "Avanti" verrà gestito per essere disabilitato sulla slide 4 e 5 -->
         <button id="nextBtn" onclick="changeSlide(1)">Avanti</button>
     </div>
 
@@ -705,14 +709,14 @@
             const progressValue = ((currentSlide + 1) / totalSlides) * 100;
             progressBar.style.width = `${progressValue}%`;
 
-            // Logica per il pulsante "Avanti" (nextBtn)
-            if (currentSlide === 3) {
-                // Slide 4 (Indice 3): si può avanzare SOLO con il pulsante magico, quindi il pulsante "Avanti" standard è disabilitato.
-                nextBtn.innerText = "Avanti"; 
-                nextBtn.disabled = true; 
-            } else if (currentSlide === totalSlides - 1) {
-                // Ultima slide: disabilita e cambia testo
-                nextBtn.innerText = "Fatto!";
+            // Gestione del pulsante "Avanti"
+            if (currentSlide === totalSlides - 1) {
+                // Ultima slide
+                nextBtn.innerText = "Finito";
+                nextBtn.disabled = true;
+            } else if (currentSlide === 3) {
+                // Slide 4 (La Rivelazione): l'utente deve usare il pulsante magico, non l'Avanti standard
+                nextBtn.innerText = "Avanti";
                 nextBtn.disabled = true;
             } else {
                 // Tutte le altre slide: abilitato e testo standard
@@ -731,12 +735,6 @@
             if (newSlide < 0) newSlide = 0;
             if (newSlide >= totalSlides) newSlide = totalSlides - 1;
             
-            // Gestione speciale per il pulsante magico della Slide 4
-            if (currentSlide === 3 && direction === 1) {
-                 newSlide = 4;
-            }
-
-
             currentSlide = newSlide;
 
             // Aggiungi la classe 'active' alla nuova slide
