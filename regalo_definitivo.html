@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Regalo di Natale</title>
+    
+    <style>
+        /* --- PALETTE COLORI GLOBALE --- */
+        :root {
+            --royal-blue: #00215F;
+            --bright-red: #CF142B;
+            --pure-white: #FFFFFF;
+            --text-color-light: #F0F0F0;
+            --dark-background: #001A4A;
+            --accent-green: #00A65A;
+        }
+
+        /* --- STILI DELLA PAGINA ORIGINALE (Slide e Layout) --- */
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background-color: var(--dark-background);
+            color: var(--text-color-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-direction: column;
+        }
+
+        .slide {
+            display: none;
+            text-align: center;
+            padding: 20px;
+            box-sizing: border-box;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide-content h1 {
+            color: var(--pure-white);
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .slide-content p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .nav-btn {
+            background-color: var(--accent-green);
+            color: var(--pure-white);
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .nav-btn:hover {
+            background-color: #008f4c;
+        }
+
+        /* --- SCHERMATA DI TRANSIZIONE (Novità) --- */
+        #interstitial-slide {
+            background-color: var(--royal-blue);
+        }
+        #interstitial-slide h1 {
+            color: var(--bright-red);
+        }
+        #interstitial-slide .nav-btn {
+            background-color: var(--bright-red);
+        }
+        #interstitial-slide .nav-btn:hover {
+            background-color: #a31123;
+        }
+
+        /* --- STILI DEI MINIGIOCHI (Presi dal codice precedente) --- */
+
+        .game-container {
+            display: none;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            background: var(--dark-background);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 50px; left: 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--pure-white);
+            padding: 8px 15px;
+            border-radius: 8px;
+            color: var(--pure-white);
+            z-index: 100;
+            font-weight: bold;
+        }
+
+        /* INFO BAR (Punteggio e Timer) */
+        .info-bar {
+            position: absolute;
+            top: 50px; right: 20px;
+            text-align: right;
+            z-index: 100;
+        }
+        .score-txt { font-size: 1.3rem; font-weight: bold; color: var(--pure-white); }
+        .timer-txt { font-size: 1rem; color: var(--bright-red); margin-top: 5px; font-weight: bold;}
+
+        /* CANVAS */
+        canvas { 
+            background-color: var(--royal-blue); 
+            display: block; 
+            border: 3px solid var(--pure-white); 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
+        
+        /* ISTRUZIONI (Non usate, ma mantenute per coerenza) */
+        #instruction-panel {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 26, 74, 0.98);
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #inst-title { font-size: 2rem; color: var(--pure-white); margin-bottom: 20px; border-bottom: 2px solid var(--bright-red); padding-bottom: 10px; }
+        #inst-desc { font-size: 1.1rem; line-height: 1.6; color: var(--text-color-light); margin-bottom: 40px; }
+        
+        .btn-start { 
+            background-color: var(--accent-green); 
+            border: none;
+            color: var(--pure-white);
+            padding: 20px;
+            font-size: 1.2rem;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 166, 90, 0.4); 
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="slide-1" class="slide">
+        <div class="slide-content">
+            <h1>Benvenuto!</h1>
+            <p>Questa è la prima slide del tuo messaggio. Clicca avanti per continuare il tuo regalo.</p>
+            <button class="nav-btn" onclick="nextSlide()">Avanti</button>
+        </div>
+    </div>
+
+    <div id="interstitial-slide" class="slide" style="display: none;">
+        <div class="slide-content">
+            <h1>Prima di passare alla pagina successiva...</h1>
+            <p style="color: var(--text-color-light);">Dovrai superare la seguente sfida!</p>
+            <button class="nav-btn" onclick="startFlappyChallenge()">Premi Continua per vedere di cosa si tratta</button>
+        </div>
+    </div>
+
+    <div id="slide-2" class="slide" style="display: none;">
+        <div class="slide-content">
+            <h1>Complimenti, hai superato la sfida!</h1>
+            <p>Ora puoi continuare con il resto del tuo regalo.</p>
+            <button class="nav-btn" onclick="nextSlide()">Continua</button>
+        </div>
+    </div>
+
+    <div id="slide-3" class="slide" style="display: none;">
+        <div class="slide-content">
+            <h1>Il tuo regalo finale è qui!</h1>
+            <p>Grazie per aver giocato e per aver superato la prova.</p>
+            <button class="nav-btn" onclick="location.reload()">Ricomincia</button>
+        </div>
+    </div>
+
+    
+    <div id="game-flappy" class="game-container">
+        <button class="back-btn" onclick="handleGameExit()">Esci / Ritorna</button>
+        <div class="info-bar">
+            <div id="score-display" class="score-txt">Punti: 0</div>
+            <div id="timer-display" class="timer-txt">Tempo: 0s</div>
+        </div>
+        <canvas id="canvas-flappy"></canvas>
+    </div>
+
+    <div id="instruction-panel" style="display: none;">
+        <h2 id="inst-title">Flappy Cube Challenge</h2>
+        <p id="inst-desc">Tocca lo schermo per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi per sbloccare il tuo regalo.</p>
+        <button class="btn btn-start" onclick="launchFlappy()">🚀 INIZIA LA SFIDA</button>
+    </div>
+
+    <script>
+        let currentSlide = 1;
+        const totalSlides = 3; // Aggiorna se aggiungi slide
+        
+        let gameLoopId = null;
+        let timerIntervalId = null;
+        let timeLeft = 0;
+        let currentScore = 0;
+        let isGameOver = false;
+
+        // Riferimenti UI (per il gioco)
+        const scoreEl = document.getElementById('score-display');
+        const timerEl = document.getElementById('timer-display');
+
+        // CONFIGURAZIONE COLORI JS (Per Canvas)
+        const COLORS = {
+            bg: '#00215F',      // royal-blue
+            player: '#FFFFFF',  // pure-white
+            obstacle: '#CF142B',// bright-red
+            safe: '#00A65A',    // accent-green (Tubi)
+            text: '#F0F0F0'     // light-text
+        };
+
+        // --- GESTIONE DEL FLUSSO SLIDE ---
+
+        function showSlide(id) {
+            document.querySelectorAll('.slide, .game-container, #instruction-panel').forEach(el => {
+                el.style.display = 'none';
+            });
+            document.getElementById('slide-' + id).style.display = 'flex';
+            document.getElementById('ui-overlay').style.display = 'none';
+        }
+
+        function nextSlide() {
+            if (currentSlide === 1) {
+                // Dopo la slide 1, vai alla schermata intermedia
+                showSlide('interstitial'); 
+            } else if (currentSlide === 'interstitial' || currentSlide === 2) {
+                currentSlide = (currentSlide === 'interstitial') ? 2 : 3;
+                if (currentSlide <= totalSlides) {
+                    showSlide(currentSlide);
+                }
+            }
+        }
+
+        // Forza la visualizzazione iniziale
+        showSlide(1);
+
+
+        // --- FUNZIONI DI INTEGRAZIONE GIOCO ---
+
+        function startFlappyChallenge() {
+            // Nasconde la slide intermedia
+            document.getElementById('interstitial-slide').style.display = 'none'; 
+            // Mostra il pannello istruzioni per il gioco
+            document.getElementById('instruction-panel').style.display = 'flex';
+        }
+
+        function launchFlappy() {
+            // Nasconde le istruzioni
+            document.getElementById('instruction-panel').style.display = 'none';
+            // Avvia il gioco
+            document.getElementById('game-flappy').style.display = 'flex';
+            document.getElementById('ui-overlay').style.display = 'block';
+            initFlappy();
+        }
+
+        function handleGameExit() {
+            // Funzione chiamata quando l'utente preme "Esci" o quando il gioco finisce.
+            // Prima di uscire, diamo un messaggio basato sul punteggio.
+            stopGame(); // Pulisce gli intervalli
+
+            let message = "";
+            let victory = currentScore >= 5;
+
+            if (victory) {
+                message = "🏆 VITTORIA! Hai superato la sfida Flappy Cube! Il tuo regalo ti aspetta.";
+                alert(message);
+                
+                // Forza il passaggio alla slide successiva
+                currentSlide = 2; // Da slide intermedia a slide 2
+                showSlide(currentSlide);
+
+            } else {
+                message = "❌ Sconfitta. Devi superare 5 ostacoli per continuare. Riprova!";
+                alert(message);
+                // L'utente torna alla schermata intermedia per riprovare
+                currentSlide = 'interstitial';
+                showSlide('interstitial');
+            }
+        }
+
+        // --- LOGICA GIOCO FLAPPY CUBE (Adattata) ---
+
+        function updateUI(score, time) {
+            scoreEl.innerText = "Punti: " + score;
+            if(time !== null) timerEl.innerText = "Tempo: " + time + "s";
+            else timerEl.innerText = "";
+        }
+
+        function stopGame() {
+            clearInterval(timerIntervalId);
+            cancelAnimationFrame(gameLoopId);
+            isGameOver = true;
+            document.getElementById('ui-overlay').style.display = 'none';
+            document.getElementById('game-flappy').style.display = 'none';
+        }
+        
+        // La funzione endGame originale viene sostituita da handleGameExit
+        // per gestire il flusso della pagina regalo.
+
+        function initFlappy() {
+            const canvas = document.getElementById('canvas-flappy');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth * 0.95;
+            canvas.height = window.innerHeight * 0.7;
+            
+            const TARGET_SCORE = 5;
+            let birdY = canvas.height / 2;
+            let birdX = 50;
+            let velocity = 0;
+            let gravity = 0.5;
+            let pipes = [];
+            
+            isGameOver = false;
+            currentScore = 0;
+            timeLeft = 20;
+
+            updateUI(0, timeLeft);
+
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateUI(currentScore, timeLeft);
+                if(timeLeft <= 0) {
+                    if (isGameOver) return; // Se già chiamato da collisione
+                    handleGameExit(); // Gestisce la sconfitta per tempo
+                }
+            }, 1000);
+
+            canvas.ontouchstart = (e) => {
+                e.preventDefault();
+                if(!isGameOver) velocity = -8;
+            };
+
+            function loop() {
+                if(isGameOver) return;
+                
+                velocity += gravity;
+                birdY += velocity;
+
+                if(frames % 90 === 0) {
+                    pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2), counted: false});
+                }
+
+                // Sfondo
+                ctx.fillStyle = COLORS.bg;
+                ctx.fillRect(0,0,canvas.width, canvas.height);
+
+                // Player (Bianco)
+                ctx.fillStyle = COLORS.player;
+                ctx.fillRect(birdX, birdY, 30, 30);
+                ctx.strokeStyle = COLORS.bg;
+                ctx.strokeRect(birdX, birdY, 30, 30);
+
+                // Tubi (Verdi)
+                ctx.fillStyle = COLORS.safe;
+                for(let i = 0; i < pipes.length; i++) {
+                    let p = pipes[i];
+                    p.x -= 3;
+                    ctx.fillRect(p.x, 0, 40, p.h); 
+                    ctx.fillRect(p.x, p.h + 130, 40, canvas.height); 
+                    
+                    ctx.strokeStyle = COLORS.player;
+                    ctx.strokeRect(p.x, 0, 40, p.h);
+                    ctx.strokeRect(p.x, p.h + 130, 40, canvas.height);
+
+                    if(!p.counted && p.x + 40 < birdX) {
+                        currentScore++;
+                        p.counted = true;
+                        updateUI(currentScore, timeLeft);
+                    }
+
+                    // Collisione
+                    if(birdX < p.x + 40 && birdX + 30 > p.x && (birdY < p.h || birdY + 30 > p.h + 130) || birdY > canvas.height || birdY < 0) {
+                        if (isGameOver) return;
+                        isGameOver = true;
+                        handleGameExit(); // Gestisce la sconfitta per collisione
+                        return;
+                    }
+                }
+
+                frames++;
+                gameLoopId = requestAnimationFrame(loop);
+            }
+            let frames = 0;
+            loop();
+        }
+
+        // Avvia la prima slide all'apertura
+        showSlide(1);
+
+    </script>
+</body>
+</html>
