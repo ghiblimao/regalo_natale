@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Arcade iPhone 15</title>
+    <style>
+        /* STILE GENERALE APP */
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow: hidden; /* Blocca scorrimento */
+            touch-action: none; /* Blocca zoom */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        h1 { margin: 0 0 20px 0; font-size: 2rem; }
+        
+        /* MENU PRINCIPALE */
+        #menu { display: flex; flex-direction: column; gap: 15px; width: 80%; }
+        .btn {
+            background: linear-gradient(45deg, #007AFF, #00C6FF);
+            border: none;
+            padding: 20px;
+            border-radius: 15px;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0,122,255,0.4);
+            cursor: pointer;
+        }
+        .btn:active { transform: scale(0.98); }
+
+        /* CONTENITORI GIOCHI */
+        .game-container {
+            display: none; /* Nascosti di default */
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            background: #1e1e1e;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 15px;
+            border-radius: 8px;
+            color: white;
+            border: none;
+            z-index: 100;
+        }
+
+        canvas { background: #000; display: block; }
+        
+        /* GIOCO 2: MEMORY STYLES */
+        #memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 90%;
+            max-width: 350px;
+        }
+        .card {
+            background-color: #333;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+        }
+        .card.flipped { background-color: #fff; color: #000; }
+        
+        /* GIOCO 3: REFLEX STYLES */
+        #reflex-area {
+            width: 90%; height: 60%;
+            background: #222;
+            position: relative;
+            border-radius: 10px;
+            border: 2px solid #333;
+        }
+        #target-dot {
+            width: 50px; height: 50px;
+            background-color: #FF3B30;
+            border-radius: 50%;
+            position: absolute;
+            display: none;
+        }
+
+        /* PUNTEGGIO */
+        .score-display {
+            position: absolute;
+            top: 40px;
+            right: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="menu">
+        <h1>📱 Sala Giochi</h1>
+        <button class="btn" onclick="startGame('flappy')">🐦 Flappy Cube</button>
+        <button class="btn" onclick="startGame('memory')">🧠 Memory Emoji</button>
+        <button class="btn" onclick="startGame('reflex')">⚡ Reflex Dot</button>
+        <button class="btn" onclick="startGame('dodger')">🏎️ Schiva Tutto</button>
+    </div>
+
+    <div id="game-flappy" class="game-container">
+        <button class="back-btn" onclick="stopGame()">Indietro</button>
+        <div class="score-display" id="score-flappy">0</div>
+        <canvas id="canvas-flappy"></canvas>
+        <p style="margin-top:10px; color:#aaa">Tocca per saltare</p>
+    </div>
+
+    <div id="game-memory" class="game-container">
+        <button class="back-btn" onclick="stopGame()">Indietro</button>
+        <div id="memory-grid"></div>
+        <p style="margin-top:20px; color:#aaa">Trova le coppie!</p>
+    </div>
+
+    <div id="game-reflex" class="game-container">
+        <button class="back-btn" onclick="stopGame()">Indietro</button>
+        <div class="score-display" id="score-reflex">0</div>
+        <div id="reflex-area">
+            <div id="target-dot" ontouchstart="hitTarget()"></div>
+        </div>
+        <p style="margin-top:10px; color:#aaa">Tocca il rosso velocemente!</p>
+    </div>
+
+    <div id="game-dodger" class="game-container">
+        <button class="back-btn" onclick="stopGame()">Indietro</button>
+        <div class="score-display" id="score-dodger">0</div>
+        <canvas id="canvas-dodger"></canvas>
+        <p style="margin-top:10px; color:#aaa">Tocca DX o SX per muoverti</p>
+    </div>
+
+    <script>
+        let activeGameInterval = null;
+        let activeGameLoop = null;
+
+        // --- GESTIONE MENU ---
+        function startGame(gameId) {
+            document.getElementById('menu').style.display = 'none';
+            document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none');
+            document.getElementById('game-' + gameId).style.display = 'flex';
+
+            if(gameId === 'flappy') initFlappy();
+            if(gameId === 'memory') initMemory();
+            if(gameId === 'reflex') initReflex();
+            if(gameId === 'dodger') initDodger();
+        }
+
+        function stopGame() {
+            clearInterval(activeGameInterval);
+            cancelAnimationFrame(activeGameLoop);
+            document.getElementById('menu').style.display = 'flex';
+            document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none');
+        }
+
+        // --- GIOCO 1: FLAPPY CUBE ---
+        function initFlappy() {
+            const canvas = document.getElementById('canvas-flappy');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth * 0.9;
+            canvas.height = window.innerHeight * 0.6;
+            
+            let birdY = canvas.height / 2;
+            let velocity = 0;
+            let gravity = 0.6;
+            let pipes = [];
+            let score = 0;
+            let gameOver = false;
+
+            // Touch input
+            canvas.ontouchstart = (e) => {
+                e.preventDefault();
+                velocity = -8;
+                if(gameOver) initFlappy();
+            };
+
+            function loop() {
+                if(gameOver) return;
+                ctx.fillStyle = '#1e1e1e';
+                ctx.fillRect(0,0,canvas.width, canvas.height);
+
+                // Bird
+                velocity += gravity;
+                birdY += velocity;
+                ctx.fillStyle = '#00C6FF';
+                ctx.fillRect(50, birdY, 30, 30);
+
+                // Pipes
+                if(frames % 100 === 0) {
+                    pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2)});
+                }
+                
+                ctx.fillStyle = '#4CAF50';
+                pipes.forEach((p, i) => {
+                    p.x -= 3;
+                    ctx.fillRect(p.x, 0, 40, p.h); // Top pipe
+                    ctx.fillRect(p.x, p.h + 120, 40, canvas.height); // Bottom pipe
+                    
+                    // Collision
+                    if(50 < p.x + 40 && 80 > p.x && (birdY < p.h || birdY + 30 > p.h + 120)) {
+                        gameOver = true; alert('Perso! Punteggio: ' + score);
+                    }
+                    if(p.x === 50) { score++; document.getElementById('score-flappy').innerText = score; }
+                });
+
+                // Ground/Ceiling
+                if(birdY > canvas.height || birdY < 0) {
+                    gameOver = true; alert('Perso!');
+                }
+
+                frames++;
+                activeGameLoop = requestAnimationFrame(loop);
+            }
+            let frames = 0;
+            loop();
+        }
+
+        // --- GIOCO 2: MEMORY ---
+        function initMemory() {
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            const emojis = ['🐶','🐶','🐱','🐱','🐭','🐭','🐹','🐹','🦊','🦊','🐻','🐻','🐼','🐼','🐨','🐨'];
+            emojis.sort(() => 0.5 - Math.random());
+            
+            let flippedCards = [];
+            let matched = 0;
+
+            emojis.forEach(emoji => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.val = emoji;
+                card.ontouchstart = () => {
+                    if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                        card.classList.add('flipped');
+                        card.innerText = emoji;
+                        flippedCards.push(card);
+                        if(flippedCards.length === 2) checkMatch();
+                    }
+                };
+                grid.appendChild(card);
+            });
+
+            function checkMatch() {
+                if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
+                    flippedCards = [];
+                    matched++;
+                    if(matched === 8) alert('Vittoria!');
+                } else {
+                    setTimeout(() => {
+                        flippedCards.forEach(c => { c.classList.remove('flipped'); c.innerText = ''; });
+                        flippedCards = [];
+                    }, 800);
+                }
+            }
+        }
+
+        // --- GIOCO 3: REFLEX ---
+        let reflexScore = 0;
+        function initReflex() {
+            reflexScore = 0;
+            document.getElementById('score-reflex').innerText = 0;
+            moveDot();
+        }
+        function moveDot() {
+            const area = document.getElementById('reflex-area');
+            const dot = document.getElementById('target-dot');
+            const x = Math.random() * (area.clientWidth - 50);
+            const y = Math.random() * (area.clientHeight - 50);
+            
+            dot.style.display = 'block';
+            dot.style.left = x + 'px';
+            dot.style.top = y + 'px';
+        }
+        window.hitTarget = function() {
+            reflexScore++;
+            document.getElementById('score-reflex').innerText = reflexScore;
+            moveDot();
+        }
+
+        // --- GIOCO 4: DODGER ---
+        function initDodger() {
+            const canvas = document.getElementById('canvas-dodger');
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth * 0.9;
+            canvas.height = window.innerHeight * 0.6;
+            
+            let playerX = canvas.width / 2 - 20;
+            let obstacles = [];
+            let score = 0;
+            let gameOver = false;
+
+            // Touch controlls
+            canvas.ontouchstart = (e) => {
+                e.preventDefault();
+                let touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
+                if(touchX < canvas.width / 2) playerX -= 40;
+                else playerX += 40;
+            };
+
+            function loop() {
+                if(gameOver) return;
+                ctx.fillStyle = '#222';
+                ctx.fillRect(0,0,canvas.width, canvas.height);
+
+                // Player
+                ctx.fillStyle = '#FF9500';
+                ctx.fillRect(playerX, canvas.height - 50, 40, 40);
+
+                // Obstacles
+                if(Math.random() < 0.05) {
+                    obstacles.push({x: Math.random() * (canvas.width - 40), y: -40});
+                }
+
+                ctx.fillStyle = '#FF3B30';
+                obstacles.forEach((o, i) => {
+                    o.y += 5;
+                    ctx.fillRect(o.x, o.y, 40, 40);
+
+                    // Collision
+                    if(o.y > canvas.height - 90 && o.y < canvas.height - 10 && 
+                       o.x < playerX + 40 && o.x + 40 > playerX) {
+                        gameOver = true; alert('Game Over! Score: ' + score);
+                    }
+                    if(o.y > canvas.height) { obstacles.splice(i, 1); score++; document.getElementById('score-dodger').innerText = score; }
+                });
+
+                activeGameLoop = requestAnimationFrame(loop);
+            }
+            loop();
+        }
+    </script>
+</body>
+</html>
