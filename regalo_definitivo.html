@@ -16,7 +16,7 @@
             --accent-green: #00A65A;
         }
 
-        /* --- STILI DELLA PAGINA ORIGINALE (Slide e Layout) --- */
+        /* --- STILI BASE (DAL REPOSITORY ORIGINALE) --- */
         body, html {
             height: 100%;
             margin: 0;
@@ -69,9 +69,11 @@
             background-color: #008f4c;
         }
 
-        /* --- SCHERMATA DI TRANSIZIONE (Novità) --- */
+        /* --- SCHERMATA DI TRANSIZIONE (NUOVA) --- */
         #interstitial-slide {
             background-color: var(--royal-blue);
+            position: absolute; /* Rende la transizione separata dalle slide */
+            z-index: 50;
         }
         #interstitial-slide h1 {
             color: var(--bright-red);
@@ -82,19 +84,35 @@
         #interstitial-slide .nav-btn:hover {
             background-color: #a31123;
         }
+        
+        /* --- STILI MINIGIOCO (Palette applicata) --- */
 
-        /* --- STILI DEI MINIGIOCHI (Presi dal codice precedente) --- */
-
-        .game-container {
+        .game-container, #instruction-panel {
             display: none;
-            width: 100%;
-            height: 100%;
             position: absolute;
             top: 0; left: 0;
+            width: 100%;
+            height: 100%;
             background: var(--dark-background);
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            z-index: 100; /* Deve stare sopra tutto */
+        }
+
+        /* ISTRUZIONI POPUP STYLES */
+        #inst-title { font-size: 2rem; color: var(--pure-white); margin-bottom: 20px; border-bottom: 2px solid var(--bright-red); padding-bottom: 10px; }
+        #inst-desc { font-size: 1.1rem; line-height: 1.6; color: var(--text-color-light); margin-bottom: 40px; text-align: center; }
+        
+        .btn-start { 
+            background-color: var(--accent-green); 
+            border: none;
+            color: var(--pure-white);
+            padding: 20px;
+            font-size: 1.2rem;
+            border-radius: 16px;
+            cursor: pointer;
+            box-shadow: 0 0 15px rgba(0, 166, 90, 0.4); 
         }
 
         .back-btn {
@@ -105,11 +123,20 @@
             padding: 8px 15px;
             border-radius: 8px;
             color: var(--pure-white);
-            z-index: 100;
+            z-index: 101; /* Deve stare sopra l'info bar */
             font-weight: bold;
         }
 
         /* INFO BAR (Punteggio e Timer) */
+        #ui-overlay {
+            display: none;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 100;
+        }
         .info-bar {
             position: absolute;
             top: 50px; right: 20px;
@@ -128,34 +155,6 @@
             border-radius: 8px;
         }
         
-        /* ISTRUZIONI (Non usate, ma mantenute per coerenza) */
-        #instruction-panel {
-            display: none;
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 26, 74, 0.98);
-            z-index: 200;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 30px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-        #inst-title { font-size: 2rem; color: var(--pure-white); margin-bottom: 20px; border-bottom: 2px solid var(--bright-red); padding-bottom: 10px; }
-        #inst-desc { font-size: 1.1rem; line-height: 1.6; color: var(--text-color-light); margin-bottom: 40px; }
-        
-        .btn-start { 
-            background-color: var(--accent-green); 
-            border: none;
-            color: var(--pure-white);
-            padding: 20px;
-            font-size: 1.2rem;
-            border-radius: 16px;
-            cursor: pointer;
-            box-shadow: 0 0 15px rgba(0, 166, 90, 0.4); 
-        }
-
     </style>
 </head>
 <body>
@@ -164,61 +163,68 @@
         <div class="slide-content">
             <h1>Benvenuto!</h1>
             <p>Questa è la prima slide del tuo messaggio. Clicca avanti per continuare il tuo regalo.</p>
-            <button class="nav-btn" onclick="nextSlide()">Avanti</button>
+            <button class="nav-btn" onclick="originalNextSlide()">Avanti</button>
         </div>
     </div>
 
-    <div id="interstitial-slide" class="slide" style="display: none;">
-        <div class="slide-content">
-            <h1>Prima di passare alla pagina successiva...</h1>
-            <p style="color: var(--text-color-light);">Dovrai superare la seguente sfida!</p>
-            <button class="nav-btn" onclick="startFlappyChallenge()">Premi Continua per vedere di cosa si tratta</button>
-        </div>
-    </div>
-
-    <div id="slide-2" class="slide" style="display: none;">
+    <div id="slide-2" class="slide">
         <div class="slide-content">
             <h1>Complimenti, hai superato la sfida!</h1>
             <p>Ora puoi continuare con il resto del tuo regalo.</p>
-            <button class="nav-btn" onclick="nextSlide()">Continua</button>
+            <button class="nav-btn" onclick="originalNextSlide()">Continua</button>
         </div>
     </div>
 
-    <div id="slide-3" class="slide" style="display: none;">
+    <div id="slide-3" class="slide">
         <div class="slide-content">
             <h1>Il tuo regalo finale è qui!</h1>
             <p>Grazie per aver giocato e per aver superato la prova.</p>
             <button class="nav-btn" onclick="location.reload()">Ricomincia</button>
         </div>
     </div>
-
     
-    <div id="game-flappy" class="game-container">
+    <div id="interstitial-slide" class="slide" style="display: none;">
+        <div class="slide-content">
+            <h1>Prima di passare alla pagina successiva...</h1>
+            <p style="color: var(--text-color-light);">Dovrai superare la seguente sfida!</p>
+            <button class="nav-btn" onclick="showInstructions()">Premi Continua per vedere di cosa si tratta</button>
+        </div>
+    </div>
+
+    <div id="instruction-panel">
+        <h2 id="inst-title">🐦 Flappy Cube Challenge</h2>
+        <p id="inst-desc">Tocca lo schermo per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi per sbloccare il tuo regalo.</p>
+        <button class="btn btn-start" onclick="launchFlappy()">🚀 INIZIA LA SFIDA</button>
+    </div>
+
+    <div id="ui-overlay">
         <button class="back-btn" onclick="handleGameExit()">Esci / Ritorna</button>
         <div class="info-bar">
             <div id="score-display" class="score-txt">Punti: 0</div>
             <div id="timer-display" class="timer-txt">Tempo: 0s</div>
         </div>
+    </div>
+    
+    <div id="game-flappy" class="game-container">
         <canvas id="canvas-flappy"></canvas>
     </div>
 
-    <div id="instruction-panel" style="display: none;">
-        <h2 id="inst-title">Flappy Cube Challenge</h2>
-        <p id="inst-desc">Tocca lo schermo per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi per sbloccare il tuo regalo.</p>
-        <button class="btn btn-start" onclick="launchFlappy()">🚀 INIZIA LA SFIDA</button>
-    </div>
 
     <script>
+        // --- VARIABILI GLOBALI ORIGINALI E DI GIOCO ---
         let currentSlide = 1;
-        const totalSlides = 3; // Aggiorna se aggiungi slide
-        
+        const totalSlides = 3; 
+
+        // Variabili Gioco
         let gameLoopId = null;
         let timerIntervalId = null;
         let timeLeft = 0;
         let currentScore = 0;
         let isGameOver = false;
+        
+        const TARGET_SCORE = 5;
 
-        // Riferimenti UI (per il gioco)
+        // Riferimenti UI Gioco
         const scoreEl = document.getElementById('score-display');
         const timerEl = document.getElementById('timer-display');
 
@@ -231,35 +237,43 @@
             text: '#F0F0F0'     // light-text
         };
 
-        // --- GESTIONE DEL FLUSSO SLIDE ---
 
+        // --- FUNZIONI DI GESTIONE SLIDE ---
+        
         function showSlide(id) {
-            document.querySelectorAll('.slide, .game-container, #instruction-panel').forEach(el => {
+            // Nasconde tutte le slide, la schermata intermedia e le UI di gioco
+            document.querySelectorAll('.slide, #instruction-panel, .game-container, #ui-overlay').forEach(el => {
                 el.style.display = 'none';
             });
-            document.getElementById('slide-' + id).style.display = 'flex';
-            document.getElementById('ui-overlay').style.display = 'none';
+            // Mostra solo l'elemento richiesto
+            if (id === 'interstitial') {
+                document.getElementById('interstitial-slide').style.display = 'flex';
+                currentSlide = 'interstitial';
+            } else if (id === 'flappy') {
+                // Le funzioni di gioco gestiranno la visibilità degli elementi di gioco
+                showInstructions(); 
+            } else {
+                document.getElementById('slide-' + id).style.display = 'flex';
+                currentSlide = id;
+            }
         }
 
-        function nextSlide() {
+        function originalNextSlide() {
             if (currentSlide === 1) {
-                // Dopo la slide 1, vai alla schermata intermedia
-                showSlide('interstitial'); 
-            } else if (currentSlide === 'interstitial' || currentSlide === 2) {
-                currentSlide = (currentSlide === 'interstitial') ? 2 : 3;
+                // Passo intermedio: mostra la schermata di sfida
+                showSlide('interstitial');
+            } else {
+                // Continua il flusso normale se non sei sulla slide 1
+                currentSlide++;
                 if (currentSlide <= totalSlides) {
                     showSlide(currentSlide);
                 }
             }
         }
-
-        // Forza la visualizzazione iniziale
-        showSlide(1);
-
-
+        
         // --- FUNZIONI DI INTEGRAZIONE GIOCO ---
 
-        function startFlappyChallenge() {
+        function showInstructions() {
             // Nasconde la slide intermedia
             document.getElementById('interstitial-slide').style.display = 'none'; 
             // Mostra il pannello istruzioni per il gioco
@@ -275,33 +289,6 @@
             initFlappy();
         }
 
-        function handleGameExit() {
-            // Funzione chiamata quando l'utente preme "Esci" o quando il gioco finisce.
-            // Prima di uscire, diamo un messaggio basato sul punteggio.
-            stopGame(); // Pulisce gli intervalli
-
-            let message = "";
-            let victory = currentScore >= 5;
-
-            if (victory) {
-                message = "🏆 VITTORIA! Hai superato la sfida Flappy Cube! Il tuo regalo ti aspetta.";
-                alert(message);
-                
-                // Forza il passaggio alla slide successiva
-                currentSlide = 2; // Da slide intermedia a slide 2
-                showSlide(currentSlide);
-
-            } else {
-                message = "❌ Sconfitta. Devi superare 5 ostacoli per continuare. Riprova!";
-                alert(message);
-                // L'utente torna alla schermata intermedia per riprovare
-                currentSlide = 'interstitial';
-                showSlide('interstitial');
-            }
-        }
-
-        // --- LOGICA GIOCO FLAPPY CUBE (Adattata) ---
-
         function updateUI(score, time) {
             scoreEl.innerText = "Punti: " + score;
             if(time !== null) timerEl.innerText = "Tempo: " + time + "s";
@@ -312,12 +299,36 @@
             clearInterval(timerIntervalId);
             cancelAnimationFrame(gameLoopId);
             isGameOver = true;
+        }
+
+        function handleGameExit() {
+            // Funzione chiamata quando il gioco finisce (tempo scaduto o collisione)
+            stopGame(); 
+            
+            // Nasconde UI di gioco
             document.getElementById('ui-overlay').style.display = 'none';
             document.getElementById('game-flappy').style.display = 'none';
+
+            let message = "";
+            let victory = currentScore >= TARGET_SCORE;
+
+            if (victory) {
+                message = "🏆 VITTORIA! Sfida superata. Continua con il tuo regalo!";
+                alert(message);
+                
+                // Forza il passaggio alla SLIDE 2 (la destinazione dopo la sfida)
+                showSlide(2);
+
+            } else {
+                message = "❌ Sconfitta. Devi superare 5 ostacoli per continuare. Riprova!";
+                alert(message);
+                // L'utente torna alla schermata intermedia per riprovare
+                showSlide('interstitial');
+            }
         }
-        
-        // La funzione endGame originale viene sostituita da handleGameExit
-        // per gestire il flusso della pagina regalo.
+
+
+        // --- LOGICA GIOCO FLAPPY CUBE ---
 
         function initFlappy() {
             const canvas = document.getElementById('canvas-flappy');
@@ -325,7 +336,6 @@
             canvas.width = window.innerWidth * 0.95;
             canvas.height = window.innerHeight * 0.7;
             
-            const TARGET_SCORE = 5;
             let birdY = canvas.height / 2;
             let birdX = 50;
             let velocity = 0;
@@ -342,8 +352,8 @@
                 timeLeft--;
                 updateUI(currentScore, timeLeft);
                 if(timeLeft <= 0) {
-                    if (isGameOver) return; // Se già chiamato da collisione
-                    handleGameExit(); // Gestisce la sconfitta per tempo
+                    if (isGameOver) return; 
+                    handleGameExit(); 
                 }
             }, 1000);
 
@@ -362,17 +372,17 @@
                     pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2), counted: false});
                 }
 
-                // Sfondo
+                // Disegno Sfondo
                 ctx.fillStyle = COLORS.bg;
                 ctx.fillRect(0,0,canvas.width, canvas.height);
 
-                // Player (Bianco)
+                // Disegno Player
                 ctx.fillStyle = COLORS.player;
                 ctx.fillRect(birdX, birdY, 30, 30);
                 ctx.strokeStyle = COLORS.bg;
                 ctx.strokeRect(birdX, birdY, 30, 30);
 
-                // Tubi (Verdi)
+                // Disegno Tubi
                 ctx.fillStyle = COLORS.safe;
                 for(let i = 0; i < pipes.length; i++) {
                     let p = pipes[i];
@@ -394,7 +404,7 @@
                     if(birdX < p.x + 40 && birdX + 30 > p.x && (birdY < p.h || birdY + 30 > p.h + 130) || birdY > canvas.height || birdY < 0) {
                         if (isGameOver) return;
                         isGameOver = true;
-                        handleGameExit(); // Gestisce la sconfitta per collisione
+                        handleGameExit(); 
                         return;
                     }
                 }
