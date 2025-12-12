@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arcade iPhone 15 v2</title>
+    <title>Arcade iPhone 15 Final</title>
     <style>
         /* --- STILE GENERALE --- */
         body {
@@ -23,12 +23,12 @@
         h1 { margin: 0 0 20px 0; font-size: 2rem; }
         
         /* MENU */
-        #menu { display: flex; flex-direction: column; gap: 15px; width: 80%; }
+        #menu { display: flex; flex-direction: column; gap: 15px; width: 85%; z-index: 10; }
         .btn {
             background: linear-gradient(45deg, #007AFF, #00C6FF);
             border: none;
             padding: 20px;
-            border-radius: 15px;
+            border-radius: 16px;
             color: white;
             font-size: 1.2rem;
             font-weight: bold;
@@ -36,6 +36,25 @@
             cursor: pointer;
         }
         .btn:active { transform: scale(0.98); }
+
+        /* ISTRUZIONI POPUP */
+        #instruction-panel {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            text-align: center;
+        }
+        #inst-title { font-size: 2rem; color: #00C6FF; margin-bottom: 20px; }
+        #inst-desc { font-size: 1.1rem; line-height: 1.6; color: #ddd; margin-bottom: 40px; }
+        .btn-start { background: #34C759; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4); }
+        .btn-cancel { background: #333; margin-top: 15px; font-size: 1rem; padding: 15px; }
 
         /* GIOCHI */
         .game-container {
@@ -115,15 +134,22 @@
 <body>
 
     <div id="menu">
-        <h1 style="text-align:center">🕹️ Arcade v2</h1>
-        <button class="btn" onclick="startGame('flappy')">🐦 Flappy (Obj: 15)</button>
-        <button class="btn" onclick="startGame('memory')">🧠 Memory (1 min)</button>
-        <button class="btn" onclick="startGame('reflex')">⚡ Reflex (Obj: 25)</button>
-        <button class="btn" onclick="startGame('dodger')">🏎️ Schiva (Obj: 25)</button>
+        <h1 style="text-align:center">🕹️ Arcade Room</h1>
+        <button class="btn" onclick="prepareGame('flappy')">🐦 Flappy Cube</button>
+        <button class="btn" onclick="prepareGame('memory')">🧠 Memory Emoji</button>
+        <button class="btn" onclick="prepareGame('reflex')">⚡ Reflex Dot</button>
+        <button class="btn" onclick="prepareGame('dodger')">🏎️ Schiva Tutto</button>
+    </div>
+
+    <div id="instruction-panel">
+        <h2 id="inst-title">Titolo Gioco</h2>
+        <p id="inst-desc">Descrizione regole...</p>
+        <button class="btn btn-start" onclick="launchGame()">🚀 GIOCA ORA</button>
+        <button class="btn btn-cancel" onclick="closeInstructions()">Annulla</button>
     </div>
 
     <div id="ui-overlay" style="display:none">
-        <button class="back-btn" onclick="stopGame()">Indietro</button>
+        <button class="back-btn" onclick="stopGame()">Esci</button>
         <div class="info-bar">
             <div id="score-display" class="score-txt">Punti: 0</div>
             <div id="timer-display" class="timer-txt">Tempo: 0s</div>
@@ -136,16 +162,36 @@
     <div id="game-dodger" class="game-container"><canvas id="canvas-dodger"></canvas></div>
 
     <script>
-        let gameLoopId = null;     // ID per requestAnimationFrame
-        let timerIntervalId = null; // ID per setInterval del tempo
+        let gameLoopId = null;
+        let timerIntervalId = null;
         let timeLeft = 0;
         let currentScore = 0;
         let isGameOver = false;
+        let selectedGameId = '';
 
-        // Riferimenti UI
+        // TESTI ISTRUZIONI
+        const INSTRUCTIONS = {
+            'flappy': {
+                title: "🐦 Flappy Cube",
+                desc: "Tocca lo schermo ripetutamente per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi.<br><br>Se superi 5 ostacoli, vinci anche se poi ti schianti!"
+            },
+            'memory': {
+                title: "🧠 Memory Emoji",
+                desc: "Tocca le caselle grigie per girarle e trovare le coppie uguali.<br><br><b>OBIETTIVO:</b> Trova tutte le 8 coppie prima che scada il timer di <b>60 secondi</b>."
+            },
+            'reflex': {
+                title: "⚡ Reflex Dot",
+                desc: "Un pallino rosso apparirà a caso sullo schermo. Toccalo il più velocemente possibile.<br><br><b>OBIETTIVO:</b> Colpisci <b>25 pallini</b> in 20 secondi."
+            },
+            'dodger': {
+                title: "🏎️ Schiva Tutto",
+                desc: "Il tuo quadratino arancione è in basso. Tocca la parte DESTRA o SINISTRA dello schermo per spostarti.<br><br><b>OBIETTIVO:</b> Schiva <b>25 quadrati rossi</b> senza farti colpire."
+            }
+        };
+
+        const uiOverlay = document.getElementById('ui-overlay');
         const scoreEl = document.getElementById('score-display');
         const timerEl = document.getElementById('timer-display');
-        const uiOverlay = document.getElementById('ui-overlay');
 
         function updateUI(score, time) {
             scoreEl.innerText = "Punti: " + score;
@@ -153,28 +199,39 @@
             else timerEl.innerText = "";
         }
 
-        // --- GESTIONE MENU ---
-        function startGame(gameId) {
+        // --- GESTIONE FLUSSO ---
+        function prepareGame(gameId) {
+            selectedGameId = gameId;
+            const data = INSTRUCTIONS[gameId];
+            document.getElementById('inst-title').innerText = data.title;
+            document.getElementById('inst-desc').innerHTML = data.desc;
+            document.getElementById('instruction-panel').style.display = 'flex';
+        }
+
+        function closeInstructions() {
+            document.getElementById('instruction-panel').style.display = 'none';
+        }
+
+        function launchGame() {
+            closeInstructions();
             document.getElementById('menu').style.display = 'none';
             document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none');
-            document.getElementById('game-' + gameId).style.display = 'flex';
+            document.getElementById('game-' + selectedGameId).style.display = 'flex';
             uiOverlay.style.display = 'block';
             
             isGameOver = false;
             currentScore = 0;
             
-            if(gameId === 'flappy') initFlappy();
-            if(gameId === 'memory') initMemory();
-            if(gameId === 'reflex') initReflex();
-            if(gameId === 'dodger') initDodger();
+            if(selectedGameId === 'flappy') initFlappy();
+            if(selectedGameId === 'memory') initMemory();
+            if(selectedGameId === 'reflex') initReflex();
+            if(selectedGameId === 'dodger') initDodger();
         }
 
         function stopGame() {
-            // Pulizia totale
             clearInterval(timerIntervalId);
             cancelAnimationFrame(gameLoopId);
             isGameOver = true;
-
             document.getElementById('menu').style.display = 'flex';
             uiOverlay.style.display = 'none';
             document.querySelectorAll('.game-container').forEach(el => el.style.display = 'none');
@@ -184,7 +241,6 @@
             isGameOver = true;
             clearInterval(timerIntervalId);
             cancelAnimationFrame(gameLoopId);
-            // Piccolo ritardo per permettere al render di finire
             setTimeout(() => {
                 alert(message);
                 stopGame();
@@ -192,7 +248,7 @@
         }
 
         // --------------------------------------------------------
-        // 1. FLAPPY CUBE (Timer 20s, Obiettivo 15, Win anche se muori dopo 15)
+        // 1. FLAPPY CUBE (Obiettivo: 5)
         // --------------------------------------------------------
         function initFlappy() {
             const canvas = document.getElementById('canvas-flappy');
@@ -200,6 +256,7 @@
             canvas.width = window.innerWidth * 0.95;
             canvas.height = window.innerHeight * 0.7;
             
+            const TARGET_SCORE = 5; // Obiettivo richiesto
             let birdY = canvas.height / 2;
             let birdX = 50;
             let velocity = 0;
@@ -209,17 +266,15 @@
             timeLeft = 20;
             updateUI(0, timeLeft);
 
-            // Timer
             timerIntervalId = setInterval(() => {
                 timeLeft--;
                 updateUI(currentScore, timeLeft);
                 if(timeLeft <= 0) {
-                    if(currentScore >= 15) endGame("⏱️ Tempo scaduto! VITTORIA (Punti: " + currentScore + ")");
-                    else endGame("⏱️ Tempo scaduto! Perso. (Servivano 15, fatti: " + currentScore + ")");
+                    if(currentScore >= TARGET_SCORE) endGame("⏱️ Tempo scaduto! VITTORIA (Obiettivo Raggiunto!)");
+                    else endGame("⏱️ Tempo scaduto! Perso. (Fatti: " + currentScore + "/5)");
                 }
             }, 1000);
 
-            // Input
             canvas.ontouchstart = (e) => {
                 e.preventDefault();
                 if(!isGameOver) velocity = -8;
@@ -227,54 +282,42 @@
 
             function loop() {
                 if(isGameOver) return;
-
-                // Logica
                 velocity += gravity;
                 birdY += velocity;
 
-                // Generazione tubi
                 if(frames % 90 === 0) {
-                    // Crea tubo con flag 'counted' per contare punti una volta sola
                     pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2), counted: false});
                 }
 
-                // Disegno
                 ctx.fillStyle = '#1e1e1e';
                 ctx.fillRect(0,0,canvas.width, canvas.height);
 
-                // Player
                 ctx.fillStyle = '#00C6FF';
                 ctx.fillRect(birdX, birdY, 30, 30);
 
-                // Tubi
                 ctx.fillStyle = '#4CAF50';
                 for(let i = 0; i < pipes.length; i++) {
                     let p = pipes[i];
-                    p.x -= 3; // Velocità scorrimento
-
-                    // Disegna
+                    p.x -= 3;
                     ctx.fillRect(p.x, 0, 40, p.h); 
                     ctx.fillRect(p.x, p.h + 130, 40, canvas.height); 
 
-                    // Conteggio Punti (più preciso)
                     if(!p.counted && p.x + 40 < birdX) {
                         currentScore++;
                         p.counted = true;
                         updateUI(currentScore, timeLeft);
                     }
 
-                    // Collisione
                     if(birdX < p.x + 40 && birdX + 30 > p.x && (birdY < p.h || birdY + 30 > p.h + 130)) {
-                        if(currentScore >= 15) endGame("💥 Incidente! Ma hai vinto comunque! (" + currentScore + " pt)");
-                        else endGame("💥 Incidente! Perso (Servivano 15, fatti: " + currentScore + ")");
+                        if(currentScore >= TARGET_SCORE) endGame("💥 Incidente! Ma hai vinto (Obiettivo raggiunto: " + currentScore + ")");
+                        else endGame("💥 Incidente! Perso (Fatti: " + currentScore + "/5)");
                         return;
                     }
                 }
 
-                // Pavimento/Soffitto
                 if(birdY > canvas.height || birdY < 0) {
-                    if(currentScore >= 15) endGame("💥 Caduto! Ma hai vinto comunque! (" + currentScore + " pt)");
-                    else endGame("💥 Caduto! Perso.");
+                    if(currentScore >= TARGET_SCORE) endGame("💥 Caduto! Ma hai vinto (Obiettivo raggiunto: " + currentScore + ")");
+                    else endGame("💥 Caduto! Perso (Fatti: " + currentScore + "/5)");
                     return;
                 }
 
@@ -286,52 +329,43 @@
         }
 
         // --------------------------------------------------------
-        // 2. MEMORY EMOJI (Timer 1 min, Perso se scade)
+        // 2. MEMORY EMOJI (1 min)
         // --------------------------------------------------------
         function initMemory() {
             const grid = document.getElementById('memory-grid');
             grid.innerHTML = '';
-            
-            // 8 coppie
             const emojis = ['🐶','🐶','🐱','🐱','🐭','🐭','🐹','🐹','🦊','🦊','🐻','🐻','🐼','🐼','🐨','🐨'];
             emojis.sort(() => 0.5 - Math.random());
             
             let flippedCards = [];
             let matched = 0;
             timeLeft = 60;
-            currentScore = 0; // Coppie trovate
-            
+            currentScore = 0;
             updateUI(0, timeLeft);
 
             timerIntervalId = setInterval(() => {
                 timeLeft--;
                 updateUI(matched, timeLeft);
-                if(timeLeft <= 0) {
-                    endGame("⏱️ Tempo scaduto! Non hai trovato tutte le coppie.");
-                }
+                if(timeLeft <= 0) endGame("⏱️ Tempo scaduto! Ritenta.");
             }, 1000);
 
             emojis.forEach(emoji => {
                 const card = document.createElement('div');
                 card.classList.add('card');
                 card.dataset.val = emoji;
-                
                 card.ontouchstart = (e) => {
-                    e.preventDefault(); // Previene doppio tap zoom
+                    e.preventDefault();
                     if(isGameOver) return;
-                    
                     if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
                         card.classList.add('flipped');
                         card.innerText = emoji;
                         flippedCards.push(card);
-                        
                         if(flippedCards.length === 2) {
-                            // Controllo match
                             if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
                                 flippedCards = [];
                                 matched++;
                                 updateUI(matched, timeLeft);
-                                if(matched === 8) endGame("🏆 VITTORIA! Hai trovato tutte le coppie!");
+                                if(matched === 8) endGame("🏆 VITTORIA! Memoria perfetta!");
                             } else {
                                 setTimeout(() => {
                                     if(!isGameOver) {
@@ -348,44 +382,34 @@
         }
 
         // --------------------------------------------------------
-        // 3. REFLEX DOT (Timer 20s, Obiettivo > 25)
+        // 3. REFLEX DOT (Obiettivo: 25)
         // --------------------------------------------------------
         function initReflex() {
             timeLeft = 20;
             currentScore = 0;
             updateUI(0, timeLeft);
-            
             moveDot();
-
             timerIntervalId = setInterval(() => {
                 timeLeft--;
                 updateUI(currentScore, timeLeft);
                 if(timeLeft <= 0) {
-                    if(currentScore >= 25) endGame("🏆 VITTORIA! Riflessi ottimi (" + currentScore + " click)");
-                    else endGame("🐢 Troppo lento... Fatti: " + currentScore + " (Target: 25)");
+                    if(currentScore >= 25) endGame("🏆 VITTORIA! Riflessi Ninja (" + currentScore + ")");
+                    else endGame("🐢 Lento... Fatti: " + currentScore + "/25");
                 }
             }, 1000);
         }
-
         function moveDot() {
             if(isGameOver) return;
             const area = document.getElementById('reflex-area');
             const dot = document.getElementById('target-dot');
-            
-            // Margini di sicurezza per non farlo uscire
-            const maxX = area.clientWidth - 70;
-            const maxY = area.clientHeight - 70;
-            
-            const x = Math.floor(Math.random() * maxX);
-            const y = Math.floor(Math.random() * maxY);
-            
+            const x = Math.floor(Math.random() * (area.clientWidth - 70));
+            const y = Math.floor(Math.random() * (area.clientHeight - 70));
             dot.style.display = 'block';
             dot.style.left = x + 'px';
             dot.style.top = y + 'px';
         }
-
         window.hitTarget = function(e) {
-            e.preventDefault(); // Evita zoom
+            e.preventDefault();
             if(isGameOver) return;
             currentScore++;
             updateUI(currentScore, timeLeft);
@@ -393,7 +417,7 @@
         }
 
         // --------------------------------------------------------
-        // 4. SCHIVA TUTTO (Vittoria a 25 ostacoli)
+        // 4. SCHIVA TUTTO (Obiettivo: 25)
         // --------------------------------------------------------
         function initDodger() {
             const canvas = document.getElementById('canvas-dodger');
@@ -404,63 +428,43 @@
             let playerX = canvas.width / 2 - 20;
             let obstacles = [];
             currentScore = 0;
-            
-            updateUI(0, null); // Niente timer qui
+            updateUI(0, null);
 
             canvas.ontouchstart = (e) => {
                 e.preventDefault();
                 let touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
                 if(touchX < canvas.width / 2) playerX -= 50;
                 else playerX += 50;
-                
-                // Mantiene player nei bordi
                 if(playerX < 0) playerX = 0;
                 if(playerX > canvas.width - 40) playerX = canvas.width - 40;
             };
 
             function loop() {
                 if(isGameOver) return;
-
                 ctx.fillStyle = '#222';
                 ctx.fillRect(0,0,canvas.width, canvas.height);
-
-                // Player
                 ctx.fillStyle = '#FF9500';
                 ctx.fillRect(playerX, canvas.height - 60, 40, 40);
 
-                // Genera Ostacoli
-                if(Math.random() < 0.04) {
-                    obstacles.push({x: Math.random() * (canvas.width - 40), y: -40});
-                }
+                if(Math.random() < 0.04) obstacles.push({x: Math.random() * (canvas.width - 40), y: -40});
 
                 ctx.fillStyle = '#FF3B30';
-                // Loop inverso per poter rimuovere elementi
                 for(let i = obstacles.length - 1; i >= 0; i--) {
                     let o = obstacles[i];
-                    o.y += 6; // Velocità discesa
+                    o.y += 6;
                     ctx.fillRect(o.x, o.y, 40, 40);
 
-                    // Collisione
-                    if(o.y > canvas.height - 100 && o.y < canvas.height - 20 && 
-                       o.x < playerX + 40 && o.x + 40 > playerX) {
-                        endGame("💥 SCHIANTATO! Punteggio finale: " + currentScore);
+                    if(o.y > canvas.height - 100 && o.y < canvas.height - 20 && o.x < playerX + 40 && o.x + 40 > playerX) {
+                        endGame("💥 SCHIANTATO! Punteggio: " + currentScore);
                         return;
                     }
-
-                    // Ostacolo superato
                     if(o.y > canvas.height) { 
                         obstacles.splice(i, 1); 
                         currentScore++; 
                         updateUI(currentScore, null);
-                        
-                        // VITTORIA A 25
-                        if(currentScore >= 25) {
-                            endGame("🏆 CAMPIONE! Hai schivato 25 ostacoli!");
-                            return;
-                        }
+                        if(currentScore >= 25) { endGame("🏆 CAMPIONE! 25 Ostacoli schivati!"); return; }
                     }
                 }
-
                 gameLoopId = requestAnimationFrame(loop);
             }
             loop();
