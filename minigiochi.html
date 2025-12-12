@@ -3,12 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Arcade iPhone 15 Final</title>
+    <title>Arcade Union Jack Edition</title>
     <style>
+        :root {
+            --royal-blue: #00215F;
+            --bright-red: #CF142B;
+            --pure-white: #FFFFFF;
+            --text-color-light: #F0F0F0;
+            --dark-background: #001A4A;
+            --accent-green: #00A65A;
+        }
+
         /* --- STILE GENERALE --- */
         body {
-            background-color: #121212;
-            color: white;
+            background-color: var(--dark-background);
+            color: var(--text-color-light);
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
             overflow: hidden;
@@ -20,29 +29,31 @@
             height: 100vh;
         }
 
-        h1 { margin: 0 0 20px 0; font-size: 2rem; }
+        h1 { margin: 0 0 20px 0; font-size: 2rem; color: var(--pure-white); text-shadow: 0 2px 4px rgba(0,0,0,0.5); }
         
         /* MENU */
         #menu { display: flex; flex-direction: column; gap: 15px; width: 85%; z-index: 10; }
+        
         .btn {
-            background: linear-gradient(45deg, #007AFF, #00C6FF);
-            border: none;
+            background-color: var(--royal-blue);
+            border: 2px solid var(--pure-white);
             padding: 20px;
             border-radius: 16px;
-            color: white;
+            color: var(--pure-white);
             font-size: 1.2rem;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0,122,255,0.4);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
             cursor: pointer;
+            transition: transform 0.1s;
         }
-        .btn:active { transform: scale(0.98); }
+        .btn:active { transform: scale(0.96); background-color: var(--dark-background); }
 
         /* ISTRUZIONI POPUP */
         #instruction-panel {
             display: none;
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
+            background-color: rgba(0, 26, 74, 0.98); /* Dark BG con trasparenza */
             z-index: 200;
             flex-direction: column;
             align-items: center;
@@ -51,19 +62,32 @@
             box-sizing: border-box;
             text-align: center;
         }
-        #inst-title { font-size: 2rem; color: #00C6FF; margin-bottom: 20px; }
-        #inst-desc { font-size: 1.1rem; line-height: 1.6; color: #ddd; margin-bottom: 40px; }
-        .btn-start { background: #34C759; box-shadow: 0 4px 15px rgba(52, 199, 89, 0.4); }
-        .btn-cancel { background: #333; margin-top: 15px; font-size: 1rem; padding: 15px; }
+        #inst-title { font-size: 2rem; color: var(--pure-white); margin-bottom: 20px; border-bottom: 2px solid var(--bright-red); padding-bottom: 10px; }
+        #inst-desc { font-size: 1.1rem; line-height: 1.6; color: var(--text-color-light); margin-bottom: 40px; }
+        
+        .btn-start { 
+            background-color: var(--accent-green); 
+            border: none;
+            color: var(--pure-white);
+            box-shadow: 0 0 15px rgba(0, 166, 90, 0.4); 
+        }
+        .btn-cancel { 
+            background: transparent; 
+            border: 1px solid var(--text-color-light); 
+            color: var(--text-color-light);
+            margin-top: 15px; 
+            font-size: 1rem; 
+            padding: 15px; 
+        }
 
-        /* GIOCHI */
+        /* GIOCHI UI */
         .game-container {
             display: none;
             width: 100%;
             height: 100%;
             position: absolute;
             top: 0; left: 0;
-            background: #1e1e1e;
+            background: var(--dark-background);
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -72,11 +96,11 @@
         .back-btn {
             position: absolute;
             top: 50px; left: 20px;
-            background: rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid var(--pure-white);
             padding: 8px 15px;
             border-radius: 8px;
-            color: white;
-            border: none;
+            color: var(--pure-white);
             z-index: 100;
             font-weight: bold;
         }
@@ -88,10 +112,17 @@
             text-align: right;
             z-index: 100;
         }
-        .score-txt { font-size: 1.2rem; font-weight: bold; color: #FFD60A; }
-        .timer-txt { font-size: 1rem; color: #aaa; margin-top: 5px; }
+        .score-txt { font-size: 1.3rem; font-weight: bold; color: var(--pure-white); }
+        .timer-txt { font-size: 1rem; color: var(--bright-red); margin-top: 5px; font-weight: bold;}
 
-        canvas { background: #000; display: block; border: 1px solid #333; }
+        /* CANVAS */
+        canvas { 
+            background-color: var(--royal-blue); 
+            display: block; 
+            border: 3px solid var(--pure-white); 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+        }
         
         /* MEMORY STYLES */
         #memory-grid {
@@ -102,7 +133,8 @@
             max-width: 350px;
         }
         .card {
-            background-color: #333;
+            background-color: var(--royal-blue);
+            border: 2px solid var(--pure-white);
             aspect-ratio: 1;
             border-radius: 8px;
             display: flex;
@@ -110,23 +142,27 @@
             justify-content: center;
             font-size: 2rem;
             cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-        .card.flipped { background-color: #fff; color: #000; }
+        .card.flipped { background-color: var(--pure-white); color: #000; border-color: var(--accent-green); }
         
         /* REFLEX STYLES */
         #reflex-area {
             width: 90%; height: 60%;
-            background: #222;
+            background: var(--royal-blue);
             position: relative;
             border-radius: 10px;
-            border: 2px solid #333;
+            border: 3px solid var(--pure-white);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
         }
         #target-dot {
             width: 60px; height: 60px;
-            background-color: #FF3B30;
+            background-color: var(--bright-red);
+            border: 2px solid var(--pure-white);
             border-radius: 50%;
             position: absolute;
             display: none;
+            box-shadow: 0 0 10px var(--bright-red);
         }
 
     </style>
@@ -162,6 +198,15 @@
     <div id="game-dodger" class="game-container"><canvas id="canvas-dodger"></canvas></div>
 
     <script>
+        // CONFIGURAZIONE COLORI JS (Per Canvas)
+        const COLORS = {
+            bg: '#00215F',      // royal-blue
+            player: '#FFFFFF',  // pure-white
+            obstacle: '#CF142B',// bright-red
+            safe: '#00A65A',    // accent-green
+            text: '#F0F0F0'     // light-text
+        };
+
         let gameLoopId = null;
         let timerIntervalId = null;
         let timeLeft = 0;
@@ -173,19 +218,19 @@
         const INSTRUCTIONS = {
             'flappy': {
                 title: "🐦 Flappy Cube",
-                desc: "Tocca lo schermo ripetutamente per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi.<br><br>Se superi 5 ostacoli, vinci anche se poi ti schianti!"
+                desc: "Tocca lo schermo per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi.<br><br>Se superi 5 ostacoli, vinci anche se poi ti schianti!"
             },
             'memory': {
                 title: "🧠 Memory Emoji",
-                desc: "Tocca le caselle grigie per girarle e trovare le coppie uguali.<br><br><b>OBIETTIVO:</b> Trova tutte le 8 coppie prima che scada il timer di <b>60 secondi</b>."
+                desc: "Tocca le caselle blu per girarle.<br><br><b>OBIETTIVO:</b> Trova tutte le 8 coppie prima che scada il timer di <b>60 secondi</b>."
             },
             'reflex': {
                 title: "⚡ Reflex Dot",
-                desc: "Un pallino rosso apparirà a caso sullo schermo. Toccalo il più velocemente possibile.<br><br><b>OBIETTIVO:</b> Colpisci <b>25 pallini</b> in 20 secondi."
+                desc: "Tocca il pallino rosso non appena appare.<br><br><b>OBIETTIVO:</b> Colpisci <b>25 pallini</b> in 20 secondi."
             },
             'dodger': {
                 title: "🏎️ Schiva Tutto",
-                desc: "Il tuo quadratino arancione è in basso. Tocca la parte DESTRA o SINISTRA dello schermo per spostarti.<br><br><b>OBIETTIVO:</b> Schiva <b>25 quadrati rossi</b> senza farti colpire."
+                desc: "Tocca a DESTRA o SINISTRA per muoverti.<br><br><b>OBIETTIVO:</b> Schiva i blocchi rossi. Raggiungi <b>25 punti</b> per vincere."
             }
         };
 
@@ -248,7 +293,7 @@
         }
 
         // --------------------------------------------------------
-        // 1. FLAPPY CUBE (Obiettivo: 5)
+        // 1. FLAPPY CUBE (Palette Update)
         // --------------------------------------------------------
         function initFlappy() {
             const canvas = document.getElementById('canvas-flappy');
@@ -256,7 +301,7 @@
             canvas.width = window.innerWidth * 0.95;
             canvas.height = window.innerHeight * 0.7;
             
-            const TARGET_SCORE = 5; // Obiettivo richiesto
+            const TARGET_SCORE = 5;
             let birdY = canvas.height / 2;
             let birdX = 50;
             let velocity = 0;
@@ -289,18 +334,29 @@
                     pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2), counted: false});
                 }
 
-                ctx.fillStyle = '#1e1e1e';
+                // Sfondo
+                ctx.fillStyle = COLORS.bg;
                 ctx.fillRect(0,0,canvas.width, canvas.height);
 
-                ctx.fillStyle = '#00C6FF';
+                // Player (Bianco)
+                ctx.fillStyle = COLORS.player;
                 ctx.fillRect(birdX, birdY, 30, 30);
+                // Bordo player
+                ctx.strokeStyle = COLORS.bg;
+                ctx.strokeRect(birdX, birdY, 30, 30);
 
-                ctx.fillStyle = '#4CAF50';
+                // Tubi (Verdi)
+                ctx.fillStyle = COLORS.safe;
                 for(let i = 0; i < pipes.length; i++) {
                     let p = pipes[i];
                     p.x -= 3;
                     ctx.fillRect(p.x, 0, 40, p.h); 
                     ctx.fillRect(p.x, p.h + 130, 40, canvas.height); 
+                    
+                    // Bordi tubi per contrasto
+                    ctx.strokeStyle = COLORS.player;
+                    ctx.strokeRect(p.x, 0, 40, p.h);
+                    ctx.strokeRect(p.x, p.h + 130, 40, canvas.height);
 
                     if(!p.counted && p.x + 40 < birdX) {
                         currentScore++;
@@ -329,7 +385,7 @@
         }
 
         // --------------------------------------------------------
-        // 2. MEMORY EMOJI (1 min)
+        // 2. MEMORY EMOJI (CSS gestisce i colori)
         // --------------------------------------------------------
         function initMemory() {
             const grid = document.getElementById('memory-grid');
@@ -382,7 +438,7 @@
         }
 
         // --------------------------------------------------------
-        // 3. REFLEX DOT (Obiettivo: 25)
+        // 3. REFLEX DOT (CSS gestisce i colori)
         // --------------------------------------------------------
         function initReflex() {
             timeLeft = 20;
@@ -417,7 +473,7 @@
         }
 
         // --------------------------------------------------------
-        // 4. SCHIVA TUTTO (Obiettivo: 25)
+        // 4. SCHIVA TUTTO (Palette Update)
         // --------------------------------------------------------
         function initDodger() {
             const canvas = document.getElementById('canvas-dodger');
@@ -441,18 +497,26 @@
 
             function loop() {
                 if(isGameOver) return;
-                ctx.fillStyle = '#222';
+                // Sfondo
+                ctx.fillStyle = COLORS.bg;
                 ctx.fillRect(0,0,canvas.width, canvas.height);
-                ctx.fillStyle = '#FF9500';
+                
+                // Player (Bianco)
+                ctx.fillStyle = COLORS.player;
                 ctx.fillRect(playerX, canvas.height - 60, 40, 40);
 
                 if(Math.random() < 0.04) obstacles.push({x: Math.random() * (canvas.width - 40), y: -40});
 
-                ctx.fillStyle = '#FF3B30';
+                // Ostacoli (Rosso acceso)
+                ctx.fillStyle = COLORS.obstacle;
                 for(let i = obstacles.length - 1; i >= 0; i--) {
                     let o = obstacles[i];
                     o.y += 6;
                     ctx.fillRect(o.x, o.y, 40, 40);
+                    
+                    // Contorno per visibilità
+                    ctx.strokeStyle = COLORS.player;
+                    ctx.strokeRect(o.x, o.y, 40, 40);
 
                     if(o.y > canvas.height - 100 && o.y < canvas.height - 20 && o.x < playerX + 40 && o.x + 40 > playerX) {
                         endGame("💥 SCHIANTATO! Punteggio: " + currentScore);
