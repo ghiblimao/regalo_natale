@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>Enigma di Natale</title>
+    <title>Enigma di Natale - Viaggio Misterioso</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
 
@@ -106,6 +106,8 @@
             min-height: 70%;
             padding: 2rem 1rem;
             box-sizing: border-box;
+            /* CORREZIONE 1: Aggiunto padding inferiore per evitare sovrapposizione con i controlli */
+            padding-bottom: 80px; 
         }
 
         /* DECORAZIONI FISSE */
@@ -283,9 +285,9 @@
         /* --- STILI GIOCHI --- */
         .game-inner-container {
             width: 90%;
-            height: 80%;
+            height: 85%; /* Aumentato l'altezza all'85% */
             max-width: 800px;
-            max-height: 500px;
+            max-height: 600px; /* CORREZIONE 2: Aumentata la max-height per i giochi */
             background-color: var(--royal-blue);
             border-radius: 10px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.8);
@@ -365,7 +367,7 @@
             box-shadow: 0 0 20px var(--bright-red), 0 0 30px var(--pure-white);
         }
         
-        /* OVERLAY ISTRUZIONI */
+        /* OVERLAY ISTRUZIONI (Gestione corretta del display: none/flex) */
         #instruction-panel {
             position: fixed;
             top: 0;
@@ -374,7 +376,6 @@
             height: 100%;
             background: rgba(0, 0, 0, 0.95);
             z-index: 200;
-            /* La proprietà display: none; è ora gestita principalmente inline per maggiore robustezza */
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -413,23 +414,7 @@
             font-size: 0.9rem;
         }
 
-
-        /* ----------------------------------------------- */
-        /* CORREZIONE LAYOUT ITINERARIO (SLIDE 9 - Centrato) */
-        /* ----------------------------------------------- */
-        #slide-9 {
-             padding-top: 0; 
-        }
-        
-        #slide-9 .slide-content {
-            /* Ritorna al centraggio verticale e orizzontale per il blocco content */
-            justify-content: center; 
-            align-items: center; 
-            padding-top: 1rem;
-            padding-bottom: 1rem;
-        }
-        
-        /* Regole per l'allineamento a sinistra del testo all'interno della timeline */
+        /* CORREZIONI LAYOUT ITINERARIO */
         .itinerary-timeline {
             margin-left: auto;
             margin-right: auto;
@@ -442,138 +427,42 @@
             margin-left: 0;
         }
         
-        /* Allineamento a centro per titolo e descrizione principali (Slide 9) */
-        #slide-9 .slide-content h1, 
-        #slide-9 .slide-content p {
-            text-align: center;
-            max-width: 90%; 
-            margin-left: auto;
-            margin-right: auto;
-        }
-        
-        /* --- ITINERARIO CON GALLERIA (SLIDE 9) --- */
-        .timeline-item {
-            display: flex;
-            padding: 20px 0;
-            position: relative;
-            background: rgba(255, 255, 255, 0.08);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            padding: 15px 15px 15px 40px;
-            border-left: 5px solid var(--bright-red);
-            transition: all 0.3s ease;
-        }
-        
-        .timeline-item:hover {
-            background: rgba(255, 255, 255, 0.15);
-            border-left-color: var(--pure-white);
-        }
-
-        .logo-container {
-            flex-shrink: 0;
-            margin-left: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            width: 60px;
-            height: 60px;
-            border-radius: 8px;
-            overflow: hidden;
-            background-color: var(--pure-white);
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-        }
-
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            padding: 5px; 
-        }
-
-        /* --- STILE GALLERIA A SCORRIMENTO ORIZZONTALE --- */
-        .scrolling-gallery {
-            display: flex;
-            overflow-x: auto;
-            gap: 15px;
-            padding: 10px 0;
-            margin-top: 15px;
-            scrollbar-width: thin;
-            scrollbar-color: var(--bright-red) rgba(255,255,255,0.1);
-        }
-        
-        .place-card {
-            flex: 0 0 140px; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            overflow: hidden;
-            transition: transform 0.2s;
-        }
-        
-        .place-card img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            border-bottom: 2px solid var(--bright-red);
-        }
-
-        .place-card span {
-            font-size: 0.8rem;
-            padding: 5px;
-            text-align: center;
-            color: var(--pure-white);
-            line-height: 1.2;
-        }
-
-
-        /* ----------------------------------------------- */
-        /* MOBILE (Punto 1, 2, 3: Ottimizzazione per iPhone 13) */
-        /* ----------------------------------------------- */
+        /* --- MOBILE (Ottimizzazione) --- */
         @media (max-width: 768px) {
             .slide { 
-                padding: 0.5rem; /* Riduci padding esterno */
+                padding: 0.5rem; 
             }
             
-            /* Aggiungi padding verticale per distanziare il contenuto da controlli/decorazioni */
             .slide-content {
                 padding-top: 30px;
-                padding-bottom: 30px;
+                /* CORREZIONE 1: Aumentato padding inferiore per mobile */
+                padding-bottom: 60px; 
             }
 
-            /* Punto 2: Titolo Slide 4 */
             h1 { 
-                font-size: 2.8rem; /* Titolo H1 ridotto per adattarsi */
+                font-size: 2.8rem; 
                 margin-bottom: 0.5rem;
             } 
             h2 { font-size: 1.6rem; margin-bottom: 1rem; } 
             h3 { font-size: 1.4rem; margin-top: 1rem; }
             p { font-size: 1rem; margin-bottom: 1rem; }
-            .clue-list li { font-size: 1.1rem; } /* Riduci testo liste */
+            .clue-list li { font-size: 1.1rem; } 
 
             .reveal-box { font-size: 3rem; padding: 1.5rem 2.5rem; }
             .date-box { font-size: 1.8rem; padding: 0.8rem 1.5rem; margin: 1.5rem 0; }
             
-            /* Punto 3: Decorazioni più piccole e vicine */
             .decoration { font-size: 3rem; opacity: 0.2; }
             .top-right { top: 10px; right: 10px; }
             .bottom-left { bottom: 10px; left: 10px; }
             
-            /* Controlli */
             .controls { right: 10px; bottom: 10px; gap: 0.5rem; }
             button { padding: 8px 16px; font-size: 0.9rem; }
 
-            /* Giochi */
-            #memory-grid { max-width: 300px; }
+            /* CORREZIONE 3: Aumentato max-width per Memory Grid */
+            #memory-grid { max-width: 350px; }
             .card { font-size: 2rem; }
-            #reflex-area { height: 50vh; max-width: 90%; }
-            #target-dot { width: 40px; height: 40px; }
             
-            /* Itinerario */
             .timeline-item { flex-direction: column; border-left-width: 3px; padding: 10px 10px 10px 20px; }
-            .timeline-item h3 { font-size: 1.2rem; }
-            .timeline-item p { font-size: 1rem; }
             .logo-container { width: 50px; height: 50px; margin: 10px auto 0; }
             .place-card { flex: 0 0 120px; }
             .place-card img { height: 80px; }
@@ -600,7 +489,8 @@
         <div class="slide active" id="slide-0">
             <div class="central-light"></div>
             <div class="slide-content">
-                <h1 class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</h1>
+                <h1 class="content-fade">Benvenuto</h1>
+                <p class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</p>
                 <h2 class="content-fade" style="transition-delay: 1.0s; color: var(--accent-green);">Cominciamo</h2>
                 <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">🚀 Inizia la Prova</button>
             </div>
@@ -815,7 +705,7 @@
     </div>
 
     <script>
-        // --- LOGICA GIOCHI (Invariata) ---
+        // --- LOGICA GIOCHI ---
         
         const COLORS = {
             bg: '#00215F',      // royal-blue
@@ -890,12 +780,10 @@
             
             document.getElementById('inst-desc').innerHTML = `${data.desc}<br><br>${attemptText}`;
             
-            // Corretto: forza display: flex per mostrare
             instructionPanel.style.display = 'flex'; 
         }
 
         function closeInstructions() {
-            // Corretto: forza display: none per nascondere
             instructionPanel.style.display = 'none';
         }
 
@@ -989,7 +877,9 @@
             const containerWidth = canvas.parentElement.clientWidth;
             const containerHeight = canvas.parentElement.clientHeight;
             const maxWidth = Math.min(containerWidth * 0.9, 800);
-            const maxHeight = Math.min(containerHeight * 0.7, 500);
+            
+            // CORREZIONE 2: Usa l'intera altezza del contenitore
+            const maxHeight = containerHeight; 
             canvas.width = maxWidth;
             canvas.height = maxHeight;
             
@@ -1199,7 +1089,9 @@
             const containerWidth = canvas.parentElement.clientWidth;
             const containerHeight = canvas.parentElement.clientHeight;
             const maxWidth = Math.min(containerWidth * 0.9, 800);
-            const maxHeight = Math.min(containerHeight * 0.7, 500);
+            
+            // CORREZIONE 2: Usa l'intera altezza del contenitore
+            const maxHeight = containerHeight; 
             canvas.width = maxWidth;
             canvas.height = maxHeight;
             
