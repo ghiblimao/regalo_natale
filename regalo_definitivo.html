@@ -416,47 +416,80 @@
             transition: all 0.3s;
         }
 
-        /* --- STILI ITINERARIO (SLIDE 9) - VERSIONE A BLOCCHI MIGLIORATA --- */
+        /* --- STILI ITINERARIO (SLIDE 9) - RIPRISTINO VECCHIA TIMELINE --- */
         .itinerary-timeline {
-            margin: 30px auto; /* Aumentato il margine superiore per separare meglio il primo blocco */
+            margin: 30px auto; /* Mantengo il margine superiore per non nascondere il primo blocco */
             max-width: 800px;
-            width: 100%;
-            padding: 0; 
+            width: 90%;
+            padding: 0 20px;
             position: relative;
         }
 
-        /* Rimuovi la linea verticale complessa */
+        /* Linea verticale centrale */
         .itinerary-timeline::before {
-            content: none !important; 
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            width: 4px;
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateX(-50%);
         }
 
         .timeline-item {
-            display: flex; 
-            align-items: flex-start;
-            padding: 20px;
-            margin-bottom: 15px;
+            padding: 10px 0;
             position: relative;
-            z-index: 10;
-            
-            /* Stile a blocco pulito - RESO SOLIDO PER MIGLIORE VISIBILITÀ */
-            background: var(--royal-blue); 
-            border-left: 6px solid var(--bright-red); 
-            border-radius: 8px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            width: 50%;
         }
 
-        .timeline-item::before {
-            content: none !important; /* Rimuovi il cerchio del punto */
+        .timeline-item:nth-child(odd) {
+            float: left;
+            clear: both;
+            padding-right: 40px;
+            text-align: right;
         }
 
-        .timeline-item-content {
-            flex-grow: 1;
+        .timeline-item:nth-child(even) {
+            float: right;
+            clear: both;
+            padding-left: 40px;
             text-align: left;
-            padding-right: 15px; /* Spazio per il logo se fluttuato */
+        }
+        
+        .timeline-item-content {
+            padding: 15px;
+            border-radius: 8px;
+            /* Ritorno al background semi-trasparente originale per lo stile vintage */
+            background: rgba(0, 33, 95, 0.6); 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Cerchio decorativo centrale */
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 25px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background-color: var(--bright-red);
+            border: 4px solid var(--pure-white);
+            z-index: 1;
+            box-shadow: 0 0 10px rgba(255,255,255,0.7);
+        }
+
+        .timeline-item:nth-child(odd)::before {
+            right: -13px;
+        }
+
+        .timeline-item:nth-child(even)::before {
+            left: -14px;
         }
 
         .timeline-meta {
-            font-size: 1.0rem;
+            font-size: 0.9rem;
             color: var(--accent-green);
             margin-bottom: 5px;
             font-weight: bold;
@@ -465,42 +498,28 @@
         .timeline-item h3 {
             margin-top: 0;
             margin-bottom: 5px;
-            font-size: 1.5rem;
-            text-align: left;
+            font-size: 1.4rem;
         }
 
         .timeline-item p {
             margin: 0;
-            font-size: 1.1rem;
-            text-align: left;
-        }
-
-        .logo-container {
-            flex-shrink: 0;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: var(--pure-white);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .logo-container img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            font-size: 1rem;
         }
         
+        .logo-container {
+            /* Rimosso, non più utilizzato nella timeline a linea verticale */
+            display: none; 
+        }
+
         /* Galleria Luoghi */
         .gallery-label {
-            text-align: left;
+            text-align: center;
             margin-top: 20px;
             margin-bottom: 10px;
             font-size: 1.1rem;
             font-weight: bold;
             display: block; 
+            width: 100%;
         }
 
         .scrolling-gallery {
@@ -516,7 +535,7 @@
             border-top: 1px dashed rgba(255,255,255,0.2);
             padding-top: 20px;
             
-            touch-action: pan-x; /* FIX CRITICO: Permette solo lo scorrimento orizzontale per evitare che la pagina scrolli verticalmente */
+            touch-action: pan-x; /* FIX CRITICO MANTENUTO: Scorrimento orizzontale interno */
         }
 
         .scrolling-gallery::-webkit-scrollbar {
@@ -550,6 +569,14 @@
             display: block;
             padding: 5px 0;
             color: var(--text-color-light);
+        }
+        
+        .gallery-container {
+            width: 100%;
+            box-sizing: border-box;
+            float: left; /* Forza la galleria a occupare la larghezza completa sotto la timeline */
+            clear: both;
+            padding: 20px 0;
         }
 
 
@@ -594,19 +621,37 @@
                 font-size: 0.9rem;
             }
 
-            /* OTTIMIZZAZIONE SLIDE 9 MOBILE */
-            .timeline-item {
-                padding: 15px;
+            /* OTTIMIZZAZIONE SLIDE 9 MOBILE: Timeline a colonna singola */
+            .itinerary-timeline {
+                padding: 0 10px;
+                width: 100%; /* Occupa tutta la larghezza */
             }
-            .timeline-item h3 {
-                font-size: 1.3rem;
+
+            /* Rimuovi la linea centrale e sposta tutto a sinistra */
+            .itinerary-timeline::before {
+                left: 10px; /* Sposta la linea a sinistra */
             }
-            .timeline-item p {
-                font-size: 1rem;
+            
+            .timeline-item, .timeline-item:nth-child(odd), .timeline-item:nth-child(even) {
+                width: 100%;
+                float: none;
+                clear: both;
+                padding-right: 0;
+                padding-left: 30px; /* Spazio per la linea a sinistra */
+                text-align: left;
             }
-            .logo-container {
-                width: 45px;
-                height: 45px;
+
+            .timeline-item:nth-child(odd)::before, .timeline-item:nth-child(even)::before {
+                left: 0px; /* Allinea il cerchio sulla linea */
+                right: auto;
+            }
+            
+            .timeline-item-content {
+                padding: 10px;
+            }
+            
+            .gallery-container {
+                padding: 10px 0;
             }
             .place-card {
                 flex: 0 0 120px;
@@ -768,10 +813,7 @@
                         <div class="timeline-item-content">
                             <div class="timeline-meta">5 Maggio - Viaggio</div>
                             <h3>Volo di Andata 🛫</h3>
-                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>.</p>
-                        </div>
-                        <div class="logo-container">
-                            <img src="https://logowik.com/content/uploads/images/ryanair7454.jpg" alt="Logo Ryanair" onerror="this.onerror=null; this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
+                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>. (Ryanair)</p>
                         </div>
                     </div>
 
@@ -781,9 +823,6 @@
                             <h3>Stansted Express per Londra 🚆</h3>
                             <p>Dall'aeroporto, treno veloce diretto per il cuore della città.</p>
                         </div>
-                        <div class="logo-container">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgHCBXDSigGWHTfga_PNYufwBLMvSu8M5RCw&s" alt="Logo Stansted Express" onerror="this.onerror=null; this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
-                        </div>
                     </div>
 
                     <div class="timeline-item">
@@ -792,27 +831,29 @@
                             <h3><a href="https://www.tripadvisor.com/Hotel_Review-g186338-d610748-Reviews-Comfort_Inn_Edgware_Road-London_England.html" target="_blank" style="color: var(--pure-white);">Hotel Comfort Inn</a></h3>
                             <p>La nostra base per l'esplorazione: <strong>Edgware Road W2</strong>.</p>
                             
-                            <span class="gallery-label">Ecco cosa vedremo:</span>
-                            
-                            <div class="scrolling-gallery">
-                                <div class="place-card"><img src="https://images.placesonline.com/photos/city-of-london_1166089699_151026_1671708925.jpg?quality=80&w=700" alt="City" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=City'"><span>City of London</span></div>
-                                <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
-                                <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
-                                <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
-                                <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
-                                <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Downing_Street.jpg" alt="Downing St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Downing+Street'"><span>Downing Street</span></div>
-                                <div class="place-card"><img src="https://www.willpearson.co.uk/wp-content/uploads/2013/04/trafalgar-square-panorama.jpg" alt="Trafalgar" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Trafalgar'"><span>Trafalgar Square</span></div>
-                                <div class="place-card"><img src="https://images.fidhouse.com/fidelitynews/wp-content/uploads/sites/9/2014/07/piccadilly-circus-londra.jpg?width=1280&height=720&quality=90" alt="Piccadilly" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Piccadilly'"><span>Piccadilly Circus</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Buckingham_Palace_%286820469041%29.jpg/1200px-Buckingham_Palace_%286820469041%29.jpg" alt="Buckingham" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Buckingham'"><span>Buckingham Palace</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Madame_Tussauds_London_2.jpg/1200px-Madame_Tussauds_London_2.jpg" alt="Tussauds" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tussauds'"><span>Madame Tussauds</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Statue_Of_Sherlock_Holmes-Marylebone_Road.jpg" alt="Sherlock" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Sherlock'"><span>Statua di Sherlock Holmes</span></div>
-                                <div class="place-card"><img src="https://londonita.com/wp-content/uploads/2020/01/hyde-park-vista-dall-alto.jpg" alt="Hyde Park" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00A65A/FFFFFF?text=Hyde+Park'"><span>Hyde Park</span></div>
-                                <div class="place-card"><img src="https://www.londraculturale.it/wp-content/uploads/sites/3603/2020/10/2018-04-20-Natural-History-Museum-65.jpg?w=700&h=700&zoom=2" alt="Museum" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Natural+History'"><span>Museo di Storia Naturale</span></div>
-                                <div class="place-card"><img src="https://i0.wp.com/lavaligiadigio.it/wp-content/uploads/sites/48/2020/02/visitare-harry-potter-studios-londra-23-scaled.jpg?fit=960%2C720&ssl=1" alt="Harry Potter" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Harry+Potter'"><span>Harry Potter Studio</span></div>
-                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="gallery-container">
+                        <span class="gallery-label">Ecco cosa vedremo:</span>
+                        <div class="scrolling-gallery">
+                            <div class="place-card"><img src="https://images.placesonline.com/photos/city-of-london_1166089699_151026_1671708925.jpg?quality=80&w=700" alt="City" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=City'"><span>City of London</span></div>
+                            <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
+                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
+                            <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
+                            <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
+                            <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
+                            <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
+                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
+                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Downing_Street.jpg" alt="Downing St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Downing+Street'"><span>Downing Street</span></div>
+                            <div class="place-card"><img src="https://www.willpearson.co.uk/wp-content/uploads/2013/04/trafalgar-square-panorama.jpg" alt="Trafalgar" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Trafalgar'"><span>Trafalgar Square</span></div>
+                            <div class="place-card"><img src="https://images.fidhouse.com/fidelitynews/wp-content/uploads/sites/9/2014/07/piccadilly-circus-londra.jpg?width=1280&height=720&quality=90" alt="Piccadilly" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Piccadilly'"><span>Piccadilly Circus</span></div>
+                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Buckingham_Palace_%286820469041%29.jpg/1200px-Buckingham_Palace_%286820469041%29.jpg" alt="Buckingham" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Buckingham'"><span>Buckingham Palace</span></div>
+                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Madame_Tussauds_London_2.jpg/1200px-Madame_Tussauds_London_2.jpg" alt="Tussauds" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tussauds'"><span>Madame Tussauds</span></div>
+                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Statue_Of_Sherlock_Holmes-Marylebone_Road.jpg" alt="Sherlock" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Sherlock'"><span>Statua di Sherlock Holmes</span></div>
+                            <div class="place-card"><img src="https://londonita.com/wp-content/uploads/2020/01/hyde-park-vista-dall-alto.jpg" alt="Hyde Park" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00A65A/FFFFFF?text=Hyde+Park'"><span>Hyde Park</span></div>
+                            <div class="place-card"><img src="https://www.londraculturale.it/wp-content/uploads/sites/3603/2020/10/2018-04-20-Natural-History-Museum-65.jpg?w=700&h=700&zoom=2" alt="Museum" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Natural+History'"><span>Museo di Storia Naturale</span></div>
+                            <div class="place-card"><img src="https://i0.wp.com/lavaligiadigio.it/wp-content/uploads/sites/48/2020/02/visitare-harry-potter-studios-londra-23-scaled.jpg?fit=960%2C720&ssl=1" alt="Harry Potter" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Harry+Potter'"><span>Harry Potter Studio</span></div>
                         </div>
                     </div>
 
@@ -822,19 +863,13 @@
                             <h3>Stansted Express per Aeroporto 🚆</h3>
                             <p>Da Londra (Liverpool Street) a <strong>Stansted</strong> (STN) in tempo per il rientro.</p>
                         </div>
-                        <div class="logo-container">
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgHCBXDSigGWHTfga_PNYufwBLMvSu8M5RCw&s" alt="Logo Stansted Express" onerror="this.onerror=null; this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
-                        </div>
                     </div>
 
                     <div class="timeline-item">
                         <div class="timeline-item-content">
                             <div class="timeline-meta">8 Maggio - Ritorno</div>
                             <h3>Volo di Ritorno 🛬</h3>
-                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
-                        </div>
-                        <div class="logo-container">
-                            <img src="https://logowik.com/content/uploads/images/ryanair7454.jpg" alt="Logo Ryanair" onerror="this.onerror=null; this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
+                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio). (Ryanair)</p>
                         </div>
                     </div>
                 </div>
