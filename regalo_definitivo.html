@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>Enigma di Natale</title>
+    <title>Enigma di Natale - Viaggio Misterioso</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght{300;400;700}&display=swap');
 
@@ -231,7 +231,7 @@
 
         /* --- CONTROLS (PULSANTI AVANTI/INDIETRO) --- */
         .controls {
-            position: fixed; /* cambiato da absolute a fixed */
+            position: fixed; 
             bottom: 30px;
             right: 30px;
             z-index: 100;
@@ -267,7 +267,7 @@
             border: 1px solid var(--pure-white);
             color: var(--pure-white);
             font-size: 1.1rem;
-            display: none; /* <--- NASCOSTO DI DEFAULT */
+            display: none; 
             gap: 20px;
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
             white-space: nowrap;
@@ -282,7 +282,7 @@
             top: 15px;
             right: 15px;
             z-index: 101; 
-            display: none; /* <--- NASCOSTO DI DEFAULT */
+            display: none; 
             background: var(--bright-red);
             color: var(--pure-white);
             padding: 8px 15px;
@@ -360,6 +360,32 @@
             max-width: 400px;
             margin-top: 20px;
         }
+        
+        /* *************** STILI AGGIUNTI PER LE CARTE *************** */
+        .card {
+            aspect-ratio: 1 / 1;
+            background: var(--royal-blue); /* Il dorso della carta */
+            border: 3px solid var(--pure-white);
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 2.5rem; /* Dimensione dell'Emoji */
+            color: transparent; /* Nasconde l'emoji quando non girata */
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+            user-select: none;
+            touch-action: manipulation;
+        }
+
+        .card.flipped {
+            background: var(--pure-white); /* La faccia della carta */
+            color: var(--royal-blue); /* Mostra l'emoji quando girata */
+            border-color: var(--bright-red);
+            transform: scale(1.05);
+        }
+        /* ************************************************************* */
         
         /* REFLEX STYLES - AREA ALLARGATA */
         #game-reflex {
@@ -439,7 +465,8 @@
         <div class="slide active" id="slide-0">
             <div class="central-light"></div>
             <div class="slide-content">
-                <h1 class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</p>
+                <h1 class="content-fade">Benvenuto</h1>
+                <p class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</p>
                 <h2 class="content-fade" style="transition-delay: 1.0s; color: var(--accent-green);">Cominciamo</h2>
                 <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">🚀 Inizia la Prova</button>
             </div>
@@ -746,7 +773,7 @@
             
             // Mostra il contenitore del gioco e gli overlay
             document.getElementById(`game-${selectedGameId}`).style.display = 'flex';
-            infoBar.style.display = 'flex'; // <--- CORRETTO: Usa 'flex' come definito nel CSS
+            infoBar.style.display = 'flex'; 
             backBtn.style.display = 'block';
             
             isGameOver = false;
@@ -770,8 +797,8 @@
             
             // Nasconde il contenitore del gioco e gli overlay
             document.getElementById(`game-${selectedGameId}`).style.display = 'none';
-            infoBar.style.display = 'none'; // <--- CORRETTO: Nasconde
-            backBtn.style.display = 'none'; // <--- CORRETTO: Nasconde
+            infoBar.style.display = 'none'; 
+            backBtn.style.display = 'none'; 
             
             // Ripristina il contenuto "statico" della slide
             document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
@@ -832,13 +859,12 @@
         }
 
         // --------------------------------------------------------
-        // 1. FLAPPY CUBE
+        // 1. FLAPPY CUBE (omesso per brevità, ma presente nel codice completo)
         // --------------------------------------------------------
         function initFlappy() {
             const canvas = document.getElementById('canvas-flappy');
             const ctx = canvas.getContext('2d');
             
-            // NUOVO RIDIMENSIONAMENTO PER EVITARE SCHIACCIAMENTI
             const containerWidth = canvas.parentElement.clientWidth;
             const containerHeight = canvas.parentElement.clientHeight;
             const maxWidth = Math.min(containerWidth * 0.9, 800);
@@ -928,7 +954,8 @@
             let frames = 0;
             loop();
         }
-
+        // --------------------------------------------------------
+        
         // --------------------------------------------------------
         // 2. MEMORY EMOJI
         // --------------------------------------------------------
@@ -988,7 +1015,7 @@
         }
 
         // --------------------------------------------------------
-        // 3. REFLEX DOT
+        // 3. REFLEX DOT (omesso per brevità, ma presente nel codice completo)
         // --------------------------------------------------------
         function initReflex() {
             timeLeft = 20;
@@ -1008,7 +1035,6 @@
             if(isGameOver) return;
             const area = document.getElementById('reflex-area');
             const dot = document.getElementById('target-dot');
-            // Usiamo clientWidth/clientHeight dell'area per posizionare il punto
             const max_x = area.clientWidth - dot.offsetWidth;
             const max_y = area.clientHeight - dot.offsetHeight;
             
@@ -1027,17 +1053,15 @@
             moveDot();
             if(currentScore >= 25) endGame("Riflessi Ninja!", true);
         }
-        // Assegnato già nell'HTML con ontouchstart per mobile
         document.getElementById('target-dot').onclick = window.hitTarget;
 
         // --------------------------------------------------------
-        // 4. SCHIVA TUTTO
+        // 4. SCHIVA TUTTO (omesso per brevità, ma presente nel codice completo)
         // --------------------------------------------------------
         function initDodger() {
             const canvas = document.getElementById('canvas-dodger');
             const ctx = canvas.getContext('2d');
             
-            // NUOVO RIDIMENSIONAMENTO PER EVITARE SCHIACCIAMENTI
             const containerWidth = canvas.parentElement.clientWidth;
             const containerHeight = canvas.parentElement.clientHeight;
             const maxWidth = Math.min(containerWidth * 0.9, 800);
@@ -1052,15 +1076,12 @@
 
             const movePlayer = (e) => {
                 e.preventDefault();
-                // Determina la posizione del tocco/click rispetto al canvas
                 let clientX = e.touches ? e.touches[0].clientX : e.clientX;
                 let touchX = clientX - canvas.getBoundingClientRect().left;
                 
-                // Muove il player verso la metà del tocco/click
                 if(touchX < canvas.width / 2) playerX -= 50;
                 else playerX += 50;
                 
-                // Limiti del campo di gioco
                 if(playerX < 0) playerX = 0;
                 if(playerX > canvas.width - 40) playerX = canvas.width - 40;
             };
@@ -1103,6 +1124,7 @@
             loop();
         }
 
+
         // --- LOGICA SLIDE (codice.html) ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
@@ -1114,14 +1136,13 @@
 
         // Mappa per associare l'indice della slide al nome del gioco e allo stato di vittoria
         const gameSlideMap = {
-            1: 'flappy', // Slide 1: Flappy Cube
-            3: 'memory', // Slide 3: Memory Emoji
-            5: 'reflex', // Slide 5: Reflex Dot
-            7: 'dodger'  // Slide 7: Schiva Tutto
+            1: 'flappy', 
+            3: 'memory', 
+            5: 'reflex', 
+            7: 'dodger'  
         };
 
         function updateControls() {
-            // Disabilita i controlli se il gioco è in esecuzione
             if (isGameRunning) {
                 prevBtn.disabled = true;
                 nextBtn.disabled = true;
@@ -1130,20 +1151,16 @@
             
             prevBtn.disabled = currentSlide === 0;
 
-            // 1. Logica di Blocco per i Minigiochi
             const gameId = gameSlideMap[currentSlide];
             let nextDisabled = false;
 
             if (gameId) {
-                // Siamo su una slide-gioco
                 const status = gameStatus[gameId];
                 if (!status.won) {
-                    // Il gioco NON è stato vinto (né realmente, né per "bontà")
                     nextDisabled = true;
                     const attemptsLeft = MAX_ATTEMPTS - status.attempts;
                     
                     if (attemptsLeft === 0) {
-                        // Questo non dovrebbe succedere, ma è un fallback
                         nextBtn.innerText = "Sbloccato (BUG)";
                         nextDisabled = false;
                     } else if (attemptsLeft === 1) {
@@ -1152,19 +1169,15 @@
                         nextBtn.innerText = `Bloccato (${status.attempts}/${MAX_ATTEMPTS})`;
                     }
                 } else {
-                    // Gioco vinto/sbloccato
                     nextBtn.innerText = "Avanti (Sbloccato!)";
                 }
             } else if (currentSlide === totalSlides - 1) { 
-                // Ultima slide (Itinerario)
                 nextBtn.innerText = "Finito";
                 nextDisabled = true;
             } else if (currentSlide === totalSlides - 2) { 
-                // Slide di rivelazione (Slide 8)
                 nextBtn.innerText = "Avanti (Itinerario)";
                 nextDisabled = false;
             } else if (currentSlide === 0) {
-                 // Slide introduttiva
                  nextBtn.innerText = "🚀 Inizia la Prova";
                  nextDisabled = false;
             } else {
@@ -1172,10 +1185,8 @@
                 nextDisabled = false;
             }
             
-            // Applica lo stato finale
             nextBtn.disabled = nextDisabled || isGameRunning; 
 
-            // Aggiorna la barra di progresso
             const progressValue = ((currentSlide + 1) / totalSlides) * 100;
             progressBar.style.width = `${progressValue}%`;
         }
@@ -1183,9 +1194,7 @@
         function changeSlide(direction) {
             if(isGameRunning) return;
             
-            // Controlla se il pulsante AVANTI è disabilitato (bloccato dal gioco)
             if (direction > 0 && nextBtn.disabled) {
-                // Mostra un messaggio di blocco solo se non siamo all'ultima slide già vinta
                 const gameId = gameSlideMap[currentSlide];
                 if (gameId && !gameStatus[gameId].won) {
                     const attemptsLeft = MAX_ATTEMPTS - gameStatus[gameId].attempts;
@@ -1220,7 +1229,6 @@
             }, transitionDelay); 
         }
 
-        // Inizializzazione: Assicura che solo la prima slide sia attiva all'inizio
         window.onload = function() {
             slides.forEach((slide, index) => {
                 if (index === 0) {
@@ -1234,4 +1242,3 @@
     </script>
 </body>
 </html>
-
