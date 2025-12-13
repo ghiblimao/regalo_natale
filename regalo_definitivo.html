@@ -103,7 +103,8 @@
             justify-content: center;
             max-width: 95%;
             width: 100%;
-            min-height: 70%;
+            /* CORREZIONE 2: Aumento dell'altezza per i giochi */
+            height: 90%; 
             padding: 2rem 1rem;
             box-sizing: border-box;
             padding-bottom: 80px; 
@@ -439,11 +440,12 @@
             .slide-content {
                 padding-top: 30px;
                 padding-bottom: 60px; 
+                height: 95%; /* Leggermente aumentato per i giochi su mobile */
             }
 
-            /* CORREZIONE PER IL TITOLO DI SLIDE 4 */
+            /* CORREZIONE 1: Ulteriore riduzione del font per il titolo di SLIDE 4 */
             h1 { 
-                font-size: 2.4rem; /* Ridotto da 2.8rem a 2.4rem per evitare overflow di "Paradosso" */
+                font-size: 2.1rem; 
                 margin-bottom: 0.5rem;
             } 
             
@@ -829,10 +831,12 @@
             isGameOver = true;
             isGameRunning = false;
             
+            // Nascondi gli elementi di gioco
             document.getElementById(`game-${selectedGameId}`).style.display = 'none';
             infoBar.style.display = 'none'; 
-            backBtn.style.display = 'none'; 
-            
+            document.getElementById('target-dot').style.display = 'none'; // Aggiunto per Reflex
+
+            // Ripristina l'interfaccia della slide
             document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
                 el.style.display = 'block';
                 el.style.opacity = '1';
@@ -865,9 +869,12 @@
                 finalMessage = `🏆 COMPLIMENTI! ${message}`;
             }
 
+            // Rimuovi il pulsante di uscita forzata quando si è terminato il gioco
+            document.getElementById('game-back-btn').style.display = 'none'; 
+
             setTimeout(() => {
                 alert(finalMessage);
-                stopGame();
+                stopGame(); // Chiama stopGame dopo l'alert
             }, 100);
         }
         
@@ -885,14 +892,10 @@
         function initFlappy() {
             const canvas = document.getElementById('canvas-flappy');
             const ctx = canvas.getContext('2d');
-            const containerWidth = canvas.parentElement.clientWidth;
-            const containerHeight = canvas.parentElement.clientHeight;
-            const maxWidth = Math.min(containerWidth * 0.9, 800);
             
-            // CORREZIONE 2: Usa l'intera altezza del contenitore
-            const maxHeight = containerHeight; 
-            canvas.width = maxWidth;
-            canvas.height = maxHeight;
+            // Usa le dimensioni del contenitore per il canvas
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
             
             const TARGET_SCORE = 5;
             let birdY = canvas.height / 2;
@@ -1060,6 +1063,13 @@
             const max_x = area.clientWidth - dot.offsetWidth;
             const max_y = area.clientHeight - dot.offsetHeight;
             
+            // Evita che il dot venga generato fuori dall'area
+            if (max_x <= 0 || max_y <= 0) {
+                 // Non mostrare il dot se l'area è troppo piccola
+                 dot.style.display = 'none';
+                 return;
+            }
+
             const x = Math.floor(Math.random() * max_x); 
             const y = Math.floor(Math.random() * max_y);
             
@@ -1098,14 +1108,9 @@
             const canvas = document.getElementById('canvas-dodger');
             const ctx = canvas.getContext('2d');
             
-            const containerWidth = canvas.parentElement.clientWidth;
-            const containerHeight = canvas.parentElement.clientHeight;
-            const maxWidth = Math.min(containerWidth * 0.9, 800);
-            
-            // CORREZIONE 2: Usa l'intera altezza del contenitore
-            const maxHeight = containerHeight; 
-            canvas.width = maxWidth;
-            canvas.height = maxHeight;
+            // Usa le dimensioni del contenitore per il canvas
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
             
             let playerX = canvas.width / 2 - 20;
             let obstacles = [];
