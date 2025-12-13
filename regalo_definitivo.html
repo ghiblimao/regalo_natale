@@ -106,7 +106,6 @@
             min-height: 70%;
             padding: 2rem 1rem;
             box-sizing: border-box;
-            /* CORREZIONE 1 (Mantieni): Aggiunto padding inferiore per evitare sovrapposizione con i controlli */
             padding-bottom: 80px; 
         }
 
@@ -312,7 +311,6 @@
             grid-template-columns: repeat(4, 1fr);
             grid-gap: 10px;
             padding: 10px;
-            /* AUMENTATO MAX-WIDTH PER DESKTOP/TABLET (non è il problema principale, ma aiuta) */
             max-width: 450px; 
             width: 100%;
             aspect-ratio: 1 / 1; 
@@ -324,7 +322,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            /* DIMENSIONE BASE CARTE/EMOJI */
+            /* Dimensione base carte/emoji (aumentata per leggibilità su mobile) */
             font-size: 3.5rem;
             border-radius: 5px;
             cursor: pointer;
@@ -332,7 +330,6 @@
             transition: all 0.3s;
             color: transparent; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            /* Assicura che le emoji siano centrate indipendentemente dalle dimensioni */
             height: 100%; 
             box-sizing: border-box; 
         }
@@ -441,14 +438,15 @@
             
             .slide-content {
                 padding-top: 30px;
-                /* CORREZIONE 1: Mantieni il padding inferiore per mobile */
                 padding-bottom: 60px; 
             }
 
+            /* CORREZIONE PER IL TITOLO DI SLIDE 4 */
             h1 { 
-                font-size: 2.8rem; 
+                font-size: 2.4rem; /* Ridotto da 2.8rem a 2.4rem per evitare overflow di "Paradosso" */
                 margin-bottom: 0.5rem;
             } 
+            
             h2 { font-size: 1.6rem; margin-bottom: 1rem; } 
             h3 { font-size: 1.4rem; margin-top: 1rem; }
             p { font-size: 1rem; margin-bottom: 1rem; }
@@ -464,18 +462,15 @@
             .controls { right: 10px; bottom: 10px; gap: 0.5rem; }
             button { padding: 8px 16px; font-size: 0.9rem; }
 
-            /* CORREZIONE ESSENZIALE PER MEMORY EMOJI */
+            /* OTTIMIZZAZIONE MEMORY EMOJI */
             #memory-grid { 
-                /* Aumenta la dimensione massima del container */
                 max-width: 400px; 
-                /* Garantisce che occupi una porzione maggiore della larghezza del container */
                 width: 95%; 
                 grid-gap: 8px;
             }
-            /* AUMENTA NOTEVOLMENTE LA DIMENSIONE DEL FONT DELL'EMOJI */
             .card { 
-                font-size: 2.5rem; /* Aumentato da 2rem a 2.5rem */
-                min-height: 80px; /* Imposta un'altezza minima per le carte */
+                font-size: 2.5rem; 
+                min-height: 80px; 
             }
             
             .timeline-item { flex-direction: column; border-left-width: 3px; padding: 10px 10px 10px 20px; }
