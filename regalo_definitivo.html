@@ -80,6 +80,7 @@
             z-index: 0;
             pointer-events: none; 
             overflow-y: auto; 
+            touch-action: pan-y; /* Permette lo scorrimento verticale della slide */
         }
         
         .slide.active {
@@ -417,7 +418,7 @@
 
         /* --- STILI ITINERARIO (SLIDE 9) - VERSIONE A BLOCCHI MIGLIORATA --- */
         .itinerary-timeline {
-            margin: 20px auto;
+            margin: 30px auto; /* Aumentato il margine superiore per separare meglio il primo blocco */
             max-width: 800px;
             width: 100%;
             padding: 0; 
@@ -437,9 +438,9 @@
             position: relative;
             z-index: 10;
             
-            /* Stile a blocco pulito */
-            background: rgba(0, 33, 95, 0.7); /* Royal Blue semi-trasparente */
-            border-left: 6px solid var(--bright-red); /* Accento rosso */
+            /* Stile a blocco pulito - RESO SOLIDO PER MIGLIORE VISIBILITÀ */
+            background: var(--royal-blue); 
+            border-left: 6px solid var(--bright-red); 
             border-radius: 8px;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
@@ -514,6 +515,8 @@
             -webkit-overflow-scrolling: touch;
             border-top: 1px dashed rgba(255,255,255,0.2);
             padding-top: 20px;
+            
+            touch-action: pan-x; /* FIX CRITICO: Permette solo lo scorrimento orizzontale per evitare che la pagina scrolli verticalmente */
         }
 
         .scrolling-gallery::-webkit-scrollbar {
