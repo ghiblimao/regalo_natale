@@ -106,7 +106,7 @@
             height: 90%; 
             padding: 2rem 1rem;
             box-sizing: border-box;
-            /* CORREZIONE 2: Aumento padding bottom per evitare sovrapposizioni con pulsanti fissi */
+            /* Correzione precedente per pulsante coperto */
             padding-bottom: 120px; 
         }
 
@@ -130,6 +130,8 @@
             color: var(--pure-white); 
             text-align: center;
             text-shadow: 0 0 15px rgba(255,255,255,0.7), 0 0 25px var(--bright-red); 
+            word-wrap: break-word; /* Forza l'andata a capo */
+            white-space: normal; /* Permette l'andata a capo normale */
         }
 
         h2 {
@@ -366,7 +368,7 @@
             box-shadow: 0 0 20px var(--bright-red), 0 0 30px var(--pure-white);
         }
         
-        /* OVERLAY ISTRUZIONI (Gestione corretta del display: none/flex) */
+        /* OVERLAY ISTRUZIONI */
         #instruction-panel {
             position: fixed;
             top: 0;
@@ -399,7 +401,7 @@
         }
         .score-txt, .timer-txt { font-weight: bold; font-size: 1.1rem; }
         
-        /* CORREZIONE 4: Spostamento pulsante ESCI al centro in basso */
+        /* Posizione pulsante ESCI */
         .game-back-btn {
             position: fixed;
             bottom: 80px; 
@@ -413,55 +415,47 @@
             transition: all 0.3s;
         }
 
-        /* --- STILI ITINERARIO (SLIDE 9) --- */
+        /* --- STILI ITINERARIO (SLIDE 9) - VERSIONE A BLOCCHI MIGLIORATA --- */
         .itinerary-timeline {
             margin: 20px auto;
             max-width: 800px;
             width: 100%;
-            padding-left: 20px; 
+            padding: 0; 
             position: relative;
         }
 
-        /* La linea verticale */
+        /* Rimuovi la linea verticale complessa */
         .itinerary-timeline::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 20px;
-            height: 100%;
-            width: 3px;
-            background-color: rgba(255, 255, 255, 0.4);
-            z-index: 1;
+            content: none !important; 
         }
 
         .timeline-item {
-            display: flex;
+            display: flex; 
             align-items: flex-start;
-            padding: 10px 0 20px 30px;
+            padding: 20px;
+            margin-bottom: 15px;
             position: relative;
             z-index: 10;
+            
+            /* Stile a blocco pulito */
+            background: rgba(0, 33, 95, 0.7); /* Royal Blue semi-trasparente */
+            border-left: 6px solid var(--bright-red); /* Accento rosso */
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
 
         .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 20px;
-            left: 17px;
-            width: 10px;
-            height: 10px;
-            background-color: var(--bright-red);
-            border: 2px solid var(--pure-white);
-            border-radius: 50%;
-            z-index: 2;
+            content: none !important; /* Rimuovi il cerchio del punto */
         }
 
         .timeline-item-content {
             flex-grow: 1;
             text-align: left;
+            padding-right: 15px; /* Spazio per il logo se fluttuato */
         }
 
         .timeline-meta {
-            font-size: 0.9rem;
+            font-size: 1.0rem;
             color: var(--accent-green);
             margin-bottom: 5px;
             font-weight: bold;
@@ -484,7 +478,6 @@
             flex-shrink: 0;
             width: 60px;
             height: 60px;
-            margin-left: 15px;
             border-radius: 50%;
             overflow: hidden;
             background: var(--pure-white);
@@ -565,21 +558,19 @@
             
             .slide-content {
                 padding-top: 30px;
-                /* CORREZIONE 2 MOBILE: Aumento padding bottom per evitare sovrapposizioni */
                 padding-bottom: 80px; 
                 height: 95%; 
             }
 
-            /* CORREZIONE 3: Ulteriore riduzione del font per titoli lunghi (Slide 4) */
             h1 { 
-                font-size: 2.0rem; /* Ridotto da 2.1rem */
+                font-size: 2.5rem; /* Base size mobile */
                 margin-bottom: 0.5rem;
             } 
             
-            /* Per schermi molto piccoli */
-            @media (max-width: 400px) {
+            /* CORREZIONE 1: Font size minimo più generoso per "Il Regno del Paradosso" */
+            @media (max-width: 450px) {
                 h1 {
-                    font-size: 1.8rem;
+                    font-size: 2.1rem; /* Dimensione sicura per evitare che sparisca */
                 }
             }
             
@@ -594,7 +585,6 @@
             .controls { right: 10px; bottom: 10px; gap: 0.5rem; }
             button { padding: 8px 16px; font-size: 0.9rem; }
             
-            /* CORREZIONE 4 MOBILE: Posizione tasto esci */
             .game-back-btn {
                 bottom: 60px; /* Adattamento per mobile */
                 padding: 5px 15px;
@@ -602,18 +592,8 @@
             }
 
             /* OTTIMIZZAZIONE SLIDE 9 MOBILE */
-            .itinerary-timeline {
-                padding-left: 15px;
-            }
-            .itinerary-timeline::before {
-                left: 15px;
-            }
             .timeline-item {
-                padding: 5px 0 15px 25px;
-            }
-            .timeline-item::before {
-                left: 12px;
-                top: 15px;
+                padding: 15px;
             }
             .timeline-item h3 {
                 font-size: 1.3rem;
@@ -803,7 +783,7 @@
                         </div>
                     </div>
 
-                    <div class="timeline-item" style="border-left-color: gold;">
+                    <div class="timeline-item">
                         <div class="timeline-item-content">
                             <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
                             <h3><a href="https://www.tripadvisor.com/Hotel_Review-g186338-d610748-Reviews-Comfort_Inn_Edgware_Road-London_England.html" target="_blank" style="color: var(--pure-white);">Hotel Comfort Inn</a></h3>
@@ -816,7 +796,7 @@
                                 <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
                                 <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
                                 <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
-                                <div class="place-card"><img src="https://media.tacdn.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
+                                <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
                                 <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
                                 <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
                                 <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
@@ -987,6 +967,7 @@
             document.getElementById(`game-${selectedGameId}`).style.display = 'none';
             infoBar.style.display = 'none'; 
             document.getElementById('target-dot').style.display = 'none'; 
+            document.getElementById('game-back-btn').style.display = 'none'; 
 
             // Ripristina l'interfaccia della slide
             document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
