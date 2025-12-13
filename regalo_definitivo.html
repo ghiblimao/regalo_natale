@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"> 
-    <title>Enigma di Natale - Viaggio Misterioso</title>
+    <title>Enigma di Natale</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght{300;400;700}&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
 
         /* PALETTE UNION JACK VERA */
         :root {
@@ -253,7 +253,7 @@
         }
         
         /* ----------------------------------------------- */
-        /* NUOVI STILI: OVERLAYS DEI GIOCHI (SCORE/TIMER/ESCI) */
+        /* OVERLAYS DEI GIOCHI */
         /* ----------------------------------------------- */
         .info-bar {
             position: fixed;
@@ -294,9 +294,7 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.5);
         }
         
-        /* ----------------------------------------------- */
-        /* CORREZIONE PROBLEMA: ISTRUZIONI SEMPRE VISIBILI */
-        /* ----------------------------------------------- */
+        /* ISTRUZIONI SEMPRE VISIBILI */
         #instruction-panel {
             position: fixed;
             top: 0;
@@ -324,10 +322,8 @@
             max-width: 600px;
             margin: 1.5rem 0 2rem 0;
         }
-        /* ----------------------------------------------- */
         
         /* --- STILI GIOCHI (giochi.html) --- */
-
         .game-inner-container {
             display: flex;
             flex-direction: column;
@@ -361,7 +357,6 @@
             margin-top: 20px;
         }
         
-        /* *************** STILI AGGIUNTI PER LE CARTE *************** */
         .card {
             aspect-ratio: 1 / 1;
             background: var(--royal-blue); /* Il dorso della carta */
@@ -385,7 +380,6 @@
             border-color: var(--bright-red);
             transform: scale(1.05);
         }
-        /* ************************************************************* */
         
         /* REFLEX STYLES - AREA ALLARGATA */
         #game-reflex {
@@ -414,7 +408,127 @@
             display: none;
             box-shadow: 0 0 10px var(--bright-red);
         }
+        
+        /* ----------------------------------------------- */
+        /* CORREZIONE LAYOUT ITINERARIO (SLIDE 9) */
+        /* ----------------------------------------------- */
+        #slide-9 {
+             padding-top: 5rem;
+        }
+        
+        #slide-9 .slide-content {
+            justify-content: flex-start; 
+            align-items: flex-start; 
+            padding-top: 1rem;
+        }
+        
+        #slide-9 .slide-content h1, 
+        #slide-9 .slide-content p {
+            text-align: left;
+            max-width: 100%; 
+            margin-left: 0;
+            margin-right: 0;
+        }
 
+        .itinerary-timeline {
+            display: flex;
+            flex-direction: column;
+            width: 95%;
+            max-width: 800px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            padding: 20px 0;
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px 15px 15px 40px;
+            border-left: 5px solid var(--bright-red);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+            color: var(--pure-white);
+            text-align: left; /* Forza allineamento a sinistra */
+        }
+
+        .timeline-item p {
+            margin: 0;
+            font-size: 1.1rem;
+            text-align: left; /* Forza allineamento a sinistra */
+            color: var(--text-color-light);
+        }
+        
+        .timeline-meta {
+            font-weight: bold;
+            color: var(--accent-green);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-container {
+            flex-shrink: 0;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--pure-white);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px; 
+        }
+        
+        .scrolling-gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            margin-top: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bright-red) rgba(255,255,255,0.1);
+        }
+        
+        .place-card {
+            flex: 0 0 140px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .place-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--bright-red);
+        }
+
+        .place-card span {
+            font-size: 0.8rem;
+            padding: 5px;
+            text-align: center;
+            color: var(--pure-white);
+            line-height: 1.2;
+        }
+        
         /* --- MOBILE --- */
         @media (max-width: 768px) {
             .slide { padding: 0.5rem; }
@@ -433,15 +547,22 @@
             }
             #target-dot { width: 40px; height: 40px; }
             
-            /* Gallery Mobile Fix */
-            .scrolling-gallery { padding: 10px 5px; }
-            
             /* Controls Mobile Fix */
             .controls { right: 10px; bottom: 10px; gap: 0.5rem; }
             button { padding: 8px 16px; font-size: 0.9rem; }
             
             .info-bar { font-size: 0.9rem; padding: 8px 15px; }
             .game-back-btn { top: 10px; right: 10px; font-size: 0.8rem; padding: 6px 12px; }
+            
+            /* Mobile gallery/itinerary fixes */
+            #slide-9 .slide-content { padding-top: 0.5rem; }
+            .itinerary-timeline { width: 100%; padding: 0 10px; }
+            .timeline-item { flex-direction: column; border-left-width: 3px; padding: 10px 10px 10px 20px; }
+            .timeline-item h3 { font-size: 1.2rem; }
+            .timeline-item p { font-size: 1rem; }
+            .logo-container { width: 50px; height: 50px; margin: 10px auto 0; }
+            .place-card { flex: 0 0 120px; }
+            .place-card img { height: 80px; }
         }
     </style>
 </head>
@@ -465,8 +586,7 @@
         <div class="slide active" id="slide-0">
             <div class="central-light"></div>
             <div class="slide-content">
-                <h1 class="content-fade">Benvenuto</h1>
-                <p class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</p>
+                <h1 class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</p>
                 <h2 class="content-fade" style="transition-delay: 1.0s; color: var(--accent-green);">Cominciamo</h2>
                 <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">🚀 Inizia la Prova</button>
             </div>
@@ -586,8 +706,8 @@
             <div class="central-light"></div>
             <div class="decoration top-right">📅</div>
             
-            <div class="slide-content" style="justify-content: flex-start; padding-top: 1rem;">
-                <h1 class="content-fade" style="font-size: 3rem; margin-top: 1rem;">L'Itinerario (5-8 Maggio)</h1>
+            <div class="slide-content">
+                <h1 class="content-fade" style="font-size: 3rem;">L'Itinerario (5-8 Maggio)</h1>
                 <p class="content-fade" style="max-width: 90%; font-size: 1.1rem; margin-bottom: 0;">Tutti i dettagli fondamentali del viaggio, pronti per la partenza!</p>
                 
                 <div class="itinerary-timeline content-fade" style="transition-delay: 0.3s;">
@@ -681,7 +801,7 @@
     </div>
 
     <script>
-        // --- LOGICA GIOCHI (giochi.html) ---
+        // --- LOGICA GIOCHI ---
         
         const COLORS = {
             bg: '#00215F',      // royal-blue
@@ -752,6 +872,7 @@
             const attemptsLeft = MAX_ATTEMPTS - gameStatus[gameId].attempts;
             let attemptText = `Tentativi rimasti: <b>${attemptsLeft}/${MAX_ATTEMPTS}</b>`;
             if (attemptsLeft === 1) attemptText = `<b>ULTIMO TENTATIVO!</b>`;
+            if (attemptsLeft === 0) attemptText = `<b>TENTATIVI ESAURITI.</b> Se perdi, passerai oltre comunque.`;
             
             document.getElementById('inst-desc').innerHTML = `${data.desc}<br><br>${attemptText}`;
             instructionPanel.style.display = 'flex';
@@ -765,13 +886,11 @@
             closeInstructions();
             isGameRunning = true;
             
-            // Nasconde il contenuto "statico" della slide 
             document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
                 if (el.tagName !== 'BUTTON' || !el.classList.contains('magic-btn')) el.style.display = 'none';
                 else el.style.opacity = '0';
             });
             
-            // Mostra il contenitore del gioco e gli overlay
             document.getElementById(`game-${selectedGameId}`).style.display = 'flex';
             infoBar.style.display = 'flex'; 
             backBtn.style.display = 'block';
@@ -784,7 +903,6 @@
             if(selectedGameId === 'reflex') initReflex();
             if(selectedGameId === 'dodger') initDodger();
             
-            // Disabilita i controlli di scorrimento durante il gioco
             prevBtn.disabled = true;
             nextBtn.disabled = true;
         }
@@ -795,22 +913,18 @@
             isGameOver = true;
             isGameRunning = false;
             
-            // Nasconde il contenitore del gioco e gli overlay
             document.getElementById(`game-${selectedGameId}`).style.display = 'none';
             infoBar.style.display = 'none'; 
             backBtn.style.display = 'none'; 
             
-            // Ripristina il contenuto "statico" della slide
             document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
                 el.style.display = 'block';
                 el.style.opacity = '1';
             });
             
-            // Riabilita i controlli di scorrimento
             updateControls();
         }
 
-        // Modifica per gestire i tentativi e il blocco
         function endGame(message, isVictory) {
             if(isGameOver) return; 
             isGameOver = true;
@@ -822,10 +936,8 @@
             let finalMessage = message;
 
             if (!isVictory) {
-                // Tentativo fallito
                 status.attempts++;
                 if (status.attempts >= MAX_ATTEMPTS) {
-                    // Sblocca per "bontà"
                     status.won = true;
                     finalMessage = `A Natale siamo tutti più buoni... Passi il turno! (Hai esaurito i ${MAX_ATTEMPTS} tentativi)`;
                     isVictory = true; 
@@ -833,7 +945,6 @@
                     finalMessage += ` - Ti restano ${MAX_ATTEMPTS - status.attempts} tentativi.`;
                 }
             } else {
-                // Vittoria Reale
                 status.won = true;
                 finalMessage = `🏆 COMPLIMENTI! ${message}`;
             }
@@ -841,10 +952,6 @@
             setTimeout(() => {
                 alert(finalMessage);
                 stopGame();
-                if (status.won) {
-                    // Se il gioco è stato vinto (realmente o per bontà), aggiorna i controlli
-                    updateControls(); 
-                }
             }, 100);
         }
         
@@ -858,13 +965,10 @@
             isGameRunning = false;
         }
 
-        // --------------------------------------------------------
-        // 1. FLAPPY CUBE (omesso per brevità, ma presente nel codice completo)
-        // --------------------------------------------------------
+        // 1. FLAPPY CUBE
         function initFlappy() {
             const canvas = document.getElementById('canvas-flappy');
             const ctx = canvas.getContext('2d');
-            
             const containerWidth = canvas.parentElement.clientWidth;
             const containerHeight = canvas.parentElement.clientHeight;
             const maxWidth = Math.min(containerWidth * 0.9, 800);
@@ -954,19 +1058,18 @@
             let frames = 0;
             loop();
         }
-        // --------------------------------------------------------
         
-        // --------------------------------------------------------
-        // 2. MEMORY EMOJI
-        // --------------------------------------------------------
+        // 2. MEMORY EMOJI (Corretto per il doppio flip)
         function initMemory() {
             const grid = document.getElementById('memory-grid');
             grid.innerHTML = '';
-            const emojis = ['🐶','🐶','🐱','🐱','🐭','🐭','🐹','🐹','🦊','🦊','🐻','🐻','🐼','🐼','🐨','🐨'];
+            // Ho aggiunto un emoji con un font più "sicuro" per la visualizzazione
+            const emojis = ['🍇','🍇','🍍','🍍','🥝','🥝','🍉','🍉','🍎','🍎','🍓','🍓','🍒','🍒','🍋','🍋'];
             emojis.sort(() => 0.5 - Math.random());
             
             let flippedCards = [];
             let matched = 0;
+            let isChecking = false; // Flag per prevenire interazioni multiple
             timeLeft = 60;
             currentScore = 0;
             updateUI(0, timeLeft);
@@ -984,29 +1087,47 @@
                 
                 const flipCard = (e) => {
                     e.preventDefault();
-                    if(isGameOver) return;
+                    if(isGameOver || isChecking) return;
                     if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
+                        
                         card.classList.add('flipped');
                         card.innerText = emoji;
                         flippedCards.push(card);
+                        
                         if(flippedCards.length === 2) {
+                            isChecking = true; // Blocca ulteriori click
+                            
                             if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
-                                flippedCards = [];
                                 matched++;
                                 updateUI(matched, timeLeft);
+                                
+                                // Rimuovi il listener e disabilita la carta in modo permanente (stilisticamente)
+                                flippedCards.forEach(c => { 
+                                    c.onclick = null;
+                                    c.ontouchstart = null;
+                                });
+
+                                flippedCards = [];
+                                isChecking = false;
+                                
                                 if(matched === 8) endGame("Memoria perfetta!", true);
                             } else {
                                 setTimeout(() => {
                                     if(!isGameOver) {
-                                        flippedCards.forEach(c => { c.classList.remove('flipped'); c.innerText = ''; });
+                                        flippedCards.forEach(c => { 
+                                            c.classList.remove('flipped'); 
+                                            c.innerText = ''; 
+                                        });
                                         flippedCards = [];
                                     }
-                                }, 600);
+                                    isChecking = false; // Riabilita i click dopo il flip-back
+                                }, 800); 
                             }
                         }
                     }
                 };
 
+                // Uso gli event listener per gestire click (desktop) e touch (mobile) in modo pulito
                 card.ontouchstart = flipCard;
                 card.onclick = flipCard;
                 
@@ -1014,23 +1135,7 @@
             });
         }
 
-        // --------------------------------------------------------
-        // 3. REFLEX DOT (omesso per brevità, ma presente nel codice completo)
-        // --------------------------------------------------------
-        function initReflex() {
-            timeLeft = 20;
-            currentScore = 0;
-            updateUI(0, timeLeft);
-            moveDot();
-            timerIntervalId = setInterval(() => {
-                timeLeft--;
-                updateUI(currentScore, timeLeft);
-                if(timeLeft <= 0) {
-                    if(currentScore >= 25) endGame("Riflessi Ninja!", true);
-                    else endGame("Lento... Obiettivo non raggiunto (" + currentScore + "/25)", false);
-                }
-            }, 1000);
-        }
+        // 3. REFLEX DOT
         window.moveDot = function() {
             if(isGameOver) return;
             const area = document.getElementById('reflex-area');
@@ -1053,11 +1158,25 @@
             moveDot();
             if(currentScore >= 25) endGame("Riflessi Ninja!", true);
         }
-        document.getElementById('target-dot').onclick = window.hitTarget;
+        function initReflex() {
+            document.getElementById('target-dot').onclick = window.hitTarget;
+            document.getElementById('target-dot').ontouchstart = window.hitTarget;
 
-        // --------------------------------------------------------
-        // 4. SCHIVA TUTTO (omesso per brevità, ma presente nel codice completo)
-        // --------------------------------------------------------
+            timeLeft = 20;
+            currentScore = 0;
+            updateUI(0, timeLeft);
+            moveDot();
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateUI(currentScore, timeLeft);
+                if(timeLeft <= 0) {
+                    if(currentScore >= 25) endGame("Riflessi Ninja!", true);
+                    else endGame("Lento... Obiettivo non raggiunto (" + currentScore + "/25)", false);
+                }
+            }, 1000);
+        }
+
+        // 4. SCHIVA TUTTO
         function initDodger() {
             const canvas = document.getElementById('canvas-dodger');
             const ctx = canvas.getContext('2d');
@@ -1124,8 +1243,7 @@
             loop();
         }
 
-
-        // --- LOGICA SLIDE (codice.html) ---
+        // --- LOGICA SLIDE ---
         let currentSlide = 0;
         const slides = document.querySelectorAll('.slide');
         const totalSlides = slides.length; 
@@ -1161,7 +1279,7 @@
                     const attemptsLeft = MAX_ATTEMPTS - status.attempts;
                     
                     if (attemptsLeft === 0) {
-                        nextBtn.innerText = "Sbloccato (BUG)";
+                        nextBtn.innerText = "Sbloccato (Ultima chance usata)";
                         nextDisabled = false;
                     } else if (attemptsLeft === 1) {
                         nextBtn.innerText = `Bloccato - Ultimo Tentativo!`;
@@ -1194,11 +1312,11 @@
         function changeSlide(direction) {
             if(isGameRunning) return;
             
-            if (direction > 0 && nextBtn.disabled) {
+            if (direction > 0 && nextBtn.disabled && gameSlideMap[currentSlide]) {
                 const gameId = gameSlideMap[currentSlide];
-                if (gameId && !gameStatus[gameId].won) {
+                if (!gameStatus[gameId].won && (MAX_ATTEMPTS - gameStatus[gameId].attempts) > 0) {
                     const attemptsLeft = MAX_ATTEMPTS - gameStatus[gameId].attempts;
-                    alert(`Devi prima completare la sfida (Tentativi: ${gameStatus[gameId].attempts}/${MAX_ATTEMPTS}).`);
+                    alert(`Devi prima completare la sfida (Tentativi: ${gameStatus[gameId].attempts}/${MAX_ATTEMPTS} usati).`);
                 }
                 return;
             }
@@ -1206,7 +1324,7 @@
             if (slides[currentSlide]) {
                 slides[currentSlide].classList.remove('active');
                 if (gameSlideMap[currentSlide]) {
-                    resetGame();
+                    resetGame(); // Assicura che i giochi non continuino in background
                 }
             }
             
