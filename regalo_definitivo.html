@@ -17,7 +17,6 @@
             --accent-green: #00A65A;
         }
 
-        /* --- STILE GLOBALE --- */
         body, html {
             margin: 0;
             padding: 0;
@@ -26,7 +25,6 @@
             background-color: var(--dark-background);
             color: var(--text-color-light);
             overflow: hidden;
-            touch-action: none; 
         }
 
         /* SFONDO ANIMATO */
@@ -73,14 +71,13 @@
             opacity: 0;
             transition: opacity 1.0s ease-in-out, transform 1.0s ease-in-out;
             transform: scale(0.95);
-            padding: 1rem;
+            padding: 2rem;
             box-sizing: border-box;
             background: rgba(0, 0, 0, 0.4); 
             backdrop-filter: blur(5px);
             z-index: 0;
             pointer-events: none; 
             overflow-y: auto; 
-            touch-action: pan-y; /* Permette lo scorrimento verticale della slide */
         }
         
         .slide.active {
@@ -102,27 +99,27 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            max-width: 95%;
+            max-width: 90%;
             width: 100%;
-            height: 90%; 
-            padding: 2rem 1rem;
-            box-sizing: border-box;
-            /* Correzione precedente per pulsante coperto */
-            padding-bottom: 120px; 
         }
 
-        /* DECORAZIONI FISSE */
-        .decoration {
+        .central-light {
             position: absolute;
-            font-size: 5rem;
-            opacity: 0.3;
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--pure-white) 0%, transparent 70%); 
             pointer-events: none;
             z-index: -1;
-            transition: all 0.5s;
+            opacity: 0.08;
+            animation: pulse-light 6s infinite ease-in-out;
         }
-        .top-right { top: 30px; right: 30px; }
-        .bottom-left { bottom: 30px; left: 30px; }
 
+        @keyframes pulse-light {
+            0% { transform: scale(1); opacity: 0.08; }
+            50% { transform: scale(1.1); opacity: 0.15; }
+            100% { transform: scale(1); opacity: 0.08; }
+        }
 
         h1 {
             font-family: 'Playfair Display', serif;
@@ -131,8 +128,6 @@
             color: var(--pure-white); 
             text-align: center;
             text-shadow: 0 0 15px rgba(255,255,255,0.7), 0 0 25px var(--bright-red); 
-            word-wrap: break-word; /* Forza l'andata a capo */
-            white-space: normal; /* Permette l'andata a capo normale */
         }
 
         h2 {
@@ -155,11 +150,11 @@
         p {
             font-size: 1.3rem;
             line-height: 1.6;
-            max-width: 900px;
+            max-width: 800px;
             text-align: center;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
         }
-        
+
         .date-box {
             border: 4px solid var(--pure-white); 
             padding: 1.5rem 4rem;
@@ -174,11 +169,20 @@
             text-shadow: 3px 3px 5px var(--royal-blue);
             font-weight: 700;
         }
+        
+        @keyframes glowing-border {
+            from {
+                box-shadow: 0 0 15px var(--pure-white), inset 0 0 8px var(--bright-red);
+            }
+            to {
+                box-shadow: 0 0 45px var(--pure-white), inset 0 0 25px var(--bright-red);
+            }
+        }
 
         .clue-list {
             list-style: none;
             padding: 0;
-            max-width: 900px;
+            max-width: 800px;
             text-align: left;
         }
 
@@ -190,7 +194,21 @@
             border-bottom: 1px dashed rgba(255,255,255,0.4);
             padding-bottom: 8px;
         }
+
+        .clue-list li::before {
+            content: '🔑';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            animation: bounce-key 1.5s infinite;
+        }
         
+        @keyframes bounce-key {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px) scale(1.1); }
+            100% { transform: translateY(0); }
+        }
+
         .reveal-box {
             background: var(--bright-red); 
             color: var(--pure-white);
@@ -200,21 +218,172 @@
             font-weight: 900;
             font-family: 'Playfair Display', serif;
             box-shadow: 0 30px 80px rgba(0,0,0,1.0), 0 0 50px var(--pure-white); 
+            animation: pulse-reveal 1s infinite, popout 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
             transform: scale(1.1);
             text-shadow: 7px 7px var(--royal-blue), 0 0 15px rgba(255,255,255,0.8);
             border: 6px solid var(--pure-white); 
         }
 
-        /* --- CONTROLS (PULSANTI AVANTI/INDIETRO) --- */
+        @keyframes pulse-reveal {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes popout {
+            0% { transform: scale(0.1) rotate(-10deg); opacity: 0; }
+            80% { transform: scale(1.2) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1.1) rotate(0deg); }
+        }
+
+        /* --- ITINERARIO CON GALLERIA (SLIDE 9) --- */
+        #slide-9 {
+             padding-top: 5rem;
+             justify-content: flex-start;
+        }
+        
+        .itinerary-timeline {
+            display: flex;
+            flex-direction: column;
+            width: 95%;
+            max-width: 800px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            padding: 20px 0;
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px 15px 15px 40px;
+            border-left: 5px solid var(--bright-red);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--pure-white);
+        }
+
+        .timeline-item-content {
+            flex-grow: 1;
+            width: 100%; 
+            overflow: hidden; 
+        }
+        
+        .timeline-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+            color: var(--pure-white);
+        }
+
+        .timeline-item p {
+            margin: 0;
+            font-size: 1.1rem;
+            text-align: left;
+            color: var(--text-color-light);
+        }
+        
+        .timeline-meta {
+            font-weight: bold;
+            color: var(--accent-green);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-container {
+            flex-shrink: 0;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--pure-white);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px; 
+        }
+
+        /* --- STILE GALLERIA A SCORRIMENTO ORIZZONTALE --- */
+        .scrolling-gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            margin-top: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bright-red) rgba(255,255,255,0.1);
+        }
+        
+        .scrolling-gallery::-webkit-scrollbar {
+            height: 8px;
+        }
+        .scrolling-gallery::-webkit-scrollbar-thumb {
+            background-color: var(--bright-red);
+            border-radius: 4px;
+        }
+        
+        .place-card {
+            flex: 0 0 140px; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .place-card:hover {
+            transform: scale(1.05);
+            background: rgba(0,0,0,0.5);
+        }
+
+        .place-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--bright-red);
+        }
+
+        .place-card span {
+            font-size: 0.8rem;
+            padding: 5px;
+            text-align: center;
+            color: var(--pure-white);
+            line-height: 1.2;
+        }
+
+        .gallery-label {
+            font-size: 0.9rem;
+            color: var(--pure-white);
+            margin-top: 10px;
+            font-style: italic;
+            opacity: 0.8;
+            text-align: left; 
+        }
+        
+        /* --- CONTROLS --- */
         .controls {
-            position: fixed; 
+            position: absolute;
             bottom: 30px;
             right: 30px;
             z-index: 100;
             display: flex;
             gap: 1.5rem;
         }
-        
+
         button {
             background: var(--royal-blue);
             border: 2px solid var(--pure-white);
@@ -266,7 +435,7 @@
             50% { transform: translateY(-10px); }
             100% { transform: translateY(0px); }
         }
-        
+
         .progress-container {
             position: absolute;
             bottom: 0;
@@ -284,427 +453,162 @@
             transition: width 0.5s ease;
             box-shadow: 0 0 15px var(--pure-white);
         }
-        
-        /* --- STILI GIOCHI --- */
-        .game-inner-container {
+
+        /* --- STILE MINIGIOCHI EMBEDDED --- */
+        .game-container-embedded {
             width: 90%;
-            height: 85%; 
-            max-width: 800px;
-            max-height: 600px; 
-            background-color: var(--royal-blue);
+            height: 70%;
+            max-width: 600px; 
+            max-height: 400px;
+            position: relative;
+            background: var(--dark-background);
             border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            box-shadow: 0 0 15px rgba(0,0,0,0.7);
             margin-top: 20px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            border: 3px solid var(--pure-white);
+        }
+        
+        .game-info-embedded {
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
         }
 
-        /* FLAPPY DODGER CANVASES */
+        /* Canvas/Grid Styles for embedded games */
         #canvas-flappy, #canvas-dodger {
+            background-color: var(--royal-blue); 
+            display: block; 
             width: 100%;
             height: 100%;
-            display: block;
-            border-radius: 10px;
-            touch-action: none;
+            border-radius: 0;
+            border: none;
+            box-shadow: none;
+            cursor: pointer;
         }
 
-        /* MEMORY GRID */
         #memory-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            grid-gap: 10px;
-            padding: 10px;
-            max-width: 450px; 
-            width: 100%;
-            aspect-ratio: 1 / 1; 
+            gap: 5px;
+            width: 95%;
+            aspect-ratio: 1; 
+            max-width: 350px;
         }
-
         .card {
-            background-color: var(--bright-red);
-            border: 3px solid var(--pure-white);
+            background-color: var(--royal-blue);
+            border: 1px solid var(--pure-white);
+            aspect-ratio: 1;
+            border-radius: 4px;
             display: flex;
-            justify-content: center;
             align-items: center;
-            font-size: 3.5rem;
-            border-radius: 5px;
+            justify-content: center;
+            font-size: 1.5rem;
             cursor: pointer;
-            user-select: none;
-            transition: all 0.3s;
-            color: transparent; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.5);
-            height: 100%; 
-            box-sizing: border-box; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: background-color 0.2s;
         }
-        
-        .card.flipped {
-            background-color: var(--pure-white);
-            color: var(--dark-background);
-            transform: rotateY(180deg);
-        }
-        .card.matched {
-            background-color: var(--accent-green);
-            border-color: gold;
-            color: white;
-            animation: match-flash 0.5s;
-        }
-        
-        /* REFLEX DOT */
-        #reflex-area {
-            width: 100%;
-            height: 90%;
-            position: relative;
-            overflow: hidden;
-            cursor: crosshair;
-        }
+        .card.flipped { background-color: var(--pure-white); color: #000; border-color: var(--accent-green); }
 
+        #reflex-area {
+            width: 90%; height: 90%;
+            background: var(--royal-blue);
+            position: relative;
+            border-radius: 8px;
+            border: 1px solid var(--pure-white);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+            overflow: hidden;
+            touch-action: none;
+        }
         #target-dot {
-            width: 60px;
-            height: 60px;
+            width: 40px; height: 40px;
             background-color: var(--bright-red);
+            border: 2px solid var(--pure-white);
             border-radius: 50%;
             position: absolute;
             display: none;
-            transition: all 0.2s ease-out;
-            box-shadow: 0 0 20px var(--bright-red), 0 0 30px var(--pure-white);
+            box-shadow: 0 0 8px var(--bright-red);
+            cursor: pointer;
         }
         
-        /* OVERLAY ISTRUZIONI */
-        #instruction-panel {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 200;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-        }
-
-        #instruction-panel h2 { color: var(--accent-green); font-size: 3rem; }
-        
-        .info-bar {
-            position: fixed;
-            top: 10px;
-            left: 10px;
-            right: 10px;
-            display: flex;
-            justify-content: space-between;
-            background: rgba(0, 0, 0, 0.5);
-            padding: 10px 20px;
-            border-radius: 5px;
-            z-index: 100;
-        }
-        .score-txt, .timer-txt { font-weight: bold; font-size: 1.1rem; }
-        
-        /* Posizione pulsante ESCI */
-        .game-back-btn {
-            position: fixed;
-            bottom: 80px; 
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            background: var(--bright-red);
-            border-color: var(--pure-white);
-            padding: 8px 20px;
-            font-size: 1rem;
-            transition: all 0.3s;
-        }
-
-        /* --- STILI ITINERARIO (SLIDE 9) - RIPRISTINO VECCHIA TIMELINE --- */
-        .itinerary-timeline {
-            margin: 30px auto; /* Mantengo il margine superiore per non nascondere il primo blocco */
-            max-width: 800px;
-            width: 90%;
-            padding: 0 20px;
-            position: relative;
-        }
-
-        /* Linea verticale centrale */
-        .itinerary-timeline::before {
-            content: '';
+        .game-status-bar {
             position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 50%;
-            width: 4px;
-            background-color: rgba(255, 255, 255, 0.2);
-            transform: translateX(-50%);
-        }
-
-        .timeline-item {
-            padding: 10px 0;
-            position: relative;
-            width: 50%;
-        }
-
-        .timeline-item:nth-child(odd) {
-            float: left;
-            clear: both;
-            padding-right: 40px;
+            top: 10px; right: 10px;
             text-align: right;
-        }
-
-        .timeline-item:nth-child(even) {
-            float: right;
-            clear: both;
-            padding-left: 40px;
-            text-align: left;
-        }
-        
-        .timeline-item-content {
-            padding: 15px;
-            border-radius: 8px;
-            /* Ritorno al background semi-trasparente originale per lo stile vintage */
-            background: rgba(0, 33, 95, 0.6); 
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-        }
-
-        /* Cerchio decorativo centrale */
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            top: 25px;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background-color: var(--bright-red);
-            border: 4px solid var(--pure-white);
-            z-index: 1;
-            box-shadow: 0 0 10px rgba(255,255,255,0.7);
-        }
-
-        .timeline-item:nth-child(odd)::before {
-            right: -13px;
-        }
-
-        .timeline-item:nth-child(even)::before {
-            left: -14px;
-        }
-
-        .timeline-meta {
-            font-size: 0.9rem;
-            color: var(--accent-green);
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        
-        .timeline-item h3 {
-            margin-top: 0;
-            margin-bottom: 5px;
-            font-size: 1.4rem;
-        }
-
-        .timeline-item p {
-            margin: 0;
-            font-size: 1rem;
-        }
-        
-        .logo-container {
-            /* Rimosso, non più utilizzato nella timeline a linea verticale */
-            display: none; 
-        }
-
-        /* Galleria Luoghi */
-        .gallery-label {
-            text-align: center;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            z-index: 10;
+            background: rgba(0,0,0,0.5);
+            padding: 5px 10px;
+            border-radius: 5px;
             font-size: 1.1rem;
-            font-weight: bold;
-            display: block; 
-            width: 100%;
         }
+        .game-status-bar .score-txt { font-weight: bold; color: var(--pure-white); margin-bottom: 2px; }
+        .game-status-bar .timer-txt { font-size: 0.9rem; color: var(--bright-red); }
 
-        .scrolling-gallery {
-            display: flex;
-            overflow-x: auto;
-            gap: 10px;
-            padding: 10px 0;
-            margin-top: 10px;
-            width: 100%;
-            box-sizing: border-box;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            border-top: 1px dashed rgba(255,255,255,0.2);
-            padding-top: 20px;
-            
-            touch-action: pan-x; /* FIX CRITICO MANTENUTO: Scorrimento orizzontale interno */
-        }
-
-        .scrolling-gallery::-webkit-scrollbar {
-            height: 8px;
-        }
-        .scrolling-gallery::-webkit-scrollbar-thumb {
-            background: var(--bright-red);
-            border-radius: 10px;
-        }
-
-        .place-card {
-            flex: 0 0 150px;
-            background: var(--royal-blue);
-            border-radius: 8px;
-            overflow: hidden;
-            text-align: center;
-            padding-bottom: 5px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
-            scroll-snap-align: start;
-            transition: transform 0.3s;
-        }
-
-        .place-card img {
-            width: 100%;
-            height: 100px;
-            object-fit: cover;
-            display: block;
-        }
-        .place-card span {
-            font-size: 0.8rem;
-            display: block;
-            padding: 5px 0;
-            color: var(--text-color-light);
-        }
-        
-        .gallery-container {
-            width: 100%;
-            box-sizing: border-box;
-            float: left; /* Forza la galleria a occupare la larghezza completa sotto la timeline */
-            clear: both;
-            padding: 20px 0;
-        }
-
-
-        /* --- MOBILE (Ottimizzazione) --- */
+        /* --- MOBILE --- */
         @media (max-width: 768px) {
-            .slide { 
-                padding: 0.5rem; 
-            }
-            
-            .slide-content {
-                padding-top: 30px;
-                padding-bottom: 80px; 
-                height: 95%; 
-            }
-
-            h1 { 
-                font-size: 2.5rem; /* Base size mobile */
-                margin-bottom: 0.5rem;
-            } 
-            
-            /* CORREZIONE 1: Font size minimo più generoso per "Il Regno del Paradosso" */
-            @media (max-width: 450px) {
-                h1 {
-                    font-size: 2.1rem; /* Dimensione sicura per evitare che sparisca */
-                }
-            }
-            
-            h2 { font-size: 1.6rem; margin-bottom: 1rem; } 
-            h3 { font-size: 1.4rem; margin-top: 1rem; }
-            p { font-size: 1rem; margin-bottom: 1rem; }
-            .clue-list li { font-size: 1.1rem; } 
-
+            .slide { padding: 1rem 0.5rem; }
+            h1 { font-size: 3rem; } 
+            h2 { font-size: 1.8rem; } 
+            h3 { font-size: 1.5rem; }
+            p { font-size: 1.05rem; }
             .reveal-box { font-size: 3rem; padding: 1.5rem 2.5rem; }
-            .date-box { font-size: 1.8rem; padding: 0.8rem 1.5rem; margin: 1.5rem 0; }
+            #slide-8 h1 { font-size: 3.5rem; }
+            .date-box { font-size: 2rem; padding: 1rem 2rem; margin: 2rem 0; }
+            
+            .itinerary-timeline { width: 100%; padding: 0 10px; }
+            .timeline-item { flex-direction: column; border-left-width: 3px; padding: 10px 10px 10px 20px; }
+            .timeline-item h3 { font-size: 1.2rem; }
+            .timeline-item p { font-size: 1rem; }
+            .logo-container { width: 50px; height: 50px; margin: 10px auto 0; }
             
             .controls { right: 10px; bottom: 10px; gap: 0.5rem; }
             button { padding: 8px 16px; font-size: 0.9rem; }
             
-            .game-back-btn {
-                bottom: 60px; /* Adattamento per mobile */
-                padding: 5px 15px;
-                font-size: 0.9rem;
-            }
+            .place-card { flex: 0 0 120px; }
+            .place-card img { height: 80px; }
 
-            /* OTTIMIZZAZIONE SLIDE 9 MOBILE: Timeline a colonna singola */
-            .itinerary-timeline {
-                padding: 0 10px;
-                width: 100%; /* Occupa tutta la larghezza */
-            }
-
-            /* Rimuovi la linea centrale e sposta tutto a sinistra */
-            .itinerary-timeline::before {
-                left: 10px; /* Sposta la linea a sinistra */
-            }
-            
-            .timeline-item, .timeline-item:nth-child(odd), .timeline-item:nth-child(even) {
-                width: 100%;
-                float: none;
-                clear: both;
-                padding-right: 0;
-                padding-left: 30px; /* Spazio per la linea a sinistra */
-                text-align: left;
-            }
-
-            .timeline-item:nth-child(odd)::before, .timeline-item:nth-child(even)::before {
-                left: 0px; /* Allinea il cerchio sulla linea */
-                right: auto;
-            }
-            
-            .timeline-item-content {
-                padding: 10px;
-            }
-            
-            .gallery-container {
-                padding: 10px 0;
-            }
-            .place-card {
-                flex: 0 0 120px;
-            }
-            .place-card img {
-                height: 80px;
-            }
+            .game-status-bar { font-size: 0.9rem; top: 5px; right: 5px; }
         }
     </style>
 </head>
 <body>
 
-    <div id="instruction-panel" style="display:none;"> 
-        <h2 id="inst-title">Titolo Gioco</h2>
-        <p id="inst-desc">Descrizione regole...</p>
-        <button class="btn btn-start" onclick="launchGame()">🚀 GIOCA ORA</button>
-        <button class="btn btn-cancel" onclick="closeInstructions()">Annulla</button>
-    </div>
-    
-    <div class="info-bar" id="info-bar" style="display:none;">
-        <div id="score-display" class="score-txt">Punti: 0</div>
-        <div id="timer-display" class="timer-txt">Tempo: 0s</div>
-    </div>
-    
-    <button class="game-back-btn" id="game-back-btn" onclick="stopGame()" style="display:none;">Esci dal Gioco</button>
     <div class="slide-container" id="slideContainer">
         
         <div class="slide active" id="slide-0">
             <div class="central-light"></div>
             <div class="slide-content">
-                <h1 class="content-fade">Benvenuto</h1>
-                <p class="content-fade" style="transition-delay: 0.5s;">Prima di scoprire il tuo regalo dovrai superare delle sfide...</p>
-                <h2 class="content-fade" style="transition-delay: 1.0s; color: var(--accent-green);">Cominciamo</h2>
-                <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">🚀 Inizia la Prova</button>
+                <h1 class="content-fade">Benvenuta nell'Enigma di Natale</h1>
+                <p class="content-fade" style="transition-delay: 0.5s;">Il tuo regalo ti aspetta. Per svelare completamente la destinazione del tuo viaggio e l'itinerario, dovrai superare una serie di **sfide intermedie**.</p>
+                <p class="content-fade" style="transition-delay: 0.9s;">Ogni vittoria sbloccherà l'indizio successivo, avvicinandoti alla meta finale.</p>
+                <button class="magic-btn content-fade" style="transition-delay: 1.2s;" onclick="changeSlide(1)">🚀 Inizia l'Avventura</button>
             </div>
         </div>
-        
-        <div class="slide" id="slide-1">
-            <div class="central-light"></div>
-            <div class="slide-content" id="game-flappy-content">
-                <h1 class="content-fade">🐦 Flappy Cube</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">Tocca lo schermo per volare. Supera almeno <b>5 ostacoli</b> in 20 secondi.</p>
-                <button class="magic-btn content-fade" style="transition-delay: 0.8s;" onclick="prepareGame('flappy')">Inizia Sfida</button>
-                <div id="game-flappy" class="game-inner-container" style="display:none; transition-delay: 1.2s;">
+
+        <div class="slide" id="slide-game-1">
+            <div class="game-status-bar">
+                <div class="score-txt" id="score-display-1">Punti: 0</div>
+                <div class="timer-txt" id="timer-display-1">Tempo: 20s</div>
+            </div>
+            <div class="slide-content" style="max-width: 95%;" onload="initGame(1, 'flappy')">
+                <h2 class="content-fade" style="margin-bottom: 0.5rem;">🐦 1. Flappy Cube</h2>
+                <p class="content-fade" style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 0;">Obiettivo: Supera 5 ostacoli in 20 secondi.</p>
+                <div class="game-container-embedded" id="embedded-game-1">
                     <canvas id="canvas-flappy"></canvas>
                 </div>
+                <div id="game-info-1" class="game-info-embedded content-fade" style="margin-top: 15px;">
+                    <p id="game-status-1" style="margin: 0; font-weight: bold; font-size: 1.2rem; color: var(--bright-red);">Tocca per iniziare/volare!</p>
+                </div>
+                <button id="next-from-game-1" class="magic-btn content-fade" disabled style="display: none; background: var(--accent-green); border-color: var(--pure-white);" onclick="changeSlide(1)">Indizio Sbloccato! Avanti >></button>
             </div>
         </div>
 
         <div class="slide" id="slide-2">
             <div class="central-light"></div>
-            <div class="decoration top-right" style="opacity: 0.1; font-size: 8rem;">🎁</div>
-            <div class="decoration bottom-left" style="opacity: 0.1; font-size: 8rem;">✨</div>
             <div class="slide-content">
                 <h1 class="content-fade">Il Sigillo</h1>
                 <p class="content-fade" style="transition-delay: 0.5s;">Questo è un dono non-materiale che richiede una sola cosa da te: <strong>l’attesa</strong>.</p>
@@ -716,25 +620,29 @@
             </div>
         </div>
         
-        <div class="slide" id="slide-3">
-            <div class="central-light"></div>
-            <div class="slide-content" id="game-memory-content">
-                <h1 class="content-fade">🧠 Memory Emoji</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">Trova tutte le <b>8 coppie</b> prima che scada il timer di 60 secondi.</p>
-                <button class="magic-btn content-fade" style="transition-delay: 0.8s;" onclick="prepareGame('memory')">Inizia Sfida</button>
-                <div id="game-memory" class="game-inner-container" style="display:none; position:relative;">
+        <div class="slide" id="slide-game-2">
+            <div class="game-status-bar">
+                <div class="score-txt" id="score-display-2">Coppie: 0/8</div>
+                <div class="timer-txt" id="timer-display-2">Tempo: 60s</div>
+            </div>
+            <div class="slide-content" style="max-width: 95%;">
+                <h2 class="content-fade" style="margin-bottom: 0.5rem;">🧠 2. Memory Emoji</h2>
+                <p class="content-fade" style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 0;">Obiettivo: Trova tutte le 8 coppie in 60 secondi.</p>
+                <div class="game-container-embedded" id="embedded-game-2">
                     <div id="memory-grid"></div>
                 </div>
+                <div id="game-info-2" class="game-info-embedded content-fade" style="margin-top: 15px;">
+                    <p id="game-status-2" style="margin: 0; font-weight: bold; font-size: 1.2rem; color: var(--bright-red);">Tocca per iniziare!</p>
+                </div>
+                <button id="next-from-game-2" class="magic-btn content-fade" disabled style="display: none; background: var(--accent-green); border-color: var(--pure-white);" onclick="changeSlide(1)">Indizio Sbloccato! Avanti >></button>
             </div>
         </div>
 
         <div class="slide" id="slide-4">
             <div class="central-light"></div>
-            <div class="decoration top-right">👑</div>
-            <div class="decoration bottom-left">🪞</div>
             <div class="slide-content">
                 <h1 class="content-fade">Il Regno del Paradosso</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">Ci receremo in una terra d’acqua e di nebbia, dove ogni logica terrestre è capovolta.</p>
+                <p class="content-fade" style="transition-delay: 0.4s;">Ci recheremo in una terra d’acqua e di nebbia, dove ogni logica terrestre è capovolta.</p>
                 <h3 class="content-fade" style="transition-delay: 0.8s;">Il Gioco di Specchi 🚗</h3>
                 <p class="content-fade" style="transition-delay: 1.0s;">Qui, il flusso dei veicoli è un riflesso ribaltato della tua quotidianità. Per muoverti in sicurezza, rinuncia alle tue certezze sul come si attraversa.</p>
                 <h3 class="content-fade" style="transition-delay: 1.4s;">Il Treno Nascosto 🚂</h3>
@@ -744,22 +652,28 @@
             </div>
         </div>
 
-        <div class="slide" id="slide-5">
-            <div class="central-light"></div>
-            <div class="slide-content" id="game-reflex-content">
-                <h1 class="content-fade">⚡ Reflex Dot</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">Tocca il pallino rosso non appena appare. Colpisci <b>25 pallini</b> in 20 secondi.</p>
-                <button class="magic-btn content-fade" style="transition-delay: 0.8s;" onclick="prepareGame('reflex')">Inizia Sfida</button>
-                <div id="game-reflex" class="game-inner-container" style="display:none; position:relative; overflow:hidden;">
-                    <div id="reflex-area"><div id="target-dot" ontouchstart="hitTarget(event)"></div></div>
+        <div class="slide" id="slide-game-3">
+            <div class="game-status-bar">
+                <div class="score-txt" id="score-display-3">Colpi: 0</div>
+                <div class="timer-txt" id="timer-display-3">Tempo: 20s</div>
+            </div>
+            <div class="slide-content" style="max-width: 95%;">
+                <h2 class="content-fade" style="margin-bottom: 0.5rem;">⚡ 3. Reflex Dot</h2>
+                <p class="content-fade" style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 0;">Obiettivo: Colpisci 25 pallini rossi in 20 secondi.</p>
+                <div class="game-container-embedded" id="embedded-game-3">
+                    <div id="reflex-area">
+                        <div id="target-dot" ontouchstart="hitTarget(event)"></div>
+                    </div>
                 </div>
+                <div id="game-info-3" class="game-info-embedded content-fade" style="margin-top: 15px;">
+                    <p id="game-status-3" style="margin: 0; font-weight: bold; font-size: 1.2rem; color: var(--bright-red);">Tocca per iniziare!</p>
+                </div>
+                <button id="next-from-game-3" class="magic-btn content-fade" disabled style="display: none; background: var(--accent-green); border-color: var(--pure-white);" onclick="changeSlide(1)">Indizio Sbloccato! Avanti >></button>
             </div>
         </div>
 
         <div class="slide" id="slide-6">
             <div class="central-light"></div>
-            <div class="decoration top-right">⏳</div>
-            <div class="decoration bottom-left">🗝️</div>
             <div class="slide-content">
                 <h1 class="content-fade">Gli Incontri Segreti</h1>
                 <p class="content-fade" style="transition-delay: 0.4s;">La nostra destinazione è un palcoscenico di storia. Ecco i codici da decifrare:</p>
@@ -772,16 +686,22 @@
                 </ul>
             </div>
         </div>
-        
-        <div class="slide" id="slide-7">
-            <div class="central-light"></div>
-            <div class="slide-content" id="game-dodger-content">
-                <h1 class="content-fade">🏎️ Schiva Tutto</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">Tocca a DESTRA o SINISTRA per muoverti. Raggiungi <b>25 punti</b> per vincere.</p>
-                <button class="magic-btn content-fade" style="transition-delay: 0.8s;" onclick="prepareGame('dodger')">Inizia Sfida</button>
-                <div id="game-dodger" class="game-inner-container" style="display:none;">
+
+        <div class="slide" id="slide-game-4">
+            <div class="game-status-bar">
+                <div class="score-txt" id="score-display-4">Punti: 0</div>
+                <div class="timer-txt" id="timer-display-4">Obiettivo: 25</div>
+            </div>
+            <div class="slide-content" style="max-width: 95%;">
+                <h2 class="content-fade" style="margin-bottom: 0.5rem;">🏎️ 4. Schiva Tutto</h2>
+                <p class="content-fade" style="font-size: 1.1rem; opacity: 0.8; margin-bottom: 0;">Obiettivo: Schiva 25 blocchi rossi toccando a destra o sinistra.</p>
+                <div class="game-container-embedded" id="embedded-game-4">
                     <canvas id="canvas-dodger"></canvas>
                 </div>
+                <div id="game-info-4" class="game-info-embedded content-fade" style="margin-top: 15px;">
+                    <p id="game-status-4" style="margin: 0; font-weight: bold; font-size: 1.2rem; color: var(--bright-red);">Tocca la metà destra/sinistra per muoverti.</p>
+                </div>
+                <button id="next-from-game-4" class="magic-btn content-fade" disabled style="display: none; background: var(--accent-green); border-color: var(--pure-white);" onclick="changeSlide(1)">Indizio Sbloccato! Avanti >></button>
             </div>
         </div>
 
@@ -792,10 +712,10 @@
                 <h2 class="content-fade">Il regno del paradosso, gli orologi silenti... non può essere che:</h2>
                 <h1 class="content-fade" style="transition-delay: 0.4s;">BUON NATALE!</h1>
                 <p class="content-fade" style="transition-delay: 0.8s;">Il tuo regalo è un viaggio dal <strong>5 all'8 MAGGIO</strong> a...</p>
-                <div class="reveal-box content-fade" style="transition-delay: 1.0s;">LONDRA!</div>
-                <p class="content-fade" style="margin-top: 2rem; transition-delay: 1.2s;">Preparati ad attraversare la Manica e ad esplorare una delle città più vibranti al mondo!</p>
-                <p class="content-fade" style="margin-top: 1rem; font-style: italic; transition-delay: 1.4s;">La nostra avventura ti aspetta. <strong>Ti amo!</strong> ❤️</p>
-                <button class="magic-btn content-fade" style="transition-delay: 1.6s;" onclick="changeSlide(1)">✈️ Scopri l'Itinerario</button>
+                <div class="reveal-box">LONDRA!</div>
+                <p class="content-fade" style="margin-top: 2rem; transition-delay: 1.0s;">Preparati ad attraversare la Manica e ad esplorare una delle città più vibranti al mondo!</p>
+                <p class="content-fade" style="margin-top: 1rem; font-style: italic; transition-delay: 1.2s;">La nostra avventura ti aspetta. <strong>Ti amo!</strong> ❤️</p>
+                <button class="magic-btn content-fade" id="final-reveal-btn" style="transition-delay: 1.5s;" onclick="changeSlide(1)">✈️ Scopri l'Itinerario</button>
             </div>
         </div>
         
@@ -813,7 +733,10 @@
                         <div class="timeline-item-content">
                             <div class="timeline-meta">5 Maggio - Viaggio</div>
                             <h3>Volo di Andata 🛫</h3>
-                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>. (Ryanair)</p>
+                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair">
                         </div>
                     </div>
 
@@ -823,37 +746,38 @@
                             <h3>Stansted Express per Londra 🚆</h3>
                             <p>Dall'aeroporto, treno veloce diretto per il cuore della città.</p>
                         </div>
-                    </div>
-
-                    <div class="timeline-item">
-                        <div class="timeline-item-content">
-                            <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
-                            <h3><a href="https://www.tripadvisor.com/Hotel_Review-g186338-d610748-Reviews-Comfort_Inn_Edgware_Road-London_England.html" target="_blank" style="color: var(--pure-white);">Hotel Comfort Inn</a></h3>
-                            <p>La nostra base per l'esplorazione: <strong>Edgware Road W2</strong>.</p>
-                            
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express">
                         </div>
                     </div>
-                    
-                    <div class="gallery-container">
-                        <span class="gallery-label">Ecco cosa vedremo:</span>
-                        <div class="scrolling-gallery">
-                            <div class="place-card"><img src="https://images.placesonline.com/photos/city-of-london_1166089699_151026_1671708925.jpg?quality=80&w=700" alt="City" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=City'"><span>City of London</span></div>
-                            <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
-                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
-                            <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
-                            <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
-                            <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
-                            <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
-                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
-                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Downing_Street.jpg" alt="Downing St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Downing+Street'"><span>Downing Street</span></div>
-                            <div class="place-card"><img src="https://www.willpearson.co.uk/wp-content/uploads/2013/04/trafalgar-square-panorama.jpg" alt="Trafalgar" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Trafalgar'"><span>Trafalgar Square</span></div>
-                            <div class="place-card"><img src="https://images.fidhouse.com/fidelitynews/wp-content/uploads/sites/9/2014/07/piccadilly-circus-londra.jpg?width=1280&height=720&quality=90" alt="Piccadilly" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Piccadilly'"><span>Piccadilly Circus</span></div>
-                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Buckingham_Palace_%286820469041%29.jpg/1200px-Buckingham_Palace_%286820469041%29.jpg" alt="Buckingham" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Buckingham'"><span>Buckingham Palace</span></div>
-                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Madame_Tussauds_London_2.jpg/1200px-Madame_Tussauds_London_2.jpg" alt="Tussauds" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tussauds'"><span>Madame Tussauds</span></div>
-                            <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Statue_Of_Sherlock_Holmes-Marylebone_Road.jpg" alt="Sherlock" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Sherlock'"><span>Statua di Sherlock Holmes</span></div>
-                            <div class="place-card"><img src="https://londonita.com/wp-content/uploads/2020/01/hyde-park-vista-dall-alto.jpg" alt="Hyde Park" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00A65A/FFFFFF?text=Hyde+Park'"><span>Hyde Park</span></div>
-                            <div class="place-card"><img src="https://www.londraculturale.it/wp-content/uploads/sites/3603/2020/10/2018-04-20-Natural-History-Museum-65.jpg?w=700&h=700&zoom=2" alt="Museum" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Natural+History'"><span>Museo di Storia Naturale</span></div>
-                            <div class="place-card"><img src="https://i0.wp.com/lavaligiadigio.it/wp-content/uploads/sites/48/2020/02/visitare-harry-potter-studios-londra-23-scaled.jpg?fit=960%2C720&ssl=1" alt="Harry Potter" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Harry+Potter'"><span>Harry Potter Studio</span></div>
+
+                    <div class="timeline-item" style="border-left-color: gold;">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
+                            <h3><a href="https://www.tripadvisor.com/Hotel_Review-g186338-d610748-Reviews-Comfort_Inn_Edgware_Road-London_England.html" target="_blank" style="color: gold; text-decoration: none;">Hotel Comfort Inn</a></h3>
+                            <p>La nostra base per l'esplorazione: <strong>Edgware Road W2</strong>.</p>
+                            
+                            <p class="gallery-label">Ecco cosa vedremo grazie alla nostra posizione strategica:</p>
+                            
+                            <div class="scrolling-gallery">
+                                <div class="place-card"><img src="https://images.placesonline.com/photos/city-of-london_1166089699_151026_1671708925.jpg?quality=80&w=700" alt="City" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=City'"><span>City of London</span></div>
+                                <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
+                                <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
+                                <div class="place-card"><img src="https://media.tacdn.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
+                                <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
+                                <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Downing_Street.jpg" alt="Downing St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Downing+Street'"><span>Downing Street</span></div>
+                                <div class="place-card"><img src="https://www.willpearson.co.uk/wp-content/uploads/2013/04/trafalgar-square-panorama.jpg" alt="Trafalgar" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Trafalgar'"><span>Trafalgar Square</span></div>
+                                <div class="place-card"><img src="https://images.fidhouse.com/fidelitynews/wp-content/uploads/sites/9/2014/07/piccadilly-circus-londra.jpg?width=1280&height=720&quality=90" alt="Piccadilly" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Piccadilly'"><span>Piccadilly Circus</span></div>
+                                <div class="place-card"><img src="https://placehold.co/140x100/CF142B/FFFFFF?text=Buckingham"><span>Buckingham Palace</span></div>
+                                <div class="place-card"><img src="https://placehold.co/140x100/00215F/FFFFFF?text=Tussauds"><span>Madame Tussauds</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Statue_Of_Sherlock_Holmes-Marylebone_Road.jpg" alt="Sherlock" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Sherlock'"><span>Statua di Sherlock Holmes</span></div>
+                                <div class="place-card"><img src="https://londonita.com/wp-content/uploads/2020/01/hyde-park-vista-dall-alto.jpg" alt="Hyde Park" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00A65A/FFFFFF?text=Hyde+Park'"><span>Hyde Park</span></div>
+                                <div class="place-card"><img src="https://www.londraculturale.it/wp-content/uploads/sites/3603/2020/10/2018-04-20-Natural-History-Museum-65.jpg?w=700&h=700&zoom=2" alt="Museum" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Natural+History'"><span>Museo di Storia Naturale</span></div>
+                                <div class="place-card"><img src="https://i0.wp.com/lavaligiadigio.it/wp-content/uploads/2020/02/visitare-harry-potter-studios-londra-23-scaled.jpg?fit=960%2C720&ssl=1" alt="Harry Potter" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Harry+Potter'"><span>Harry Potter Studio</span></div>
+                            </div>
                         </div>
                     </div>
 
@@ -863,13 +787,19 @@
                             <h3>Stansted Express per Aeroporto 🚆</h3>
                             <p>Da Londra (Liverpool Street) a <strong>Stansted</strong> (STN) in tempo per il rientro.</p>
                         </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express">
+                        </div>
                     </div>
 
                     <div class="timeline-item">
                         <div class="timeline-item-content">
                             <div class="timeline-meta">8 Maggio - Ritorno</div>
                             <h3>Volo di Ritorno 🛬</h3>
-                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio). (Ryanair)</p>
+                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair">
                         </div>
                     </div>
                 </div>
@@ -888,8 +818,101 @@
     </div>
 
     <script>
-        // --- LOGICA GIOCHI ---
+        // --- VARIABILI GLOBALI ---
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        const progressBar = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const transitionDelay = 10; 
         
+        // Mappa gli indici delle slide gioco con il loro stato di vittoria (false = da vincere)
+        // Indici Slide Gioco: 1 (Flappy), 3 (Memory), 5 (Reflex), 7 (Dodger)
+        const gameStates = {
+            1: false, // Flappy Cube
+            3: false, // Memory Emoji
+            5: false, // Reflex Dot
+            7: false  // Schiva Tutto
+        };
+
+        // --- GESTIONE CONTROLLI E NAVIGAZIONE ---
+        function updateControls() {
+            prevBtn.disabled = currentSlide === 0;
+            
+            // Logica del pulsante AVANTI (basata sulla vittoria del minigioco)
+            if (currentSlide === totalSlides - 1) {
+                // Ultima slide (Itinerario)
+                nextBtn.innerText = "Finito";
+                nextBtn.disabled = true;
+            } else if (gameStates.hasOwnProperty(currentSlide + 1)) {
+                // Se la PROSSIMA slide è un gioco, il pulsante AVANTI è disabilitato (si usa il pulsante 'Indizio Sbloccato')
+                nextBtn.innerText = "Avanti";
+                nextBtn.disabled = true;
+            } else if (gameStates.hasOwnProperty(currentSlide)) {
+                // Se la slide CORRENTE è un gioco, il pulsante AVANTI è disabilitato (si usa il pulsante 'Indizio Sbloccato')
+                 nextBtn.innerText = "Avanti";
+                 nextBtn.disabled = true;
+            }
+             else {
+                // Slide di Contenuto (0, 2, 4, 6, 8) - Abilitato
+                nextBtn.innerText = "Avanti";
+                nextBtn.disabled = false;
+            }
+
+            // Aggiorna la barra di progresso
+            const progressValue = ((currentSlide + 1) / totalSlides) * 100;
+            progressBar.style.width = `${progressValue}%`;
+        }
+
+        function changeSlide(direction) {
+            // Disabilita i pulsanti durante la transizione
+            prevBtn.disabled = true;
+            nextBtn.disabled = true;
+
+            // 1. Rimuovi la classe 'active' dalla slide corrente
+            if (slides[currentSlide]) {
+                slides[currentSlide].classList.remove('active');
+            }
+            
+            // 2. Calcola il nuovo indice
+            let newSlide = currentSlide + direction;
+            
+            // Limita la navigazione tra gli indici validi
+            if (newSlide < 0) newSlide = 0;
+            if (newSlide >= totalSlides) newSlide = totalSlides - 1;
+            
+            // 3. Usa setTimeout per ritardare l'attivazione della nuova slide 
+            setTimeout(() => {
+                currentSlide = newSlide;
+                
+                // 4. Aggiungi la classe 'active' alla nuova slide
+                if (slides[currentSlide]) {
+                    slides[currentSlide].classList.add('active');
+                    
+                    // 5. Avvia il gioco se la nuova slide è una slide gioco
+                    if (gameStates.hasOwnProperty(currentSlide) && !gameStates[currentSlide]) {
+                        // Mappa l'indice della slide con la chiave del gioco
+                        if (currentSlide === 1) initGame(1, 'flappy');
+                        if (currentSlide === 3) initGame(3, 'memory');
+                        if (currentSlide === 5) initGame(5, 'reflex');
+                        if (currentSlide === 7) initGame(7, 'dodger');
+                    } else if (gameStates.hasOwnProperty(currentSlide) && gameStates[currentSlide]) {
+                         // Se la slide è un gioco già vinto, mostra il pulsante di avanzamento
+                         document.getElementById(`next-from-game-${currentSlide}`).style.display = 'block';
+                         document.getElementById(`next-from-game-${currentSlide}`).disabled = false;
+                         document.getElementById(`game-status-${currentSlide}`).innerText = "COMPLETATO! Puoi proseguire.";
+                    }
+                }
+                
+                // 6. Aggiorna i controlli e riabilita i pulsanti
+                updateControls();
+            }, transitionDelay); 
+        }
+
+        // --- LOGICA GIOCHI EMBEDDED ---
+
+        // CONFIGURAZIONE COLORI JS (Per Canvas)
         const COLORS = {
             bg: '#00215F',      // royal-blue
             player: '#FFFFFF',  // pure-white
@@ -902,202 +925,123 @@
         let timerIntervalId = null;
         let timeLeft = 0;
         let currentScore = 0;
-        let isGameOver = false;
-        let selectedGameId = '';
-        let isGameRunning = false; 
-        
-        const MAX_ATTEMPTS = 5;
+        let isGameOver = true; // Inizialmente true, diventerà false all'avvio del gioco
 
-        // Stato di vittoria e tentativi per ogni gioco
-        let gameStatus = {
-            flappy: { won: false, attempts: 0 },
-            memory: { won: false, attempts: 0 },
-            reflex: { won: false, attempts: 0 },
-            dodger: { won: false, attempts: 0 }
+        const GAME_CONFIG = {
+            1: { type: 'flappy', scoreTarget: 5, timeLimit: 20, updateFunc: (score, time) => `Punti: ${score} - Tempo: ${time}s` },
+            3: { type: 'memory', scoreTarget: 8, timeLimit: 60, updateFunc: (score, time) => `Coppie: ${score}/8 - Tempo: ${time}s` },
+            5: { type: 'reflex', scoreTarget: 25, timeLimit: 20, updateFunc: (score, time) => `Colpi: ${score} - Tempo: ${time}s` },
+            7: { type: 'dodger', scoreTarget: 25, timeLimit: null, updateFunc: (score, time) => `Punti: ${score} - Obiettivo: 25` }
         };
 
-        // TESTI ISTRUZIONI
-        const INSTRUCTIONS = {
-            'flappy': {
-                title: "🐦 Flappy Cube",
-                desc: "Tocca lo schermo per volare.<br><br><b>OBIETTIVO:</b> Supera almeno <b>5 ostacoli</b> in 20 secondi."
-            },
-            'memory': {
-                title: "🧠 Memory Emoji",
-                desc: "Tocca le caselle blu per girarle.<br><br><b>OBIETTIVO:</b> Trova tutte le 8 coppie prima che scada il timer di <b>60 secondi</b>."
-            },
-            'reflex': {
-                title: "⚡ Reflex Dot",
-                desc: "Tocca il pallino rosso non appena appare.<br><br><b>OBIETTIVO:</b> Colpisci <b>25 pallini</b> in 20 secondi."
-            },
-            'dodger': {
-                title: "🏎️ Schiva Tutto",
-                desc: "Tocca a DESTRA o SINISTRA per muoverti.<br><br><b>OBIETTIVO:</b> Schiva i blocchi rossi. Raggiungi <b>25 punti</b> per vincere."
+        function updateGameUI(gameIndex, score, time) {
+            const config = GAME_CONFIG[gameIndex];
+            const scoreEl = document.getElementById(`score-display-${gameIndex}`);
+            const timerEl = document.getElementById(`timer-display-${gameIndex}`);
+            
+            if (scoreEl) {
+                if (gameIndex === 3) scoreEl.innerText = `Coppie: ${score}/8`;
+                else if (gameIndex === 5) scoreEl.innerText = `Colpi: ${score}`;
+                else scoreEl.innerText = `Punti: ${score}`;
             }
-        };
 
-        const instructionPanel = document.getElementById('instruction-panel');
-        const infoBar = document.getElementById('info-bar');
-        const backBtn = document.getElementById('game-back-btn');
-        const scoreEl = document.getElementById('score-display');
-        const timerEl = document.getElementById('timer-display');
-
-        function updateUI(score, time) {
-            scoreEl.innerText = "Punti: " + score;
-            if(time !== null) timerEl.innerText = "Tempo: " + time + "s";
-            else timerEl.innerText = "";
+            if (timerEl) {
+                if (config.timeLimit !== null) timerEl.innerText = `Tempo: ${time}s`;
+            }
         }
 
-        // --- GESTIONE FLUSSO GIOCHI ---
-        function prepareGame(gameId) {
-            if (isGameRunning) return; 
-            
-            selectedGameId = gameId;
-            const data = INSTRUCTIONS[gameId];
-            document.getElementById('inst-title').innerText = data.title;
-            
-            const attemptsLeft = MAX_ATTEMPTS - gameStatus[gameId].attempts;
-            let attemptText = `Tentativi rimasti: <b>${attemptsLeft}/${MAX_ATTEMPTS}</b>`;
-            if (attemptsLeft === 1) attemptText = `<b>ULTIMO TENTATIVO!</b>`;
-            if (attemptsLeft === 0) attemptText = `<b>TENTATIVI ESAURITI.</b> Se perdi, passerai oltre comunque.`;
-            
-            document.getElementById('inst-desc').innerHTML = `${data.desc}<br><br>${attemptText}`;
-            
-            instructionPanel.style.display = 'flex'; 
-        }
-
-        function closeInstructions() {
-            instructionPanel.style.display = 'none';
-        }
-
-        function launchGame() {
-            closeInstructions();
-            isGameRunning = true;
-            
-            document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
-                if (el.tagName !== 'BUTTON' || !el.classList.contains('magic-btn')) el.style.display = 'none';
-                else el.style.opacity = '0';
-            });
-            
-            document.getElementById(`game-${selectedGameId}`).style.display = 'flex';
-            infoBar.style.display = 'flex'; 
-            backBtn.style.display = 'block';
-            
+        function initGame(gameIndex, gameType) {
+            // Resetta lo stato di gioco
             isGameOver = false;
             currentScore = 0;
-            
-            if(selectedGameId === 'flappy') initFlappy();
-            if(selectedGameId === 'memory') initMemory();
-            if(selectedGameId === 'reflex') initReflex();
-            if(selectedGameId === 'dodger') initDodger();
-            
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
-        }
-
-        function stopGame() {
+            timeLeft = GAME_CONFIG[gameIndex].timeLimit || 0;
             clearInterval(timerIntervalId);
             cancelAnimationFrame(gameLoopId);
-            isGameOver = true;
-            isGameRunning = false;
             
-            // Nascondi gli elementi di gioco
-            document.getElementById(`game-${selectedGameId}`).style.display = 'none';
-            infoBar.style.display = 'none'; 
-            document.getElementById('target-dot').style.display = 'none'; 
-            document.getElementById('game-back-btn').style.display = 'none'; 
+            document.getElementById(`next-from-game-${gameIndex}`).style.display = 'none';
+            document.getElementById(`game-status-${gameIndex}`).style.color = 'var(--bright-red)';
+            document.getElementById(`game-status-${gameIndex}`).innerText = "Tocca per iniziare!";
+            
+            updateGameUI(gameIndex, currentScore, timeLeft);
 
-            // Ripristina l'interfaccia della slide
-            document.getElementById(`game-${selectedGameId}-content`).querySelectorAll('.content-fade').forEach(el => {
-                el.style.display = 'block';
-                el.style.opacity = '1';
-            });
-            
-            updateControls();
+            if (gameType === 'flappy') startFlappy(gameIndex);
+            if (gameType === 'memory') startMemory(gameIndex);
+            if (gameType === 'reflex') startReflex(gameIndex);
+            if (gameType === 'dodger') startDodger(gameIndex);
         }
 
-        function endGame(message, isVictory) {
-            if(isGameOver) return; 
+        function endGame(gameIndex, message, isWin) {
             isGameOver = true;
             clearInterval(timerIntervalId);
             cancelAnimationFrame(gameLoopId);
             
-            const gameId = selectedGameId;
-            const status = gameStatus[gameId];
-            let finalMessage = message;
-
-            if (!isVictory) {
-                status.attempts++;
-                if (status.attempts >= MAX_ATTEMPTS) {
-                    status.won = true;
-                    finalMessage = `A Natale siamo tutti più buoni... Passi il turno! (Hai esaurito i ${MAX_ATTEMPTS} tentativi)`;
-                    isVictory = true; 
-                } else {
-                    finalMessage += ` - Ti restano ${MAX_ATTEMPTS - status.attempts} tentativi.`;
-                }
+            const statusEl = document.getElementById(`game-status-${gameIndex}`);
+            
+            if (isWin) {
+                gameStates[gameIndex] = true;
+                statusEl.innerText = "🏆 VITTORIA! " + message;
+                statusEl.style.color = 'var(--accent-green)';
+                document.getElementById(`next-from-game-${gameIndex}`).style.display = 'block';
+                document.getElementById(`next-from-game-${gameIndex}`).disabled = false;
             } else {
-                status.won = true;
-                finalMessage = `🏆 COMPLIMENTI! ${message}`;
+                 statusEl.innerText = "😭 HAI PERSO. " + message + " Riprova!";
+                 statusEl.style.color = 'var(--bright-red)';
             }
-
-            // Rimuovi il pulsante di uscita forzata quando si è terminato il gioco
-            document.getElementById('game-back-btn').style.display = 'none'; 
-
-            setTimeout(() => {
-                alert(finalMessage);
-                stopGame(); // Chiama stopGame dopo l'alert
-            }, 100);
+            
+            // Ritarda l'aggiornamento dei controlli per evitare salti involontari
+            setTimeout(updateControls, 100);
         }
-        
-        function resetGame() {
-             if (isGameRunning) {
-                stopGame(); 
-            }
-            clearInterval(timerIntervalId);
-            cancelAnimationFrame(gameLoopId);
-            isGameOver = true;
-            isGameRunning = false;
-        }
+
+        // --- INIZIALIZZAZIONE GIOCHI SPECIFICI ---
 
         // 1. FLAPPY CUBE
-        function initFlappy() {
+        function startFlappy(gameIndex) {
             const canvas = document.getElementById('canvas-flappy');
             const ctx = canvas.getContext('2d');
             
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
-            
-            const TARGET_SCORE = 5;
+            // Adatta le dimensioni del canvas al contenitore
+            const container = document.getElementById(`embedded-game-${gameIndex}`);
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            const TARGET_SCORE = GAME_CONFIG[gameIndex].scoreTarget;
+            const TIME_LIMIT = GAME_CONFIG[gameIndex].timeLimit;
             let birdY = canvas.height / 2;
             let birdX = 50;
             let velocity = 0;
             let gravity = 0.5;
             let pipes = [];
-            
-            timeLeft = 20;
-            updateUI(0, timeLeft);
+            let isRunning = false;
 
-            timerIntervalId = setInterval(() => {
-                timeLeft--;
-                updateUI(currentScore, timeLeft);
-                if(timeLeft <= 0) {
-                    if(currentScore >= TARGET_SCORE) endGame("Tempo scaduto! Obiettivo Raggiunto!", true);
-                    else endGame("Tempo scaduto! Obiettivo non raggiunto (" + currentScore + "/5)", false);
-                }
-            }, 1000);
+            const startMessage = document.getElementById(`game-status-${gameIndex}`);
+            startMessage.innerText = "Tocca per iniziare/volare!";
+            
+            function startGameLoop() {
+                isRunning = true;
+                startMessage.innerText = "VOLA!";
+                
+                timerIntervalId = setInterval(() => {
+                    timeLeft--;
+                    updateGameUI(gameIndex, currentScore, timeLeft);
+                    if(timeLeft <= 0) {
+                        if(currentScore >= TARGET_SCORE) endGame(gameIndex, "Tempo scaduto! VITTORIA!", true);
+                        else endGame(gameIndex, `Fatti: ${currentScore}/${TARGET_SCORE}`, false);
+                    }
+                }, 1000);
+                
+                loop();
+            }
 
             canvas.ontouchstart = (e) => {
                 e.preventDefault();
-                if(!isGameOver) velocity = -8;
-            };
-            
-            canvas.onclick = (e) => {
-                e.preventDefault();
-                if(!isGameOver) velocity = -8;
+                if(isGameOver) return;
+                if(!isRunning) startGameLoop();
+                velocity = -8;
             };
 
             function loop() {
-                if(isGameOver) return;
+                if(isGameOver || !isRunning) return;
+                
                 velocity += gravity;
                 birdY += velocity;
 
@@ -1105,14 +1049,15 @@
                     pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2), counted: false});
                 }
 
+                // Sfondo
                 ctx.fillStyle = COLORS.bg;
                 ctx.fillRect(0,0,canvas.width, canvas.height);
 
+                // Player (Bianco)
                 ctx.fillStyle = COLORS.player;
                 ctx.fillRect(birdX, birdY, 30, 30);
-                ctx.strokeStyle = COLORS.bg;
-                ctx.strokeRect(birdX, birdY, 30, 30);
 
+                // Tubi (Verdi)
                 ctx.fillStyle = COLORS.safe;
                 for(let i = 0; i < pipes.length; i++) {
                     let p = pipes[i];
@@ -1120,26 +1065,26 @@
                     ctx.fillRect(p.x, 0, 40, p.h); 
                     ctx.fillRect(p.x, p.h + 130, 40, canvas.height); 
                     
-                    ctx.strokeStyle = COLORS.player;
-                    ctx.strokeRect(p.x, 0, 40, p.h);
-                    ctx.strokeRect(p.x, p.h + 130, 40, canvas.height);
-
                     if(!p.counted && p.x + 40 < birdX) {
                         currentScore++;
                         p.counted = true;
-                        updateUI(currentScore, timeLeft);
+                        updateGameUI(gameIndex, currentScore, timeLeft);
+                        if(currentScore >= TARGET_SCORE && timeLeft > 0) {
+                            endGame(gameIndex, "Obiettivo raggiunto con " + timeLeft + "s rimasti!", true);
+                            return;
+                        }
                     }
 
+                    // Collisione
                     if(birdX < p.x + 40 && birdX + 30 > p.x && (birdY < p.h || birdY + 30 > p.h + 130)) {
-                        if(currentScore >= TARGET_SCORE) endGame("Incidente! Ma hai raggiunto l'obiettivo!", true);
-                        else endGame("Incidente! Obiettivo non raggiunto (" + currentScore + "/5)", false);
+                        endGame(gameIndex, `Schianatato! Fatti: ${currentScore}/${TARGET_SCORE}`, false);
                         return;
                     }
                 }
 
+                // Fuori schermo
                 if(birdY > canvas.height || birdY < 0) {
-                    if(currentScore >= TARGET_SCORE) endGame("Caduto! Ma hai raggiunto l'obiettivo!", true);
-                    else endGame("Caduto! Obiettivo non raggiunto (" + currentScore + "/5)", false);
+                    endGame(gameIndex, `Caduto! Fatti: ${currentScore}/${TARGET_SCORE}`, false);
                     return;
                 }
 
@@ -1147,296 +1092,203 @@
                 gameLoopId = requestAnimationFrame(loop);
             }
             let frames = 0;
-            loop();
         }
-        
+
         // 2. MEMORY EMOJI
-        function initMemory() {
+        function startMemory(gameIndex) {
             const grid = document.getElementById('memory-grid');
             grid.innerHTML = '';
-            const emojis = ['🍇','🍇','🍍','🍍','🥝','🥝','🍉','🍉','🍎','🍎','🍓','🍓','🍒','🍒','🍋','🍋'];
+            const emojis = ['🐶','🐶','🐱','🐱','🐭','🐭','🐹','🐹','🦊','🦊','🐻','🐻','🐼','🐼','🐨','🐨'];
             emojis.sort(() => 0.5 - Math.random());
             
             let flippedCards = [];
             let matched = 0;
-            let isChecking = false; 
-            timeLeft = 60;
-            currentScore = 0;
-            updateUI(0, timeLeft);
-
-            timerIntervalId = setInterval(() => {
-                timeLeft--;
-                updateUI(matched, timeLeft);
-                if(timeLeft <= 0) endGame("Tempo scaduto! Ritenta.", false);
-            }, 1000);
+            const TARGET_SCORE = GAME_CONFIG[gameIndex].scoreTarget;
+            const TIME_LIMIT = GAME_CONFIG[gameIndex].timeLimit;
+            let isRunning = false;
+            
+            const startMessage = document.getElementById(`game-status-${gameIndex}`);
+            startMessage.innerText = "Tocca per iniziare!";
+            
+            function startGameLoop() {
+                isRunning = true;
+                startMessage.innerText = "Concentrati!";
+                
+                timerIntervalId = setInterval(() => {
+                    timeLeft--;
+                    updateGameUI(gameIndex, matched, timeLeft);
+                    if(timeLeft <= 0) {
+                        endGame(gameIndex, "Tempo scaduto!", false);
+                    }
+                }, 1000);
+            }
 
             emojis.forEach(emoji => {
                 const card = document.createElement('div');
                 card.classList.add('card');
                 card.dataset.val = emoji;
-                
-                const flipCard = (e) => {
+                card.ontouchstart = (e) => {
                     e.preventDefault();
-                    if(isGameOver || isChecking || card.classList.contains('matched')) return;
+                    if(isGameOver) return;
+                    if(!isRunning) startGameLoop();
+                    
                     if(flippedCards.length < 2 && !card.classList.contains('flipped')) {
-                        
                         card.classList.add('flipped');
-                        card.innerText = emoji; 
+                        card.innerText = emoji;
                         flippedCards.push(card);
-                        
                         if(flippedCards.length === 2) {
-                            isChecking = true; 
-                            
                             if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
-                                matched++;
-                                updateUI(matched, timeLeft);
-                                
-                                flippedCards.forEach(c => { 
-                                    c.classList.add('matched');
-                                    c.onclick = null;
-                                    c.ontouchstart = null;
-                                });
-
                                 flippedCards = [];
-                                isChecking = false;
-                                
-                                if(matched === 8) endGame("Memoria perfetta!", true);
+                                matched++;
+                                updateGameUI(gameIndex, matched, timeLeft);
+                                if(matched === TARGET_SCORE) {
+                                    endGame(gameIndex, "Memoria perfetta!", true);
+                                }
                             } else {
                                 setTimeout(() => {
                                     if(!isGameOver) {
-                                        flippedCards.forEach(c => { 
-                                            c.classList.remove('flipped'); 
-                                            c.innerText = ''; 
-                                        });
+                                        flippedCards.forEach(c => { c.classList.remove('flipped'); c.innerText = ''; });
                                         flippedCards = [];
                                     }
-                                    isChecking = false; 
-                                }, 800); 
+                                }, 600);
                             }
                         }
                     }
                 };
-
-                card.ontouchstart = flipCard;
-                card.onclick = flipCard;
-                
                 grid.appendChild(card);
             });
         }
 
         // 3. REFLEX DOT
-        window.moveDot = function() {
-            if(isGameOver) return;
+        function startReflex(gameIndex) {
+            const TARGET_SCORE = GAME_CONFIG[gameIndex].scoreTarget;
+            const TIME_LIMIT = GAME_CONFIG[gameIndex].timeLimit;
             const area = document.getElementById('reflex-area');
             const dot = document.getElementById('target-dot');
-            const max_x = area.clientWidth - dot.offsetWidth;
-            const max_y = area.clientHeight - dot.offsetHeight;
-            
-            if (max_x <= 0 || max_y <= 0) {
-                 dot.style.display = 'none';
-                 return;
+            const startMessage = document.getElementById(`game-status-${gameIndex}`);
+            dot.style.display = 'none';
+
+            let isRunning = false;
+
+            function startGameLoop() {
+                isRunning = true;
+                startMessage.innerText = "COLPISCI!";
+                moveDot();
+                timerIntervalId = setInterval(() => {
+                    timeLeft--;
+                    updateGameUI(gameIndex, currentScore, timeLeft);
+                    if(timeLeft <= 0) {
+                        dot.style.display = 'none';
+                        if(currentScore >= TARGET_SCORE) endGame(gameIndex, `Riflessi Ninja (${currentScore})`, true);
+                        else endGame(gameIndex, `Colpiti: ${currentScore}/${TARGET_SCORE}`, false);
+                    }
+                }, 1000);
             }
 
-            const x = Math.floor(Math.random() * max_x); 
-            const y = Math.floor(Math.random() * max_y);
+            area.ontouchstart = (e) => {
+                e.preventDefault();
+                if(isGameOver) return;
+                if(!isRunning) startGameLoop();
+            };
             
-            dot.style.display = 'block';
-            dot.style.left = x + 'px';
-            dot.style.top = y + 'px';
-        }
-        window.hitTarget = function(e) {
-            e.preventDefault();
-            if(isGameOver) return;
-            currentScore++;
-            updateUI(currentScore, timeLeft);
-            moveDot();
-            if(currentScore >= 25) endGame("Riflessi Ninja!", true);
-        }
-        function initReflex() {
-            document.getElementById('target-dot').onclick = window.hitTarget;
-            document.getElementById('target-dot').ontouchstart = window.hitTarget;
-
-            timeLeft = 20;
-            currentScore = 0;
-            updateUI(0, timeLeft);
-            moveDot();
-            timerIntervalId = setInterval(() => {
-                timeLeft--;
-                updateUI(currentScore, timeLeft);
-                if(timeLeft <= 0) {
-                    if(currentScore >= 25) endGame("Riflessi Ninja!", true);
-                    else endGame("Lento... Obiettivo non raggiunto (" + currentScore + "/25)", false);
+            window.hitTarget = function(e) {
+                e.preventDefault();
+                e.stopPropagation(); // Evita di propagare all'area e far partire il gioco di nuovo
+                if(isGameOver || !isRunning) return;
+                currentScore++;
+                updateGameUI(gameIndex, currentScore, timeLeft);
+                if(currentScore >= TARGET_SCORE && timeLeft > 0) {
+                    endGame(gameIndex, `Obiettivo raggiunto con ${timeLeft}s rimasti!`, true);
+                    return;
                 }
-            }, 1000);
+                moveDot();
+            }
+
+            function moveDot() {
+                if(isGameOver) return;
+                const x = Math.floor(Math.random() * (area.clientWidth - 70));
+                const y = Math.floor(Math.random() * (area.clientHeight - 70));
+                dot.style.display = 'block';
+                dot.style.left = x + 'px';
+                dot.style.top = y + 'px';
+            }
         }
 
         // 4. SCHIVA TUTTO
-        function initDodger() {
+        function startDodger(gameIndex) {
             const canvas = document.getElementById('canvas-dodger');
             const ctx = canvas.getContext('2d');
             
-            canvas.width = canvas.parentElement.clientWidth;
-            canvas.height = canvas.parentElement.clientHeight;
+            const container = document.getElementById(`embedded-game-${gameIndex}`);
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
             
+            const TARGET_SCORE = GAME_CONFIG[gameIndex].scoreTarget;
             let playerX = canvas.width / 2 - 20;
             let obstacles = [];
-            currentScore = 0;
-            updateUI(0, null);
+            let isRunning = false;
+            
+            const startMessage = document.getElementById(`game-status-${gameIndex}`);
+            startMessage.innerText = "Tocca la metà destra/sinistra per iniziare e muoverti.";
+            
+            function startGameLoop() {
+                isRunning = true;
+                startMessage.innerText = "SCHIVA!";
+                loop();
+            }
 
-            const movePlayer = (e) => {
+            canvas.ontouchstart = (e) => {
                 e.preventDefault();
-                let clientX = e.touches ? e.touches[0].clientX : e.clientX;
-                let touchX = clientX - canvas.getBoundingClientRect().left;
+                if(isGameOver) return;
+                if(!isRunning) startGameLoop();
                 
+                let touchX = e.touches[0].clientX - canvas.getBoundingClientRect().left;
                 if(touchX < canvas.width / 2) playerX -= 50;
                 else playerX += 50;
-                
                 if(playerX < 0) playerX = 0;
                 if(playerX > canvas.width - 40) playerX = canvas.width - 40;
             };
 
-            canvas.ontouchstart = movePlayer;
-            canvas.onclick = movePlayer;
-
             function loop() {
-                if(isGameOver) return;
+                if(isGameOver || !isRunning) return;
+                
+                // Sfondo
                 ctx.fillStyle = COLORS.bg;
                 ctx.fillRect(0,0,canvas.width, canvas.height);
                 
+                // Player (Bianco)
                 ctx.fillStyle = COLORS.player;
                 ctx.fillRect(playerX, canvas.height - 60, 40, 40);
 
                 if(Math.random() < 0.04) obstacles.push({x: Math.random() * (canvas.width - 40), y: -40});
 
+                // Ostacoli (Rosso acceso)
                 ctx.fillStyle = COLORS.obstacle;
                 for(let i = obstacles.length - 1; i >= 0; i--) {
                     let o = obstacles[i];
                     o.y += 6;
                     ctx.fillRect(o.x, o.y, 40, 40);
                     
-                    ctx.strokeStyle = COLORS.player;
-                    ctx.strokeRect(o.x, o.y, 40, 40);
-
+                    // Collisione
                     if(o.y > canvas.height - 100 && o.y < canvas.height - 20 && o.x < playerX + 40 && o.x + 40 > playerX) {
-                        endGame("Schiantato!", false);
+                        endGame(gameIndex, "SCHIANTATO! Punteggio: " + currentScore, false);
                         return;
                     }
                     if(o.y > canvas.height) { 
                         obstacles.splice(i, 1); 
                         currentScore++; 
-                        updateUI(currentScore, null);
-                        if(currentScore >= 25) { endGame("Campione! 25 Ostacoli schivati!", true); return; }
+                        updateGameUI(gameIndex, currentScore, null);
+                        if(currentScore >= TARGET_SCORE) { 
+                            endGame(gameIndex, "CAMPIONE! 25 Ostacoli schivati!", true); 
+                            return; 
+                        }
                     }
                 }
                 gameLoopId = requestAnimationFrame(loop);
             }
-            loop();
         }
 
-        // --- LOGICA SLIDE ---
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length; 
-        const progressBar = document.getElementById('progress');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const transitionDelay = 10; 
-
-        // Mappa per associare l'indice della slide al nome del gioco e allo stato di vittoria
-        const gameSlideMap = {
-            1: 'flappy', 
-            3: 'memory', 
-            5: 'reflex', 
-            7: 'dodger'  
-        };
-
-        function updateControls() {
-            if (isGameRunning) {
-                prevBtn.disabled = true;
-                nextBtn.disabled = true;
-                return;
-            }
-            
-            prevBtn.disabled = currentSlide === 0;
-
-            const gameId = gameSlideMap[currentSlide];
-            let nextDisabled = false;
-
-            if (gameId) {
-                const status = gameStatus[gameId];
-                if (!status.won) {
-                    nextDisabled = true;
-                    const attemptsLeft = MAX_ATTEMPTS - status.attempts;
-                    
-                    if (attemptsLeft === 0) {
-                        nextBtn.innerText = "Sbloccato (Ultima chance usata)";
-                        nextDisabled = false;
-                    } else if (attemptsLeft === 1) {
-                        nextBtn.innerText = `Bloccato - Ultimo Tentativo!`;
-                    } else {
-                        nextBtn.innerText = `Bloccato (${status.attempts}/${MAX_ATTEMPTS})`;
-                    }
-                } else {
-                    nextBtn.innerText = "Avanti (Sbloccato!)";
-                }
-            } else if (currentSlide === totalSlides - 1) { 
-                nextBtn.innerText = "Finito";
-                nextDisabled = true;
-            } else if (currentSlide === totalSlides - 2) { 
-                nextBtn.innerText = "Avanti (Itinerario)";
-                nextDisabled = false;
-            } else if (currentSlide === 0) {
-                 nextBtn.innerText = "🚀 Inizia la Prova";
-                 nextDisabled = false;
-            } else {
-                nextBtn.innerText = "Avanti";
-                nextDisabled = false;
-            }
-            
-            nextBtn.disabled = nextDisabled || isGameRunning; 
-
-            const progressValue = ((currentSlide + 1) / totalSlides) * 100;
-            progressBar.style.width = `${progressValue}%`;
-        }
-
-        function changeSlide(direction) {
-            if(isGameRunning) return;
-            
-            if (direction > 0 && nextBtn.disabled && gameSlideMap[currentSlide]) {
-                const gameId = gameSlideMap[currentSlide];
-                if (!gameStatus[gameId].won && (MAX_ATTEMPTS - gameStatus[gameId].attempts) > 0) {
-                    const attemptsLeft = MAX_ATTEMPTS - gameStatus[gameId].attempts;
-                    alert(`Devi prima completare la sfida (Tentativi: ${gameStatus[gameId].attempts}/${MAX_ATTEMPTS} usati).`);
-                }
-                return;
-            }
-
-            if (slides[currentSlide]) {
-                slides[currentSlide].classList.remove('active');
-                if (gameSlideMap[currentSlide]) {
-                    resetGame(); // Assicura che i giochi non continuino in background
-                }
-            }
-            
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
-
-            let newSlide = currentSlide + direction;
-            
-            if (newSlide < 0) newSlide = 0;
-            if (newSlide >= totalSlides) newSlide = totalSlides - 1;
-            
-            setTimeout(() => {
-                currentSlide = newSlide;
-                
-                if (slides[currentSlide]) {
-                    slides[currentSlide].classList.add('active');
-                }
-                
-                updateControls();
-            }, transitionDelay); 
-        }
-
+        // --- INIZIALIZZAZIONE ---
         window.onload = function() {
             slides.forEach((slide, index) => {
                 if (index === 0) {
