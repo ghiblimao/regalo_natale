@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Memory Emoji - 5 Vite</title>
+    <style>
+        :root {
+            --royal-blue: #00215F;
+            --bright-red: #CF142B;
+            --pure-white: #FFFFFF;
+            --text-color-light: #F0F0F0;
+            --dark-background: #001A4A;
+            --accent-green: #00A65A;
+        }
+
+        /* --- STILE GENERALE --- */
+        body {
+            background-color: var(--dark-background);
+            color: var(--text-color-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* GIOCHI UI */
+        .game-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            background: var(--dark-background);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .instructions {
+             position: absolute;
+             top: 20px; right: 20px;
+             color: var(--text-color-light);
+             text-align: right;
+             font-size: 0.9rem;
+             z-index: 100;
+             max-width: 50%;
+        }
+
+        /* INFO BAR (Punteggio e Timer) */
+        .info-bar {
+            position: absolute;
+            top: 80px; right: 20px;
+            text-align: right;
+            z-index: 100;
+        }
+        .score-txt { font-size: 1.3rem; font-weight: bold; color: var(--pure-white); }
+        .timer-txt { font-size: 1rem; color: var(--bright-red); margin-top: 5px; font-weight: bold;}
+
+        /* MEMORY STYLES */
+        #memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 90%;
+            max-width: 350px;
+            margin-top: 30px;
+        }
+        .card {
+            background-color: var(--royal-blue);
+            border: 2px solid var(--pure-white);
+            aspect-ratio: 1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+            user-select: none;
+            /* Forza l'accelerazione hardware per animazioni più fluide */
+            transform: translateZ(0);
+        }
+        .card.flipped { background-color: var(--pure-white); color: #000; border-color: var(--accent-green); }
+        .card.matched { background-color: var(--accent-green); color: var(--pure-white); border-color: var(--pure-white); }
+
+    </style>
+</head>
+<body>
+
+    <div class="instructions">
+        <b>Obiettivo:</b> Trova le 8 coppie in 60 secondi.
+    </div>
+
+    <div class="info-bar">
+        <div id="score-display" class="score-txt">Coppie: 0/8</div>
+        <div id="timer-display" class="timer-txt">Tempo: 60s</div>
+    </div>
+
+    <div id="game-memory" class="game-container">
+        <div id="memory-grid"></div>
+    </div>
+
+    <script>
+        // VARIABILI PER LA PERSISTENZA TRA I TENTATIVI
+        const MAX_ATTEMPTS = 5;
+        let attemptsLeft = MAX_ATTEMPTS; 
+
+        let timerIntervalId = null;
+        let timeLeft = 60;
+        let isGameOver = false;
+
+        const scoreEl = document.getElementById('score-display');
+        const timerEl = document.getElementById('timer-display');
+        
+        function updateUI(matched, time) {
+            scoreEl.innerText = "Coppie: " + matched + "/8 | Tentativi: " + attemptsLeft + "/" + MAX_ATTEMPTS;
+            timerEl.innerText = "Tempo: " + time + "s";
+        }
+
+        // FUNZIONE ENDGAME AGGIORNATA PER LA GESTIONE DELLE 5 VITE
+        function endGame(message, didWin) {
+            isGameOver = true;
+            
+            if (timerIntervalId) clearInterval(timerIntervalId);
+            
+            setTimeout(() => {
+                alert(message);
+
+                if (didWin) {
+                    alert("Hai vinto!");
+                    window.location.href = "https://ghiblimao.github.io/regalo_natale/slide-2.html"; 
+                } else {
+                    attemptsLeft--;
+                    
+                    if (attemptsLeft <= 0) {
+                        alert("Game Over! Hai esaurito i " + MAX_ATTEMPTS + " tentativi. Ma a Natale siamo tutti più buoni. Passa alla sfida successiva!");
+                        window.location.href = "https://ghiblimao.github.io/regalo_natale/slide-2.html"; 
+                    } else {
+                        // Aggiungo un piccolo ritardo prima di riavviare per resettare la UI
+                        setTimeout(() => {
+                            isGameOver = false; 
+                            initMemory();
+                        }, 500);
+                    }
+                }
+            }, 100);
+        }
+
+        function initMemory() {
+            const grid = document.getElementById('memory-grid');
+            grid.innerHTML = '';
+            
+            let flippedCards = [];
+            let matched = 0;
+            timeLeft = 60;
+            isGameOver = false;
+
+            const emojis = ['🐶','🐶','🐱','🐱','🐭','🐭','🐹','🐹','🦊','🦊','🐻','🐻','🐼','🐼','🐨','🐨'];
+            emojis.sort(() => 0.5 - Math.random());
+            
+            updateUI(0, timeLeft);
+            
+            if (timerIntervalId) clearInterval(timerIntervalId);
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateUI(matched, timeLeft);
+                if(timeLeft <= 0 && !isGameOver) {
+                    endGame("⏱️ Tempo scaduto! Ritenta. (Coppie: " + matched + "/8)", false);
+                }
+            }, 1000);
+
+            // Funzione condivisa per l'azione di capovolgimento della carta
+            const flipAction = (e, card, emoji) => {
+                // Previene il comportamento del browser (scrolling, zoom) solo per touch
+                if (e.type !== 'click') e.preventDefault(); 
+
+                if(isGameOver) return;
+                // Controlla che non si stia già aspettando il secondo click e che la carta non sia già girata/accoppiata
+                if(flippedCards.length < 2 && !card.classList.contains('flipped') && !card.classList.contains('matched')) {
+                    
+                    card.classList.add('flipped');
+                    card.innerText = emoji;
+                    flippedCards.push(card);
+                    
+                    if(flippedCards.length === 2) {
+                        if(flippedCards[0].dataset.val === flippedCards[1].dataset.val) {
+                            // Match!
+                            flippedCards.forEach(c => c.classList.add('matched'));
+                            flippedCards = [];
+                            matched++;
+                            updateUI(matched, timeLeft);
+                            if(matched === 8) {
+                                endGame("🏆 VITTORIA! Memoria perfetta!", true);
+                            }
+                        } else {
+                            // Mismatch!
+                            setTimeout(() => {
+                                if(!isGameOver) {
+                                    flippedCards.forEach(c => { c.classList.remove('flipped'); c.innerText = ''; });
+                                    flippedCards = [];
+                                }
+                            }, 600); // tempo in cui le carte restano visibili
+                        }
+                    }
+                }
+            };
+            
+            emojis.forEach(emoji => {
+                const card = document.createElement('div');
+                card.classList.add('card');
+                card.dataset.val = emoji;
+                
+                // --- FIX CRITICO: Aggiunge il gestore per click e touch ---
+                card.onclick = (e) => flipAction(e, card, emoji);       // Per mouse (desktop)
+                card.ontouchstart = (e) => flipAction(e, card, emoji); // Per touch (mobile)
+                // --- FINE FIX ---
+
+                grid.appendChild(card);
+            });
+        }
+        
+        initMemory();
+    </script>
+</body>
+</html>

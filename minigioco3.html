@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Reflex Dot - 5 Vite</title>
+    <style>
+        :root {
+            --royal-blue: #00215F;
+            --bright-red: #CF142B;
+            --pure-white: #FFFFFF;
+            --text-color-light: #F0F0F0;
+            --dark-background: #001A4A;
+            --accent-green: #00A65A;
+        }
+
+        /* --- STILE GENERALE --- */
+        body {
+            background-color: var(--dark-background);
+            color: var(--text-color-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* GIOCHI UI */
+        .game-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            background: var(--dark-background);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .instructions {
+             position: absolute;
+             top: 20px; right: 20px;
+             color: var(--text-color-light);
+             text-align: right;
+             font-size: 0.9rem;
+             z-index: 100;
+             max-width: 50%;
+        }
+
+        /* INFO BAR (Punteggio e Timer) */
+        .info-bar {
+            position: absolute;
+            top: 80px; right: 20px;
+            text-align: right;
+            z-index: 100;
+        }
+        .score-txt { font-size: 1.3rem; font-weight: bold; color: var(--pure-white); }
+        .timer-txt { font-size: 1rem; color: var(--bright-red); margin-top: 5px; font-weight: bold;}
+
+        /* REFLEX STYLES */
+        #reflex-area {
+            width: 90%; height: 70vh;
+            background: var(--royal-blue);
+            position: relative;
+            border-radius: 10px;
+            border: 3px solid var(--pure-white);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            margin-top: 50px;
+        }
+        #target-dot {
+            width: 60px; height: 60px;
+            background-color: var(--bright-red);
+            border: 2px solid var(--pure-white);
+            border-radius: 50%;
+            position: absolute;
+            display: none;
+            box-shadow: 0 0 10px var(--bright-red);
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instructions">
+        <b>Obiettivo:</b> Colpisci 25 pallini in 20 secondi.
+    </div>
+
+    <div class="info-bar">
+        <div id="score-display" class="score-txt">Punti: 0/25</div>
+        <div id="timer-display" class="timer-txt">Tempo: 20s</div>
+    </div>
+
+    <div id="game-reflex" class="game-container">
+        <div id="reflex-area">
+            <div id="target-dot"></div>
+        </div>
+    </div>
+
+    <script>
+        // VARIABILI PER LA PERSISTENZA TRA I TENTATIVI
+        const MAX_ATTEMPTS = 5;
+        let attemptsLeft = MAX_ATTEMPTS; 
+        const TARGET_SCORE = 25;
+
+        // VARIABILI DI GIOCO
+        let timerIntervalId = null;
+        let timeLeft = 20;
+        let currentScore = 0;
+        let isGameOver = false;
+
+        const scoreEl = document.getElementById('score-display');
+        const timerEl = document.getElementById('timer-display');
+        const dot = document.getElementById('target-dot');
+        const area = document.getElementById('reflex-area');
+        
+        function updateUI(score, time) {
+            scoreEl.innerText = "Punti: " + score + "/" + TARGET_SCORE + " | Tentativi: " + attemptsLeft + "/" + MAX_ATTEMPTS;
+            timerEl.innerText = "Tempo: " + time + "s";
+        }
+        
+        // FUNZIONE ENDGAME AGGIORNATA PER LA GESTIONE DELLE 5 VITE
+        function endGame(message, didWin) {
+            isGameOver = true;
+            
+            if (timerIntervalId) clearInterval(timerIntervalId);
+            dot.style.display = 'none';
+
+            setTimeout(() => {
+                alert(message);
+
+                if (didWin) {
+                    alert("Hai vinto!");
+                    window.location.href = "https://ghiblimao.github.io/regalo_natale/slide-3.html"; 
+                } else {
+                    attemptsLeft--;
+                    
+                    if (attemptsLeft <= 0) {
+                        alert("Game Over! Hai esaurito i " + MAX_ATTEMPTS + " tentativi. Ma a Natale siamo tutti più buoni. Passa alla sfida successiva!");
+                        window.location.href = "https://ghiblimao.github.io/regalo_natale/slide-3.html"; 
+                    } else {
+                        isGameOver = false; 
+                        initReflex();
+                    }
+                }
+            }, 100);
+        }
+
+        function moveDot() {
+            if(isGameOver) return;
+            const x = Math.floor(Math.random() * (area.clientWidth - 70));
+            const y = Math.floor(Math.random() * (area.clientHeight - 70));
+            dot.style.display = 'block';
+            dot.style.left = x + 'px';
+            dot.style.top = y + 'px';
+        }
+        
+        function hitTarget(e) {
+            e.preventDefault();
+            if(isGameOver) return;
+            currentScore++;
+            updateUI(currentScore, timeLeft);
+            if(currentScore >= TARGET_SCORE) {
+                endGame("🏆 VITTORIA! Riflessi Ninja (" + currentScore + ")", true);
+                return;
+            }
+            moveDot();
+        }
+
+        function initReflex() {
+            timeLeft = 20;
+            currentScore = 0;
+            isGameOver = false;
+
+            updateUI(0, timeLeft);
+            
+            dot.ontouchstart = hitTarget;
+            dot.onclick = hitTarget;
+            
+            moveDot();
+
+            if (timerIntervalId) clearInterval(timerIntervalId);
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateUI(currentScore, timeLeft);
+                if(timeLeft <= 0 && !isGameOver) {
+                    if(currentScore >= TARGET_SCORE) {
+                        endGame("🏆 VITTORIA! Il tempo è scaduto ma l'obiettivo era raggiunto!", true);
+                    } else {
+                        endGame("🐢 Lenta... Fatti: " + currentScore + "/" + TARGET_SCORE, false);
+                    }
+                }
+            }, 1000);
+        }
+        
+        initReflex();
+    </script>
+</body>
+</html>

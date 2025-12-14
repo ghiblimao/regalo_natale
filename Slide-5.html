@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Enigma di Natale</title>
+               <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
+
+        /* PALETTE UNION JACK VERA */
+        :root {
+            --royal-blue: #00215F;
+            --bright-red: #CF142B;
+            --pure-white: #FFFFFF;
+            --text-color-light: #F0F0F0;
+            --dark-background: #001A4A;
+            --accent-green: #00A65A;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Lato', sans-serif;
+            background-color: var(--dark-background);
+            color: var(--text-color-light);
+            overflow: hidden;
+        }
+
+        /* SFONDO ANIMATO */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                linear-gradient(45deg, rgba(207, 20, 43, 0.15) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(207, 20, 43, 0.15) 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, rgba(207, 20, 43, 0.15) 75%),
+                linear-gradient(-45deg, transparent 75%, rgba(207, 20, 43, 0.15) 75%),
+                linear-gradient(to right, var(--royal-blue), var(--dark-background));
+            background-size: 80px 80px, 80px 80px, 80px 80px, 80px 80px, 100% 100%;
+            animation: background-pan 40s linear infinite alternate;
+            z-index: -2;
+            opacity: 1;
+        }
+
+        @keyframes background-pan {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            /* Aumentata la transizione a 1.0s per maggiore stabilità */
+            transition: opacity 1.0s ease-in-out, transform 1.0s ease-in-out;
+            transform: scale(0.95);
+            padding: 2rem;
+            box-sizing: border-box;
+            background: rgba(0, 0, 0, 0.4); 
+            backdrop-filter: blur(5px);
+            z-index: 0;
+            pointer-events: none; 
+            overflow-y: auto; 
+        }
+        
+        .slide.active {
+            opacity: 1;
+            transform: scale(1);
+            z-index: 1;
+            pointer-events: auto;
+        }
+
+        .slide:not(.active) .content-fade { opacity: 0; transform: translateY(20px); }
+        .slide.active .content-fade {
+            opacity: 1;
+            transform: translateY(0);
+            /* Ritardo nella comparsa del contenuto (dopo 0.4s) */
+            transition: opacity 0.8s ease-out 0.4s, transform 0.8s ease-out 0.4s;
+        }
+        
+        .slide-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            max-width: 90%;
+            width: 100%;
+        }
+
+        .central-light {
+            position: absolute;
+            width: 70%;
+            height: 70%;
+            border-radius: 50%;
+            background: radial-gradient(circle, var(--pure-white) 0%, transparent 70%); 
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.08;
+            animation: pulse-light 6s infinite ease-in-out;
+        }
+
+        @keyframes pulse-light {
+            0% { transform: scale(1); opacity: 0.08; }
+            50% { transform: scale(1.1); opacity: 0.15; }
+            100% { transform: scale(1); opacity: 0.08; }
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 4.5rem; 
+            margin-bottom: 1rem;
+            color: var(--pure-white); 
+            text-align: center;
+            text-shadow: 0 0 15px rgba(255,255,255,0.7), 0 0 25px var(--bright-red); 
+        }
+
+        h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            color: var(--bright-red); 
+            margin-bottom: 1.5rem;
+            text-align: center;
+            text-shadow: 1px 1px 5px var(--royal-blue);
+        }
+
+        h3 {
+             font-family: 'Playfair Display', serif;
+             font-size: 1.8rem;
+             color: var(--text-color-light);
+             margin-top: 1.5rem;
+             text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+        }
+
+        p {
+            font-size: 1.3rem;
+            line-height: 1.6;
+            max-width: 800px;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .date-box {
+            border: 4px solid var(--pure-white); 
+            padding: 1.5rem 4rem;
+            font-size: 3rem; 
+            font-family: 'Playfair Display', serif;
+            color: var(--pure-white); 
+            margin: 3rem 0;
+            background: rgba(207, 20, 43, 0.4); 
+            border-radius: 18px;
+            box-shadow: 0 0 30px var(--pure-white), inset 0 0 20px var(--bright-red);
+            animation: glowing-border 1.2s infinite alternate; 
+            text-shadow: 3px 3px 5px var(--royal-blue);
+            font-weight: 700;
+        }
+        
+        @keyframes glowing-border {
+            from {
+                box-shadow: 0 0 15px var(--pure-white), inset 0 0 8px var(--bright-red);
+            }
+            to {
+                box-shadow: 0 0 45px var(--pure-white), inset 0 0 25px var(--bright-red);
+            }
+        }
+
+        .clue-list {
+            list-style: none;
+            padding: 0;
+            max-width: 800px;
+            text-align: left;
+        }
+
+        .clue-list li {
+            margin-bottom: 1.2rem;
+            padding-left: 2.5rem;
+            position: relative;
+            font-size: 1.3rem; 
+            border-bottom: 1px dashed rgba(255,255,255,0.4);
+            padding-bottom: 8px;
+        }
+
+        .clue-list li::before {
+            content: '🔑';
+            position: absolute;
+            left: 0;
+            top: 2px;
+            animation: bounce-key 1.5s infinite;
+        }
+        
+        @keyframes bounce-key {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-3px) scale(1.1); }
+            100% { transform: translateY(0); }
+        }
+
+        .reveal-box {
+            background: var(--bright-red); 
+            color: var(--pure-white);
+            padding: 3rem 6rem;
+            border-radius: 30px; 
+            font-size: 6rem; 
+            font-weight: 900;
+            font-family: 'Playfair Display', serif;
+            box-shadow: 0 30px 80px rgba(0,0,0,1.0), 0 0 50px var(--pure-white); 
+            animation: pulse-reveal 1s infinite, popout 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55); 
+            transform: scale(1.1);
+            text-shadow: 7px 7px var(--royal-blue), 0 0 15px rgba(255,255,255,0.8);
+            border: 6px solid var(--pure-white); 
+        }
+
+        @keyframes pulse-reveal {
+            0% { transform: scale(1.1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1.1); }
+        }
+
+        @keyframes popout {
+            0% { transform: scale(0.1) rotate(-10deg); opacity: 0; }
+            80% { transform: scale(1.2) rotate(2deg); opacity: 1; }
+            100% { transform: scale(1.1) rotate(0deg); }
+        }
+
+        /* --- ITINERARIO CON GALLERIA (SLIDE 5) --- */
+        #slide-5 {
+             padding-top: 5rem;
+             justify-content: flex-start;
+        }
+        
+        .itinerary-timeline {
+            display: flex;
+            flex-direction: column;
+            width: 95%;
+            max-width: 800px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .timeline-item {
+            display: flex;
+            padding: 20px 0;
+            position: relative;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            margin-bottom: 20px;
+            padding: 15px 15px 15px 40px;
+            border-left: 5px solid var(--bright-red);
+            transition: all 0.3s ease;
+        }
+        
+        .timeline-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-left-color: var(--pure-white);
+        }
+
+        .timeline-item-content {
+            flex-grow: 1;
+            width: 100%; 
+            overflow: hidden; 
+        }
+        
+        .timeline-item h3 {
+            margin: 0 0 5px 0;
+            font-size: 1.4rem;
+            color: var(--pure-white);
+        }
+
+        .timeline-item p {
+            margin: 0;
+            font-size: 1.1rem;
+            text-align: left;
+            color: var(--text-color-light);
+        }
+        
+        .timeline-meta {
+            font-weight: bold;
+            color: var(--accent-green);
+            font-size: 1rem;
+            margin-bottom: 5px;
+        }
+
+        .logo-container {
+            flex-shrink: 0;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: var(--pure-white);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5);
+        }
+
+        .logo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 5px; 
+        }
+
+        /* --- STILE GALLERIA A SCORRIMENTO ORIZZONTALE --- */
+        .scrolling-gallery {
+            display: flex;
+            overflow-x: auto;
+            gap: 15px;
+            padding: 10px 0;
+            margin-top: 15px;
+            scrollbar-width: thin;
+            scrollbar-color: var(--bright-red) rgba(255,255,255,0.1);
+        }
+        
+        .scrolling-gallery::-webkit-scrollbar {
+            height: 8px;
+        }
+        .scrolling-gallery::-webkit-scrollbar-thumb {
+            background-color: var(--bright-red);
+            border-radius: 4px;
+        }
+        
+        .place-card {
+            flex: 0 0 140px; /* Larghezza fissa per ogni card */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.2s;
+        }
+        
+        .place-card:hover {
+            transform: scale(1.05);
+            background: rgba(0,0,0,0.5);
+        }
+
+        .place-card img {
+            width: 100%;
+            height: 100px;
+            object-fit: cover;
+            border-bottom: 2px solid var(--bright-red);
+        }
+
+        .place-card span {
+            font-size: 0.8rem;
+            padding: 5px;
+            text-align: center;
+            color: var(--pure-white);
+            line-height: 1.2;
+        }
+
+        .gallery-label {
+            font-size: 0.9rem;
+            color: var(--pure-white);
+            margin-top: 10px;
+            font-style: italic;
+            opacity: 0.8;
+            text-align: left; 
+        }
+
+        /* --- CONTROLS --- */
+        .controls {
+            position: absolute;
+            bottom: 30px;
+            right: 30px;
+            z-index: 100;
+            display: flex;
+            gap: 1.5rem;
+        }
+
+        button {
+            background: var(--royal-blue);
+            border: 2px solid var(--pure-white);
+            color: var(--pure-white);
+            padding: 12px 30px;
+            font-family: 'Lato', sans-serif;
+            font-size: 1.2rem; 
+            cursor: pointer;
+            transition: all 0.3s;
+            border-radius: 40px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.7);
+        }
+
+        button:hover {
+            background: var(--pure-white);
+            color: var(--royal-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.9);
+        }
+
+        button:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            background: #333; 
+            border-color: #666;
+            color: #888;
+            transform: translateY(0);
+            box-shadow: none;
+        }
+
+        .magic-btn {
+            background: linear-gradient(45deg, var(--bright-red), #FF4136); 
+            border: 3px solid var(--pure-white);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 8px 30px rgba(207, 20, 43, 0.8);
+            margin-top: 2rem;
+            animation: float 3s ease-in-out infinite;
+        }
+        
+        .magic-btn:hover {
+            background: linear-gradient(45deg, #FF4136, var(--bright-red));
+            transform: translateY(-5px);
+            color: white;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .progress-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 10px; 
+            background: rgba(255,255,255,0.1);
+            z-index: 100;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--pure-white), var(--bright-red));
+            width: 20%; 
+            transition: width 0.5s ease;
+            box-shadow: 0 0 15px var(--pure-white);
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 768px) {
+            .slide { padding: 1rem 0.5rem; }
+            h1 { font-size: 3rem; } 
+            h2 { font-size: 1.8rem; } 
+            h3 { font-size: 1.5rem; }
+            p { font-size: 1.05rem; }
+            .reveal-box { font-size: 3rem; padding: 1.5rem 2.5rem; }
+            #slide-4 h1 { font-size: 3.5rem; }
+            .date-box { font-size: 2rem; padding: 1rem 2rem; margin: 2rem 0; }
+            
+            .itinerary-timeline { width: 100%; padding: 0 10px; }
+            .timeline-item { flex-direction: column; border-left-width: 3px; padding: 10px 10px 10px 20px; }
+            .timeline-item h3 { font-size: 1.2rem; }
+            .timeline-item p { font-size: 1rem; }
+            .logo-container { width: 50px; height: 50px; margin: 10px auto 0; }
+            
+            .controls { right: 10px; bottom: 10px; gap: 0.5rem; }
+            button { padding: 8px 16px; font-size: 0.9rem; }
+            
+            /* Mobile gallery fixes */
+            .place-card { flex: 0 0 120px; }
+            .place-card img { height: 80px; }
+        }
+		/* Forza la visibilità della slide perché non c'è più il JS a dare la classe .active */
+		.slide {
+			opacity: 1 !important;
+			transform: scale(1) !important;
+			pointer-events: auto !important;
+			display: flex !important; /* Assicura che sia centrata */
+		}
+		/* Forza la visibilità dei testi animati */
+		.slide .content-fade {
+			opacity: 1 !important;
+			transform: translateY(0) !important;
+		}
+		.controls-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.4); /* Sfondo semi-trasparente */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+		/* NUOVA REGOLA: Applica lo stile sia ai button che ai link (a) */
+.controls-container button,
+.controls-container a {
+    /* STILE FISSO PER I PULSANTI DI NAVIGAZIONE */
+    background-color: var(--royal-blue); 
+    color: var(--pure-white);
+    border: none;
+    padding: 12px 30px;
+    margin: 0 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    /* Rimuove la sottolineatura tipica dei link: */
+    text-decoration: none; 
+}
+
+/* Aggiorna anche lo stile al passaggio del mouse (hover) */
+.controls-container button:hover,
+.controls-container a:hover {
+    background-color: #003399; 
+    transform: translateY(-1px);
+	}
+    </style>
+</head>
+<body>
+
+    <div class="slide-container" id="slideContainer">
+        <div class="slide" id="slide-5" style="display: flex;">
+            <div class="central-light"></div>
+            <div class="decoration top-right">📅</div>
+            
+            <div class="slide-content">
+                <h1 class="content-fade" style="font-size: 3rem;">L'Itinerario (5-8 Maggio)</h1>
+                <p class="content-fade" style="max-width: 90%; font-size: 1.1rem; margin-bottom: 0;">Tutti i dettagli fondamentali del viaggio, pronti per la partenza!</p>
+                
+                <div class="itinerary-timeline content-fade">
+                    
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">5 Maggio - Viaggio</div>
+                            <h3>Volo di Andata 🛫</h3>
+                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://play-lh.googleusercontent.com/UlvFF-Zo2h6_8RdoMh9xWbAcaqSrsIU_yhQPOcH5rbTQ7Av9EvfWFTrAen1EX4X-JxA_" alt="Logo Ryanair" onerror="this.onerror=null; this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">5 Maggio - Trasferimento</div>
+                            <h3>Stansted Express per Londra 🚆</h3>
+                            <p>Dall'aeroporto, treno veloce diretto per il cuore della città.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgHCBXDSigGWHTfga_PNYufwBLMvSu8M5RCw&s" alt="Logo Stansted Express" onerror="this.onerror=null; this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
+                        </div>
+                    </div>
+
+                    <div class="timeline-item" style="border-left-color: gold;">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
+                            <h3><a href="https://www.tripadvisor.com/Hotel_Review-g186338-d610748-Reviews-Comfort_Inn_Edgware_Road-London_England.html">Hotel Comfort Inn</a></h3>
+                            <p>La nostra base per l'esplorazione: <strong>Edgware Road W2</strong>.</p>
+                            
+                            <p class="gallery-label">Ecco cosa vedremo grazie alla nostra posizione strategica:</p>
+                            
+                            <div class="scrolling-gallery">
+                                <div class="place-card"><img src="https://images.placesonline.com/photos/city-of-london_1166089699_151026_1671708925.jpg?quality=80&w=700" alt="City" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=City'"><span>City of London</span></div>
+                                <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
+                                <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
+                                <div class="place-card"><img src="https://media.tacdn.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
+                                <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
+                                <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Downing_Street.jpg" alt="Downing St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Downing+Street'"><span>Downing Street</span></div>
+                                <div class="place-card"><img src="https://www.willpearson.co.uk/wp-content/uploads/2013/04/trafalgar-square-panorama.jpg" alt="Trafalgar" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Trafalgar'"><span>Trafalgar Square</span></div>
+                                <div class="place-card"><img src="https://images.fidhouse.com/fidelitynews/wp-content/uploads/sites/9/2014/07/piccadilly-circus-londra.jpg?width=1280&height=720&quality=90" alt="Piccadilly" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Piccadilly'"><span>Piccadilly Circus</span></div>
+                                <div class="place-card"><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXcpKHnOy5v7xdb8MT5c8F4vMoyfUUc5GHJR85JIBaz0oIuNw4MqxFWv1hsAlAb-T2UulMrPN6gR5RKzmByFy4et6YGUeffLpGe_Tw8YK0B8e7W0yB72XqYN_nEm79ZI27a_avXd?key=Wh6z-92XWsH8MwBSX5TAj_MZ" alt="Buckingham" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Buckingham'"><span>Buckingham Palace</span></div>
+                                <div class="place-card"><img src="https://yt3.googleusercontent.com/zzl-UWupkVQwzB8LYDSAqC1USZRhAy9MEvK3xwpAHC942Zqb4NAP9V73oFSUBsH84GQmsJel3w=s900-c-k-c0x00ffffff-no-rj" alt="Tussauds" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tussauds'"><span>Madame Tussauds</span></div>
+                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Statue_Of_Sherlock_Holmes-Marylebone_Road.jpg" alt="Sherlock" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Sherlock'"><span>Statua di Sherlock Holmes</span></div>
+                                <div class="place-card"><img src="https://media.istockphoto.com/id/1207359066/it/foto/bella-vista-panoramica-aerea-del-parco-hyde-a-londra.jpg?s=612x612&w=0&k=20&c=wUEMjFasszENobFIESWen6rcP73C2peX7KTElBfxN7o=" alt="Hyde Park" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00A65A/FFFFFF?text=Hyde+Park'"><span>Hyde Park</span></div>
+                                <div class="place-card"><img src="https://www.londraculturale.it/wp-content/uploads/sites/3603/2020/10/2018-04-20-Natural-History-Museum-65.jpg?w=700&h=700&zoom=2" alt="Museum" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Natural+History'"><span>Museo di Storia Naturale</span></div>
+                                <div class="place-card"><img src="https://i0.wp.com/lavaligiadigio.it/wp-content/uploads/2020/02/visitare-harry-potter-studios-londra-23-scaled.jpg?fit=960%2C720&ssl=1" alt="Harry Potter" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Harry+Potter'"><span>Harry Potter Studio</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">8 Maggio - Trasferimento</div>
+                            <h3>Stansted Express per Aeroporto 🚆</h3>
+                            <p>Da Londra (Liverpool Street) a <strong>Stansted</strong> (STN) in tempo per il rientro.</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgHCBXDSigGWHTfga_PNYufwBLMvSu8M5RCw&s" alt="Logo Stansted Express" onerror="this.onerror=null; this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
+                        </div>
+                    </div>
+
+                    <div class="timeline-item">
+                        <div class="timeline-item-content">
+                            <div class="timeline-meta">8 Maggio - Ritorno</div>
+                            <h3>Volo di Ritorno 🛬</h3>
+                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
+                        </div>
+                        <div class="logo-container">
+                            <img src="https://play-lh.googleusercontent.com/UlvFF-Zo2h6_8RdoMh9xWbAcaqSrsIU_yhQPOcH5rbTQ7Av9EvfWFTrAen1EX4X-JxA_" alt="Logo Ryanair" onerror="this.onerror=null; this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
+                        </div>
+                    </div>
+					<p>
+					</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+	<div class="controls-container">
+    <a href="https://ghiblimao.github.io/regalo_natale/Slide-4.html" id="prevBtn">
+        Precedente
+    </a>
+
+</div>
+</body>
+</html>
