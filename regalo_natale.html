@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Enigma di Natale - Viaggio Misterioso</title>
-    <style>
+    <title>Enigma di Natale</title>
+       <style>
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Lato:wght@300;400;700&display=swap');
 
         /* PALETTE UNION JACK VERA */
@@ -480,266 +480,83 @@
             .place-card { flex: 0 0 120px; }
             .place-card img { height: 80px; }
         }
+		/* Forza la visibilità della slide perché non c'è più il JS a dare la classe .active */
+		.slide {
+			opacity: 1 !important;
+			transform: scale(1) !important;
+			pointer-events: auto !important;
+			display: flex !important; /* Assicura che sia centrata */
+		}
+		/* Forza la visibilità dei testi animati */
+		.slide .content-fade {
+			opacity: 1 !important;
+			transform: translateY(0) !important;
+		}
+		/* Contenitore dei Controlli (base per il fondo pagina) */
+.controls-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0;
+    background: rgba(0, 0, 0, 0.4); /* Sfondo semi-trasparente */
+    box-shadow: 0 -5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+/* NUOVA REGOLA: Applica lo stile sia ai button che ai link (a) */
+.controls-container button,
+.controls-container a {
+    /* STILE FISSO PER I PULSANTI DI NAVIGAZIONE */
+    background-color: var(--royal-blue); 
+    color: var(--pure-white);
+    border: none;
+    padding: 12px 30px;
+    margin: 0 15px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    /* Rimuove la sottolineatura tipica dei link: */
+    text-decoration: none; 
+}
+
+/* Aggiorna anche lo stile al passaggio del mouse (hover) */
+.controls-container button:hover,
+.controls-container a:hover {
+    background-color: #003399; 
+    transform: translateY(-1px);
+	}
     </style>
 </head>
 <body>
 
     <div class="slide-container" id="slideContainer">
-        <!-- SLIDE 1: Il Sigillo -->
-        <div class="slide active" id="slide-1">
+        <div class="slide" id="slide-0" style="display: flex;"> 
             <div class="central-light"></div>
-            <div class="decoration top-right" style="opacity: 0.1;">🎁</div>
-            <div class="decoration bottom-left" style="opacity: 0.1;">✨</div>
+            <div class="decoration top-right">🎁</div>
+            <div class="decoration bottom-left">✨</div>
             <div class="slide-content">
-                <h1 class="content-fade">Il Sigillo</h1>
-                <p class="content-fade" style="transition-delay: 0.5s;">Questo è un dono non-materiale che richiede una sola cosa da te: <strong>l’attesa</strong>.</p>
-                <p class="content-fade" style="transition-delay: 0.9s;">Per poterlo toccare, dovrai aspettare l'arrivo della stagione dei fiori e della rinascita...</p>
-                <p class="content-fade" style="transition-delay: 1.3s;">Le coordinate temporali sono fissate. Segna queste quattro albe nel tuo almanacco:</p>
-                <div class="date-box content-fade" style="transition-delay: 1.5s;">5 - 8 MAGGIO</div>
-                <p class="content-fade" style="transition-delay: 1.7s;"><em>(E porta scarpe comode, ti serviranno...)</em></p>
-                <p class="content-fade" style="transition-delay: 2.1s;"><em>P.S.:Il futuro ha in serbo un timbro su una pagina che ancora non esiste. Vai a procurarti il libretto dei desideri timbrabili!</em></p>
+                <h1 class="content-fade">Benvenuta nell'enigma di Natale</h1>
+                <p class="content-fade">Il tuo regalo ti aspetta</p>
+                <p class="content-fade">Dovrai superare una serie di <strong>sfide intermedie</strong></p>
+				<div class="date-box content-fade">Ogni vittoria sbloccherà l'indizio successivo</div>
             </div>
         </div>
-
-        <!-- SLIDE 2: Il Regno del Paradosso -->
-        <div class="slide" id="slide-2">
-            <div class="central-light"></div>
-            <div class="decoration top-right">👑</div>
-            <div class="decoration bottom-left">🪞</div>
-            <div class="slide-content">
-                <h1 class="content-fade">Il Regno del Paradosso</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">Ci recheremo in una terra d’acqua e di nebbia, dove ogni logica terrestre è capovolta.</p>
-                <h3 class="content-fade" style="transition-delay: 0.8s;">Il Gioco di Specchi 🚗</h3>
-                <p class="content-fade" style="transition-delay: 1.0s;">Qui, il flusso dei veicoli è un riflesso ribaltato della tua quotidianità. Per muoverti in sicurezza, rinuncia alle tue certezze sul come si attraversa.</p>
-                <h3 class="content-fade" style="transition-delay: 1.4s;">Il Treno Nascosto 🚂</h3>
-                <p class="content-fade" style="transition-delay: 1.6s;">Il nostro aereo ci lascerà a terra, ma la corsa non sarà finita. Per raggiungere direttamente la <strong>Porta di Smeraldo</strong>, dovrai prendere un convoglio veloce, l'unico che collega la <strong>Pista degli Alianti</strong> al <strong>Vicolo dei Mercanti</strong>.</p>
-                <h3 class="content-fade" style="transition-delay: 2.0s;">Indizio Finale</h3>
-                <p class="content-fade" style="transition-delay: 2.2s;">La bandiera del suo regno non è un tricolore, ma l'unione di tre croci che simboleggiano l'unità di popoli distanti.</p>
-            </div>
-        </div>
-
-        <!-- SLIDE 3: Gli Incontri Segreti -->
-        <div class="slide" id="slide-3">
-            <div class="central-light"></div>
-            <div class="decoration top-right">⏳</div>
-            <div class="decoration bottom-left">🗝️</div>
-            <div class="slide-content">
-                <h1 class="content-fade">Gli Incontri Segreti</h1>
-                <p class="content-fade" style="transition-delay: 0.4s;">La nostra destinazione è un palcoscenico di storia. Ecco i codici da decifrare:</p>
-                <ul class="clue-list content-fade" style="transition-delay: 0.8s; text-align: center;">
-                    <li><strong>L'Asceta Silenzioso:</strong> La torre che ha sussurrato il tempo per secoli, ora in veste nuova.</li>
-                    <li><strong>Il Guardiano Rosso:</strong> Soldati che non ridono mai, in scarlatto.</li>
-                    <li><strong>Il Segreto di Ahkmenrah:</strong> Dove statue e reperti prendono vita (cerca il faraone!).</li>
-                    <li><strong>Il Drago Sotterraneo:</strong> La bestia di metallo che urla <em>"Mind the Gap"</em>.</li>
-                    <li><strong>Il Luogo delle Corone:</strong> Dove i gioielli riposano e il ponte si alza in segno di saluto.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- SLIDE 4: La Rivelazione -->
-        <div class="slide" id="slide-4">
-            <div class="decoration top-right">🥂</div>
-            <div class="decoration bottom-left" style="font-size: 12rem; opacity: 0.1;">🎁</div>
-            <div class="slide-content">
-                <h2 class="content-fade">Il regno del paradosso, gli orologi silenti... non può essere che:</h2>
-                <h1 class="content-fade" style="transition-delay: 0.4s;">BUON NATALE!</h1>
-                <p class="content-fade" style="transition-delay: 0.8s;">Il tuo regalo è un viaggio dal <strong>5 all'8 MAGGIO</strong> a...</p>
-                <div class="reveal-box">LONDRA!</div>
-                <p class="content-fade" style="margin-top: 2rem; transition-delay: 1.0s;">Preparati ad attraversare la Manica e ad esplorare una delle città più vibranti al mondo!</p>
-                <p class="content-fade" style="margin-top: 1rem; font-style: italic; transition-delay: 1.2s;">La nostra avventura ti aspetta. <strong>Ti amo!</strong> ❤️</p>
-                <!-- PULSANTE CENTRALE: Chiama changeSlide(1) -->
-                <button class="magic-btn content-fade" style="transition-delay: 1.5s;" onclick="changeSlide(1)">✈️ Scopri l'Itinerario</button>
-            </div>
-        </div>
-        
-        <!-- SLIDE 5: L'ITINERARIO CON GALLERIA -->
-        <div class="slide" id="slide-5">
-            <div class="central-light"></div>
-            <div class="decoration top-right">📅</div>
-            
-            <div class="slide-content">
-                <h1 class="content-fade" style="font-size: 3rem;">L'Itinerario (5-8 Maggio)</h1>
-                <p class="content-fade" style="max-width: 90%; font-size: 1.1rem; margin-bottom: 0;">Tutti i dettagli fondamentali del viaggio, pronti per la partenza!</p>
-                
-                <div class="itinerary-timeline content-fade" style="transition-delay: 0.3s;">
-                    
-                    <!-- 1. VOLO ANDATA -->
-                    <div class="timeline-item">
-                        <div class="timeline-item-content">
-                            <div class="timeline-meta">5 Maggio - Viaggio</div>
-                            <h3>Volo di Andata 🛫</h3>
-                            <p>Partenza da <strong>Bologna</strong> (BLQ) ore <strong>09:45</strong>. Arrivo a <strong>Stansted</strong> (STN) ore <strong>11:00</strong>.</p>
-                        </div>
-                        <div class="logo-container">
-                            <!-- Placeholder per Ryanair -->
-                            <img src="https://play-lh.googleusercontent.com/UlvFF-Zo2h6_8RdoMh9xWbAcaqSrsIU_yhQPOcH5rbTQ7Av9EvfWFTrAen1EX4X-JxA_" alt="Logo Ryanair" onerror="this.onerror=null; this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
-                        </div>
-                    </div>
-
-                    <!-- 2. TRENO ANDATA -->
-                    <div class="timeline-item">
-                        <div class="timeline-item-content">
-                            <div class="timeline-meta">5 Maggio - Trasferimento</div>
-                            <h3>Stansted Express per Londra 🚆</h3>
-                            <p>Dall'aeroporto, treno veloce diretto per il cuore della città.</p>
-                        </div>
-                        <div class="logo-container">
-                            <!-- Placeholder per Stansted Express -->
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgHCBXDSigGWHTfga_PNYufwBLMvSu8M5RCw&s" alt="Logo Stansted Express" onerror="this.onerror=null; this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
-                        </div>
-                    </div>
-
-                    <!-- 3. HOTEL & LUOGHI -->
-                    <div class="timeline-item" style="border-left-color: gold;">
-                        <div class="timeline-item-content">
-                            <div class="timeline-meta">Soggiorno (5-8 Maggio)</div>
-                            <h3><a href="https://www.tripadvisor.com/Hotel_Review-g186338-d610748-Reviews-Comfort_Inn_Edgware_Road-London_England.html">Hotel Comfort Inn</a></h3>
-                            <p>La nostra base per l'esplorazione: <strong>Edgware Road W2</strong>.</p>
-                            
-                            <p class="gallery-label">Ecco cosa vedremo grazie alla nostra posizione strategica:</p>
-                            
-                            <!-- GALLERIA LUOGHI -->
-                            <div class="scrolling-gallery">
-                                <!-- Ho lasciato gli URL di Google per coerenza, ma li ho avvolti in placehold.co come fallback in caso non funzionassero. -->
-                                <div class="place-card"><img src="https://images.placesonline.com/photos/city-of-london_1166089699_151026_1671708925.jpg?quality=80&w=700" alt="City" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=City'"><span>City of London</span></div>
-                                <div class="place-card"><img src="https://www.londonservice.net/media/k2/items/cache/19f9cefdfb07230a68581d617885a3af_L.jpg" alt="Torre" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Tower+of+London'"><span>Tower of London</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c8/Tower_Bridge_London_2016.jpg/1200px-Tower_Bridge_London_2016.jpg" alt="Tower Bridge" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tower+Bridge'"><span>Tower Bridge</span></div>
-                                <div class="place-card"><img src="https://www.thetrainline.com/cms/media/5773/st-pauls-cathedral-at-sunrise-in-london-uk.jpg?mode=crop&width=660&height=440&quality=70" alt="St Pauls" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=St+Paul%27s'"><span>St Paul & Millennium Bridge</span></div>
-                                <div class="place-card"><img src="https://media.tacdn.com/media/attractions-splice-spp-674x446/12/79/25/a1.jpg" alt="Eye" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=London+Eye'"><span>London Eye</span></div>
-                                <div class="place-card"><img src="https://dynamic-media-cdn.tripadvisor.com/media/photo-o/15/01/48/75/leake-street-tunnel.jpg?w=900&h=500&s=1" alt="Leake St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Leake+Street'"><span>Leake Street Arches</span></div>
-                                <div class="place-card"><img src="https://www.london-forever.com/wp-content/uploads/2019/04/big-ben-3.jpg" alt="Big Ben" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Big+Ben'"><span>Big Ben</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8b/Westminster_Abbey_St_Peter.jpg/965px-Westminster_Abbey_St_Peter.jpg" alt="Westminster" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Westminster'"><span>Westminster</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/2/21/Downing_Street.jpg" alt="Downing St" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Downing+Street'"><span>Downing Street</span></div>
-                                <div class="place-card"><img src="https://www.willpearson.co.uk/wp-content/uploads/2013/04/trafalgar-square-panorama.jpg" alt="Trafalgar" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Trafalgar'"><span>Trafalgar Square</span></div>
-                                <div class="place-card"><img src="https://images.fidhouse.com/fidelitynews/wp-content/uploads/sites/9/2014/07/piccadilly-circus-londra.jpg?width=1280&height=720&quality=90" alt="Piccadilly" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Piccadilly'"><span>Piccadilly Circus</span></div>
-                                <div class="place-card"><img src="https://lh7-rt.googleusercontent.com/docsz/AD_4nXcpKHnOy5v7xdb8MT5c8F4vMoyfUUc5GHJR85JIBaz0oIuNw4MqxFWv1hsAlAb-T2UulMrPN6gR5RKzmByFy4et6YGUeffLpGe_Tw8YK0B8e7W0yB72XqYN_nEm79ZI27a_avXd?key=Wh6z-92XWsH8MwBSX5TAj_MZ" alt="Buckingham" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Buckingham'"><span>Buckingham Palace</span></div>
-                                <div class="place-card"><img src="https://yt3.googleusercontent.com/zzl-UWupkVQwzB8LYDSAqC1USZRhAy9MEvK3xwpAHC942Zqb4NAP9V73oFSUBsH84GQmsJel3w=s900-c-k-c0x00ffffff-no-rj" alt="Tussauds" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Tussauds'"><span>Madame Tussauds</span></div>
-                                <div class="place-card"><img src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Statue_Of_Sherlock_Holmes-Marylebone_Road.jpg" alt="Sherlock" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Sherlock'"><span>Statua di Sherlock Holmes</span></div>
-                                <div class="place-card"><img src="https://londonita.com/wp-content/uploads/2020/01/hyde-park-vista-dall-alto.jpg" alt="Hyde Park" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00A65A/FFFFFF?text=Hyde+Park'"><span>Hyde Park</span></div>
-                                <div class="place-card"><img src="https://www.londraculturale.it/wp-content/uploads/sites/3603/2020/10/2018-04-20-Natural-History-Museum-65.jpg?w=700&h=700&zoom=2" alt="Museum" onerror="this.onerror=null; this.src='https://placehold.co/140x100/00215F/FFFFFF?text=Natural+History'"><span>Museo di Storia Naturale</span></div>
-                                <div class="place-card"><img src="https://i0.wp.com/lavaligiadigio.it/wp-content/uploads/2020/02/visitare-harry-potter-studios-londra-23-scaled.jpg?fit=960%2C720&ssl=1" alt="Harry Potter" onerror="this.onerror=null; this.src='https://placehold.co/140x100/CF142B/FFFFFF?text=Harry+Potter'"><span>Harry Potter Studio</span></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. TRENO RITORNO -->
-                    <div class="timeline-item">
-                        <div class="timeline-item-content">
-                            <div class="timeline-meta">8 Maggio - Trasferimento</div>
-                            <h3>Stansted Express per Aeroporto 🚆</h3>
-                            <p>Da Londra (Liverpool Street) a <strong>Stansted</strong> (STN) in tempo per il rientro.</p>
-                        </div>
-                        <div class="logo-container">
-                            <!-- Placeholder per Stansted Express -->
-                            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQgHCBXDSigGWHTfga_PNYufwBLMvSu8M5RCw&s" alt="Logo Stansted Express" onerror="this.onerror=null; this.src='https://placehold.co/150x150/333333/FFFFFF?text=Stansted+Express'">
-                        </div>
-                    </div>
-
-                    <!-- 5. VOLO RITORNO -->
-                    <div class="timeline-item">
-                        <div class="timeline-item-content">
-                            <div class="timeline-meta">8 Maggio - Ritorno</div>
-                            <h3>Volo di Ritorno 🛬</h3>
-                            <p>Partenza da <strong>Stansted</strong> (STN) ore <strong>22:10</strong>. Arrivo a <strong>Bologna</strong> (BLQ) ore <strong>01:15</strong> (9 Maggio).</p>
-                        </div>
-                        <div class="logo-container">
-                            <!-- Placeholder per Ryanair -->
-                            <img src="https://play-lh.googleusercontent.com/UlvFF-Zo2h6_8RdoMh9xWbAcaqSrsIU_yhQPOcH5rbTQ7Av9EvfWFTrAen1EX4X-JxA_" alt="Logo Ryanair" onerror="this.onerror=null; this.src='https://placehold.co/150x150/00A65A/FFFFFF?text=Ryanair'">
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
+    <div class="controls-container">
 
-    <div class="progress-container">
-        <div class="progress-bar" id="progress"></div>
-    </div>
+    <a href="minigioco1.html" id="nextBtn">
+        Inizia l'avventura️
+    </a>
+</div>
 
-    <div class="controls">
-        <button id="prevBtn" onclick="changeSlide(-1)" disabled>Indietro</button>
-        <button id="nextBtn" onclick="changeSlide(1)">Avanti</button>
-    </div>
-
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-        const progressBar = document.getElementById('progress');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        // Tempo di ritardo per assicurare la stabilità del cambio di slide (in ms)
-        const transitionDelay = 10; 
-
-        function updateControls() {
-            prevBtn.disabled = currentSlide === 0;
-            
-            // Aggiorna la barra di progresso
-            const progressValue = ((currentSlide + 1) / totalSlides) * 100;
-            progressBar.style.width = `${progressValue}%`;
-
-            // Logica dei pulsanti Avanti / Finito
-            if (currentSlide === totalSlides - 1) {
-                nextBtn.innerText = "Finito";
-                nextBtn.disabled = true;
-            } else if (currentSlide === totalSlides - 2) {
-                 // Slide di rivelazione (Slide 4)
-                nextBtn.innerText = "Avanti (Itinerario)";
-                nextBtn.disabled = false;
-            } else {
-                nextBtn.innerText = "Avanti";
-                nextBtn.disabled = false;
-            }
-        }
-
-        function changeSlide(direction) {
-            // Disabilita i pulsanti durante la transizione per prevenire doppi click
-            prevBtn.disabled = true;
-            nextBtn.disabled = true;
-
-            // 1. Rimuovi la classe 'active' dalla slide corrente (Inizia l'animazione OUT)
-            if (slides[currentSlide]) {
-                slides[currentSlide].classList.remove('active');
-            }
-            
-            // 2. Calcola il nuovo indice
-            let newSlide = currentSlide + direction;
-            
-            // Limita la navigazione tra gli indici validi
-            if (newSlide < 0) newSlide = 0;
-            if (newSlide >= totalSlides) newSlide = totalSlides - 1;
-            
-            // 3. Usa setTimeout per ritardare l'attivazione della nuova slide 
-            // Questo assicura che il browser abbia registrato la rimozione della classe 'active'
-            setTimeout(() => {
-                currentSlide = newSlide;
-                
-                // 4. Aggiungi la classe 'active' alla nuova slide (Inizia l'animazione IN)
-                if (slides[currentSlide]) {
-                    slides[currentSlide].classList.add('active');
-                }
-                
-                // 5. Aggiorna i controlli e riabilita i pulsanti
-                updateControls();
-            }, transitionDelay); 
-        }
-
-        // Inizializzazione: Assicura che solo la prima slide sia attiva all'inizio
-        window.onload = function() {
-            slides.forEach((slide, index) => {
-                if (index === 0) {
-                    slide.classList.add('active');
-                } else {
-                    slide.classList.remove('active');
-                }
-            });
-            updateControls();
-        };
-    </script>
 </body>
 </html>
-
-
-
-
+    </div>
+    </body>
+</html>
