@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Flappy Cube - 5 Vite</title>
+    <style>
+        /* --- PALETTE E VARIABILI --- */
+        :root {
+            --royal-blue: #00215F;
+            --bright-red: #CF142B;
+            --pure-white: #FFFFFF;
+            --text-color-light: #F0F0F0;
+            --dark-background: #001A4A;
+            --accent-green: #00A65A;
+        }
+
+        /* --- STILE GENERALE --- */
+        body {
+            background-color: var(--dark-background);
+            color: var(--text-color-light);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            overflow: hidden;
+            touch-action: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* GIOCHI UI */
+        .game-container {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            background: var(--dark-background);
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        /* Istruzioni per l'utente */
+        .instructions {
+             position: absolute;
+             top: 20px; right: 20px;
+             color: var(--text-color-light);
+             text-align: right;
+             font-size: 0.9rem;
+             z-index: 100;
+             max-width: 50%;
+        }
+
+        /* INFO BAR (Punteggio e Timer) */
+        .info-bar {
+            position: absolute;
+            top: 80px; right: 20px;
+            text-align: right;
+            z-index: 100;
+        }
+        .score-txt { font-size: 1.3rem; font-weight: bold; color: var(--pure-white); }
+        .timer-txt { font-size: 1rem; color: var(--bright-red); margin-top: 5px; font-weight: bold;}
+
+        /* CANVAS */
+        canvas { 
+            background-color: var(--royal-blue); 
+            display: block; 
+            border: 3px solid var(--pure-white); 
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 8px;
+            width: 95%; 
+            height: 70vh; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="instructions">
+        <b>Obiettivo:</b> Supera 5 ostacoli in 20 secondi. Tocca lo schermo per volare.
+    </div>
+
+    <div class="info-bar">
+        <div id="score-display" class="score-txt">Punti: 0</div>
+        <div id="timer-display" class="timer-txt">Tempo: 20s</div>
+    </div>
+
+    <div id="game-flappy" class="game-container">
+        <canvas id="canvas-flappy"></canvas>
+    </div>
+
+    <script>
+        const COLORS = {
+            bg: '#00215F',      
+            player: '#FFFFFF',  
+            obstacle: '#CF142B',
+            safe: '#00A65A',    
+            text: '#F0F0F0'     
+        };
+
+        // VARIABILI PER LA PERSISTENZA TRA I TENTATIVI
+        const MAX_ATTEMPTS = 5;
+        let attemptsLeft = MAX_ATTEMPTS; 
+
+        // VARIABILI DI GIOCO
+        let gameLoopId = null;
+        let timerIntervalId = null;
+        let timeLeft = 20;
+        let currentScore = 0;
+        let isGameOver = false;
+
+        const scoreEl = document.getElementById('score-display');
+        const timerEl = document.getElementById('timer-display');
+        
+        // La UI ora mostra anche i tentativi rimasti
+        function updateUI(score, time) {
+            scoreEl.innerText = "Punti: " + score + " | Tentativi: " + attemptsLeft + "/" + MAX_ATTEMPTS;
+            if(time !== null) timerEl.innerText = "Tempo: " + time + "s";
+            else timerEl.innerText = "";
+        }
+        
+        // FUNZIONE ENDGAME AGGIORNATA PER LA GESTIONE DELLE 5 VITE
+        function endGame(message, didWin) {
+            isGameOver = true;
+            
+            // Ferma timer e loop di animazione
+            if (typeof timerIntervalId !== 'undefined') clearInterval(timerIntervalId);
+            if (typeof gameLoopId !== 'undefined') cancelAnimationFrame(gameLoopId);
+            
+            setTimeout(() => {
+                alert(message);
+
+                if (didWin) {
+                    // VITTORIA DEFINITIVA: Reindirizza alla slide
+                    alert("Hai vinto!");
+                    window.location.href = "slide-1.html"; 
+                } else {
+                    // SCONFITTA SINGOLA: Decrementa tentativi
+                    attemptsLeft--;
+                    
+                    if (attemptsLeft <= 0) {
+                        // SCONFITTA DEFINITIVA: Reindirizza alla slide
+                        alert("Game Over! Hai esaurito i " + MAX_ATTEMPTS + " tentativi. Ma a Natale siamo tutti più buoni. Passa alla sfida successiva!");
+                        window.location.href = "slide-1.html"; 
+                    } else {
+                        // Riavvia il gioco per un altro tentativo
+                        isGameOver = false; // Reset game state
+                        initFlappy();
+                    }
+                }
+            }, 100);
+        }
+        
+        function initFlappy() {
+            const canvas = document.getElementById('canvas-flappy');
+            if (!canvas) {
+                console.error("Canvas element not found!");
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            
+            // Adatta le dimensioni del canvas (necessario ad ogni riavvio)
+            canvas.width = window.innerWidth * 0.95;
+            canvas.height = window.innerHeight * 0.7;
+            
+            const TARGET_SCORE = 5;
+            
+            // Variabili resettate per il nuovo tentativo
+            let birdY = canvas.height / 2;
+            let birdX = 50;
+            let velocity = 0;
+            let gravity = 0.5;
+            let pipes = [];
+            let frames = 0;
+            currentScore = 0; // Il punteggio deve ripartire da zero ad ogni round
+            timeLeft = 20;
+
+            updateUI(0, timeLeft);
+
+            // Resetta e riavvia Timer
+            if (timerIntervalId) clearInterval(timerIntervalId);
+            timerIntervalId = setInterval(() => {
+                timeLeft--;
+                updateUI(currentScore, timeLeft);
+                if(timeLeft <= 0 && !isGameOver) {
+                    if(currentScore >= TARGET_SCORE) {
+                        // WIN
+                        endGame("⏱️ Tempo scaduto! HAI VINTO (Obiettivo Raggiunto!)", true);
+                    } else {
+                        // LOSS (Tempo esaurito)
+                        endGame("⏱️ Tempo scaduto! Hai perso. (Fatti: " + currentScore + "/" + TARGET_SCORE + ")", false);
+                    }
+                }
+            }, 1000);
+
+            // Gestione del salto (Touch per mobile, Mouse/Space per desktop)
+            const jump = (e) => {
+                e.preventDefault();
+                if(!isGameOver) velocity = -8;
+            };
+
+            canvas.ontouchstart = jump;
+            window.onkeydown = (e) => {
+                if (e.code === 'Space' && !isGameOver) jump(e);
+            };
+
+            function loop() {
+                if(isGameOver) return;
+                velocity += gravity;
+                birdY += velocity;
+
+                // Generazione ostacoli
+                if(frames % 90 === 0) {
+                    pipes.push({x: canvas.width, h: Math.random() * (canvas.height/2), counted: false});
+                }
+
+                // Sfondo
+                ctx.fillStyle = COLORS.bg;
+                ctx.fillRect(0,0,canvas.width, canvas.height);
+
+                // Player (Bianco)
+                ctx.fillStyle = COLORS.player;
+                ctx.fillRect(birdX, birdY, 30, 30);
+                // Bordo player
+                ctx.strokeStyle = COLORS.bg;
+                ctx.strokeRect(birdX, birdY, 30, 30);
+
+                // Disegno e movimento dei Tubi
+                ctx.fillStyle = COLORS.safe;
+                for(let i = 0; i < pipes.length; i++) {
+                    let p = pipes[i];
+                    p.x -= 3;
+                    ctx.fillRect(p.x, 0, 40, p.h); 
+                    ctx.fillRect(p.x, p.h + 130, 40, canvas.height); 
+                    
+                    // Bordi tubi per contrasto
+                    ctx.strokeStyle = COLORS.player;
+                    ctx.strokeRect(p.x, 0, 40, p.h);
+                    ctx.strokeRect(p.x, p.h + 130, 40, canvas.height);
+
+                    // Punteggio
+                    if(!p.counted && p.x + 40 < birdX) {
+                        currentScore++;
+                        p.counted = true;
+                        updateUI(currentScore, timeLeft);
+                    }
+
+                    // Collisione con i tubi
+                    if(birdX < p.x + 40 && birdX + 30 > p.x && (birdY < p.h || birdY + 30 > p.h + 130)) {
+                        if(currentScore >= TARGET_SCORE) {
+                            // WIN (Collisione dopo aver raggiunto l'obiettivo)
+                            endGame("💥 Incidente! Ma hai vinto (Obiettivo raggiunto: " + currentScore + ")", true);
+                        } else {
+                            // LOSS (Collisione prima dell'obiettivo)
+                            endGame("💥 Incidente! Riprova (Fatti: " + currentScore + "/" + TARGET_SCORE + ")", false);
+                        }
+                        return;
+                    }
+                }
+
+                // Collisione con pavimento/soffitto
+                if(birdY > canvas.height - 30 || birdY < 0) {
+                    if(currentScore >= TARGET_SCORE) {
+                        // WIN
+                        endGame("💥 Caduta! Ma hai vinto (Obiettivo raggiunto: " + currentScore + ")", true);
+                    } else {
+                        // LOSS
+                        endGame("💥 Caduta! Riprova (Fatti: " + currentScore + "/" + TARGET_SCORE + ")", false);
+                    }
+                    return;
+                }
+
+                frames++;
+                gameLoopId = requestAnimationFrame(loop);
+            }
+            
+            // Pulisce eventuali vecchi loop e avvia il nuovo
+            if (gameLoopId) cancelAnimationFrame(gameLoopId);
+            loop();
+        }
+
+        // QUESTA CHIAMATA VIENE ESEGUITA DOPO CHE TUTTO L'HTML è STATO CARICATO
+        initFlappy();
+    </script>
+</body>
+</html>
